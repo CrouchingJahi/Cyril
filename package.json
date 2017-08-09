@@ -1,0 +1,31 @@
+{
+  "name": "cyril",
+  "version": "0.0.1",
+  "description": "A desktop finance management app",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/CrouchingJahi/Cyril.git"
+  },
+  "keywords": [
+    "finance",
+    "money",
+    "spending"
+  ],
+  "author": "Jahi Crouch",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/CrouchingJahi/Cyril/issues"
+  },
+  "homepage": "https://github.com/CrouchingJahi/Cyril#readme",
+  "dependencies": {
+    "electron": "^1.7.5",
+    "react": "^15.6.1"
+  },
+  "devDependencies": {
+    "jest": "^20.0.4"
+  }
+}
