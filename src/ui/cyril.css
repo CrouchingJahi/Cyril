@@ -4,8 +4,8 @@
   --gray-light: #676F62;
   --white: #EBEEED;
 
-  --accent: #E4EED6;
-  --accent2: #FFDF00;
+  --accent: #FFDF00;
+  --accent2: #E4EED6;
 
   --theme-light: #C9DCC1;
   --theme-med: #9CB598;
@@ -40,4 +40,13 @@ body {
   color: var(--theme-light);
   padding: 2rem;
   font-family: "Elliot Sans", sans-serif;
+}
+
+a {
+  color: var(--theme-med);
+  text-decoration: none;
+}
+
+a:hover {
+  color: var(--white)
 }

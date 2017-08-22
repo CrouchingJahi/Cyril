@@ -1,8 +1,17 @@
 import React from 'react';
 import { render } from 'react-dom';
 
+import Router from '~/router/router';
+import SplashScreen from '~/screens/splash';
+import MenuScreen from '~/screens/menu';
+
+const routes = {
+  'splash': SplashScreen,
+  'menu': MenuScreen,
+};
+
 document.addEventListener("DOMContentLoaded", () => {
   render(
-    <div>Hello World</div>
+    <Router states={routes} default="menu" />
   , document.getElementById('cyril'));
 });

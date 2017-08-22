@@ -3,7 +3,8 @@ const gulp = require('gulp'),
 
 const input = {
   index: 'app/index.html',
-  jsx: 'src/ui/**/*.jsx'
+  jsx: 'src/ui/**/*.jsx',
+  css: 'src/ui/cyril.css'
 };
 const output = {
   dir: 'app',
@@ -14,7 +15,8 @@ gulp.task('serve', function () {
 });
 
 gulp.task('dev', function () {
-  gulp.watch([input.jsx], electron.reload);
+  gulp.watch([input.index, input.jsx, input.css], electron.reload);
+  electron.start();
 });
 
 gulp.task('default', ['serve']);
