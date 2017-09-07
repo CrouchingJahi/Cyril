@@ -48,5 +48,9 @@ a {
 }
 
 a:hover {
-  color: var(--white)
+  color: var(--white);
+}
+
+.small {
+  font-size: 0.75rem;
 }

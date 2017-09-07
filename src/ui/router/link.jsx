@@ -1,31 +1,31 @@
-import React from 'react';
-import Radium from 'radium';
+import React from 'react'
 
-import { newRoutingEvent } from './router';
+import { newRoutingEvent } from './router'
 
-const css = {
-  
-};
-
-@Radium
 export default class Link extends React.Component {
-  constructor(props) {
-    super(props);
+  constructor (props) {
+    super(props)
 
-    this.handleClick = this.handleClick.bind(this);
+    this.handleClick = this.handleClick.bind(this)
   }
 
-  handleClick(e) {
-    e.preventDefault();
-    this.link.dispatchEvent(newRoutingEvent(this.props.to));
+  handleClick (e) {
+    e.preventDefault()
+    this.link.dispatchEvent(newRoutingEvent(this.props.to))
   }
 
-  render() {
+  render () {
     return <a href
-             ref={elem => this.link = elem}
-             onClick={ this.handleClick }
-           >
+              className={this.props.className}
+              ref={elem => this.link = elem}
+              onClick={this.handleClick}>
               { this.props.children }
-           </a>;
+           </a>
+  }
+}
+
+export class BackToMenuLink extends React.Component {
+  render () {
+    return <Link className="small" to="menu">&#x25c4; Back to Menu</Link>
   }
 }

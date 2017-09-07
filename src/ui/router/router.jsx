@@ -1,47 +1,45 @@
-import React from 'react';
+import React from 'react'
 
 export function newRoutingEvent(state) {
   return new CustomEvent('route', {
     detail: state,
     bubbles: true,
     cancelable: true
-  });
+  })
 }
 
 export default class Router extends React.Component {
   constructor(props) {
-    super(props);
+    super(props)
 
     this.state = {
       route: this.props.default
-    };
+    }
 
-    this.changeState = this.changeState.bind(this);
+    this.changeState = this.changeState.bind(this)
   }
 
   componentDidMount() {
-    this.router.addEventListener('route', this.changeState);
+    this.router.addEventListener('route', this.changeState)
   }
 
   componentWillUnmount() {
-    this.router.removeEventListener('route', this.changeState);
+    this.router.removeEventListener('route', this.changeState)
   }
 
   changeState(e) {
-    const state = e.detail;
+    const route = e.detail
 
-    if (!state || !this.props.states[state]) {
-      throw new Error('Router error: Illegal route: ' + state);
+    if (!route || !this.props.states[route]) {
+      throw new Error('Router error: Illegal route: ' + route)
     }
     else {
-      this.setState({
-        route: e.detail
-      });
+      this.setState({ route })
     }
   }
 
   render() {
-    var Route = this.props.states[this.state.route];
-    return <div id="router" ref={elem => this.router = elem}><Route /></div>;
+    var Route = this.props.states[this.state.route]
+    return <div id="router" ref={elem => this.router = elem}><Route /></div>
   }
 }
