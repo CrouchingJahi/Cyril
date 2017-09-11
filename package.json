@@ -24,7 +24,9 @@
   },
   "homepage": "https://github.com/CrouchingJahi/Cyril#readme",
   "dependencies": {
+    "banking": "^1.1.0",
     "electron": "^1.7.5",
+    "lokijs": "^1.5.0",
     "radium": "^0.19.4",
     "react": "^15.6.1",
     "react-dom": "^15.6.1"

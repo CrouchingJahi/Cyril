@@ -42,6 +42,11 @@ body {
   font-family: "Elliot Sans", sans-serif;
 }
 
+::selection {
+  color: var(--theme-med);
+  background-color: var(--theme-dark);
+}
+
 a {
   color: var(--theme-med);
   text-decoration: none;

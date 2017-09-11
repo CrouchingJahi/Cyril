@@ -1,7 +1,11 @@
+require('babel-register');
 const { app, BrowserWindow } = require('electron');
 const { client } = require('electron-connect');
+const API = require('./services').default;
 
 var win;
+
+API.listen();
 
 app.on('ready', () => {
   win = new BrowserWindow({
@@ -11,7 +15,7 @@ app.on('ready', () => {
     title: 'Cyril',
     backgroundColor: '#333B3D'
   });
-  win.loadURL('file://' + __dirname + '/index.html');
+  win.loadURL(`file://${__dirname}/index.html`);
   win.webContents.openDevTools();
   win.on('closed', () => {
     win = null;
