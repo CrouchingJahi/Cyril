@@ -1,45 +1,20 @@
 import React from 'react'
+import { connect } from 'react-redux'
 
-export function newRoutingEvent(state) {
-  return new CustomEvent('route', {
-    detail: state,
-    bubbles: true,
-    cancelable: true
-  })
-}
-
-export default class Router extends React.Component {
-  constructor(props) {
-    super(props)
-
-    this.state = {
-      route: this.props.default
-    }
-
-    this.changeState = this.changeState.bind(this)
-  }
-
-  componentDidMount() {
-    this.router.addEventListener('route', this.changeState)
-  }
-
-  componentWillUnmount() {
-    this.router.removeEventListener('route', this.changeState)
-  }
-
-  changeState(e) {
-    const route = e.detail
-
-    if (!route || !this.props.states[route]) {
+export class Router extends React.Component {
+  render() {
+    if (!this.props.route || !this.props.states[this.props.route]) {
       throw new Error('Router error: Illegal route: ' + route)
     }
-    else {
-      this.setState({ route })
-    }
-  }
-
-  render() {
-    var Route = this.props.states[this.state.route]
+    var Route = this.props.states[this.props.route]
     return <div id="router" ref={elem => this.router = elem}><Route /></div>
   }
 }
+
+const mapStateToProps = state => {
+  return {
+    route: state.route
+  }
+}
+
+export default connect(mapStateToProps)(Router)

@@ -1,8 +1,9 @@
 import React from 'react'
+import { connect } from 'react-redux'
 
-import { newRoutingEvent } from './router'
+import { route } from '~/store/actions'
 
-export default class Link extends React.Component {
+export class Link extends React.Component {
   constructor (props) {
     super(props)
 
@@ -11,7 +12,7 @@ export default class Link extends React.Component {
 
   handleClick (e) {
     e.preventDefault()
-    this.link.dispatchEvent(newRoutingEvent(this.props.to))
+    this.props.gotoRoute(this.props.to)
   }
 
   render () {
@@ -24,8 +25,12 @@ export default class Link extends React.Component {
   }
 }
 
-export class BackToMenuLink extends React.Component {
-  render () {
-    return <Link className="small" to="menu">&#x25c4; Back to Menu</Link>
+const mapDispatchToProps = dispatch => {
+  return {
+    gotoRoute: to => {
+      dispatch(route(to))
+    }
   }
 }
+
+export default connect(null, mapDispatchToProps)(Link)

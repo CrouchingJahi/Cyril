@@ -1,7 +1,7 @@
 import React from 'react'
 import { ipcRenderer } from 'electron'
 
-import { BackToMenuLink } from '~/router/link'
+import Link from '~/router/link'
 import { Categorizer } from '~/components/categorizer'
 
 export default class UploadScreen extends React.Component {
@@ -64,10 +64,10 @@ export default class UploadScreen extends React.Component {
   render () {
     return (
       <div id="upload">
-        <BackToMenuLink />
+        <Link className="small" to="menu">&#x25c4; Back to Menu</Link>
         <h2>Upload</h2>
         { this.state.formPhase == 1 ? (
-            <div v-if="this.state.formPhase == 1">
+            <div>
               <p>Accepts .ofx, .qfx files</p>
               <p><input type="file" name="ofx" accept=".ofx, .qfx" onChange={this.fileSelected} disabled={this.state.formPhase != 1} /></p>
               <button type="button" onClick={this.readFile} disabled={!this.state.fileIsValid}>Upload</button>

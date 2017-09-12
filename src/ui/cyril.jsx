@@ -1,6 +1,9 @@
 import React from 'react'
 import { render } from 'react-dom'
+import { Provider } from 'react-redux'
 
+import store from '~/store'
+import { init } from '~/store/actions'
 import Router from '~/router/router'
 import SplashScreen from '~/screens/splash'
 import MenuScreen from '~/screens/menu'
@@ -12,8 +15,12 @@ const routes = {
   'upload': UploadScreen,
 }
 
-document.addEventListener("DOMContentLoaded", () => {
+store.dispatch(init)
+
+document.addEventListener('DOMContentLoaded', () => {
   render(
-    <Router states={routes} default="splash" />
+    <Provider store={store}>
+      <Router states={routes} />
+    </Provider>
   , document.getElementById('cyril'))
 })
