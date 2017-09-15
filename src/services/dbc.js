@@ -26,10 +26,10 @@ class DBC {
   constructor (options={}) {
     let cb = () => {
       let collectionOptions = {
-        unique: ['id'],
-        indices: ['id']
+        autoupdate: true
       }
-      this.accounts = this.findCollection('accounts', collectionOptions)
+      this.accounts = this.findCollection('accounts', Object.assign({ unique: ['id'], indices: ['id']}, collectionOptions))
+      this.categories = this.findCollection('categories', collectionOptions)
       console.log('Database initialized.')
     }
 
@@ -56,6 +56,9 @@ class DBC {
     return this.accounts.find()
   }
 
+  getCategories () {
+    return this.categories.findOne() || this.categories.insert({categories: {}})
+  }
 }
 
 export default new DBC()

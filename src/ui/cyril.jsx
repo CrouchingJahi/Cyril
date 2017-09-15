@@ -15,7 +15,7 @@ const routes = {
   'upload': UploadScreen,
 }
 
-store.dispatch(init)
+store.dispatch(init())
 
 document.addEventListener('DOMContentLoaded', () => {
   render(

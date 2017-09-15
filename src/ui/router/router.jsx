@@ -2,10 +2,12 @@ import React from 'react'
 import { connect } from 'react-redux'
 
 export class Router extends React.Component {
-  render() {
-    if (!this.props.route || !this.props.states[this.props.route]) {
-      throw new Error('Router error: Illegal route: ' + route)
+  componentWillReceiveProps (props) {
+    if (!props.route || !props.states[props.route]) {
+      throw new Error('Illegal route: ' + props.route)
     }
+  }
+  render () {
     var Route = this.props.states[this.props.route]
     return <div id="router" ref={elem => this.router = elem}><Route /></div>
   }
