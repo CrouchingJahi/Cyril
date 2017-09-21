@@ -33,4 +33,12 @@ const mapDispatchToProps = dispatch => {
   }
 }
 
-export default connect(null, mapDispatchToProps)(Link)
+const ConnectedLink = connect(null, mapDispatchToProps)(Link)
+
+export default ConnectedLink
+
+export class BackToMenuLink extends React.Component {
+  render () {
+    return <ConnectedLink className="small" to="menu">&#x25c4; Back to Menu</ConnectedLink>
+  }
+}
