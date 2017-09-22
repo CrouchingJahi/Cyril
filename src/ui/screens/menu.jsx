@@ -3,7 +3,9 @@ import React from 'react'
 import Link from '~/router/link'
 
 let menuLinks = [
-  { label: 'Upload', href: 'upload' }
+  { label: 'Spending', href: 'spending' },
+  { label: 'Upload', href: 'upload' },
+  // { label: 'Settings', href: 'settings' }
 ]
 
 export default class MenuScreen extends React.Component {
@@ -11,7 +13,9 @@ export default class MenuScreen extends React.Component {
     return (
       <div id="menu">
         <h2>Menu</h2>
-        { menuLinks.map((link) => <Link key={ link.href } to={ link.href }>{ link.label }</Link>) }
+        <ul>
+          { menuLinks.map((link) => <li key={ link.href }><Link to={ link.href }>{ link.label }</Link></li>) }
+        </ul>
       </div>
     )
   }

@@ -7,11 +7,13 @@ import { init } from '~/store/actions'
 import Router from '~/router/router'
 import SplashScreen from '~/screens/splash'
 import MenuScreen from '~/screens/menu'
+import SpendingScreen from '~/screens/spending'
 import UploadScreen from '~/screens/upload'
 
 const routes = {
   'splash': SplashScreen,
   'menu': MenuScreen,
+  'spending': SpendingScreen,
   'upload': UploadScreen,
 }
 

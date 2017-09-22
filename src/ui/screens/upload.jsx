@@ -11,26 +11,12 @@ export default class UploadScreen extends React.Component {
     this.fileSelected = this.fileSelected.bind(this)
     this.readFile = this.readFile.bind(this)
 
-    /*
     this.state = {
       formPhase: 1,
       fileIsValid: false,
       file: null,
       newTransactions: [],
-      currentTransaction: 0
-    }
-    */
-    this.state = {
-      formPhase: 2,
-      fileIsValid: false,
-      file: null,
-      newTransactions: [
-        {"amount":9.45,"date":"2016-11-02T16:00:00.000Z","id":"20161102234836346617","memo":"24164076306937331457685; 05814; ;","name":"A AND F WEXNER51223097 NEW ALBAN","type":"DEBIT"},
-        {"amount":3,"date":"2016-11-02T16:00:00.000Z","id":"20161102234836346626","memo":"24164076306937331466124; 05814; ;","name":"A AND F WEXNER51223097 NEW ALBAN","type":"DEBIT"},
-        {"amount":4.91,"date":"2016-11-03T16:00:00.000Z","id":"20161104000837429344","memo":"24610436307010187494585; 05200; ;","name":"THE HOME DEPOT #3831 DUBLIN OH","type":"DEBIT"}
-      ],
-      currentPosition: 0,
-      currentTransaction: {"amount":9.45,"date":"2016-11-02T16:00:00.000Z","id":"20161102234836346617","memo":"24164076306937331457685; 05814; ;","name":"A AND F WEXNER51223097 NEW ALBAN","type":"DEBIT"}
+      currentPosition: 0
     }
     this.reader = new FileReader()
     this.reader.onload = () => {
