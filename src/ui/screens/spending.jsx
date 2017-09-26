@@ -26,12 +26,15 @@ export class SpendingScreen extends React.Component {
         <BackToMenuLink />
         <h2>Spending</h2>
         { this.state.selectedAccount ?
-          <div>{ this.state.selectedAccount }</div>
+          <div>
+            <a onClick={() => this.selectAccount()}>Back</a>
+            <h4>{ this.state.selectedAccount }</h4>
+          </div>
           :
           <div>
             <p>Select an account:</p>
             <ul>
-              { this.props.accounts.map(acct => <li><a onClick={() => this.selectAccount(acct.id)}>{ acct.id }</a></li>) }
+              { this.props.accounts.map(acct => <li key={acct.id}><a onClick={() => this.selectAccount(acct.id)}>{ acct.id }</a></li>) }
             </ul>
           </div>
         }

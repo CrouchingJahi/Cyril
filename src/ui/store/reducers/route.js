@@ -1,6 +1,6 @@
 import actions from '~/store/actions'
 
-export default (state = 'spending', action) => {
+export default (state = 'splash', action) => {
   if (action.type == actions.route) {
     return action.to    
   }

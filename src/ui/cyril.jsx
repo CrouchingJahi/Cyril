@@ -17,12 +17,12 @@ const routes = {
   'upload': UploadScreen,
 }
 
-store.dispatch(init())
-
 document.addEventListener('DOMContentLoaded', () => {
-  render(
+  store.dispatch(init()).then(() => {
+    render(
     <Provider store={store}>
       <Router states={routes} />
     </Provider>
   , document.getElementById('cyril'))
+  })
 })
