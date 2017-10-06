@@ -9,12 +9,14 @@ import SplashScreen from '~/screens/splash'
 import MenuScreen from '~/screens/menu'
 import SpendingScreen from '~/screens/spending'
 import UploadScreen from '~/screens/upload'
+import SummaryScreen from '~/screens/summary'
 
 const routes = {
   'splash': SplashScreen,
   'menu': MenuScreen,
   'spending': SpendingScreen,
   'upload': UploadScreen,
+  'summary': SummaryScreen,
 }
 
 document.addEventListener('DOMContentLoaded', () => {

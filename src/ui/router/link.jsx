@@ -12,12 +12,14 @@ export class Link extends React.Component {
 
   handleClick (e) {
     e.preventDefault()
+    if (typeof this.props.onClick == 'function') {
+      this.props.onClick()
+    }
     this.props.gotoRoute(this.props.to)
   }
 
   render () {
-    return <a href
-              className={this.props.className}
+    return <a className={this.props.className}
               ref={elem => this.link = elem}
               onClick={this.handleClick}>
               { this.props.children }

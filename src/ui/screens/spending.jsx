@@ -1,7 +1,8 @@
 import React from 'react'
 import { connect } from 'react-redux'
 
-import { BackToMenuLink } from '~/router/link'
+import Link, { BackToMenuLink } from '~/router/link'
+import { selectAccount } from '~/store/actions'
 
 export class SpendingScreen extends React.Component {
   constructor (props) {
@@ -15,29 +16,26 @@ export class SpendingScreen extends React.Component {
   }
 
   selectAccount (id) {
-    this.setState({
-      selectedAccount: id
-    })
+    this.props.dispatch(selectAccount(id))
   }
 
   render () {
+    let account = this.props.accounts.find((acct) => acct.id == this.state.selectedAccount)
+
     return (
       <div id="spending">
         <BackToMenuLink />
         <h2>Spending</h2>
-        { this.state.selectedAccount ?
-          <div>
-            <a onClick={() => this.selectAccount()}>Back</a>
-            <h4>{ this.state.selectedAccount }</h4>
-          </div>
-          :
-          <div>
-            <p>Select an account:</p>
-            <ul>
-              { this.props.accounts.map(acct => <li key={acct.id}><a onClick={() => this.selectAccount(acct.id)}>{ acct.id }</a></li>) }
-            </ul>
-          </div>
-        }
+        <div>
+          <p>Select an account:</p>
+          <ul>
+          { this.props.accounts.map(acct => (
+            <li key={acct.id}>
+              <Link onClick={() => this.selectAccount(acct.id)} to="summary">{acct.id}</Link>
+            </li>
+          ) ) }
+          </ul>
+        </div>
       </div>
     )
   }

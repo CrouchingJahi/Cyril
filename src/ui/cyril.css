@@ -53,6 +53,7 @@ a {
 }
 
 a:hover {
+  cursor: pointer;
   color: var(--white);
 }
 

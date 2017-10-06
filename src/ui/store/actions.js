@@ -8,10 +8,17 @@ const actions = {
   updateCategories: 'UPDATE_CATEGORIES',
   fetchAccounts: 'FETCH_ACCOUNTS',
   getAccounts: 'GET_ACCOUNTS',
-  updateAccounts: 'UPDATE_ACCOUNTS',
+  selectAccount: 'SELECT_ACCOUNT'
 }
 
 export default actions
+
+export function selectAccount (account) {
+  return {
+    type: actions.selectAccount,
+    account
+  }
+}
 
 export function fetchCategories () {
   return (dispatch) => {
