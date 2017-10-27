@@ -1,7 +1,7 @@
 import React from 'react'
 import { connect } from 'react-redux'
 
-import { getCategories, updateCategories } from '~/store/actions'
+import { fetchCategories } from '~/store/actions'
 
 export class CategoryPicker extends React.Component {
 
@@ -17,30 +17,14 @@ export class CategoryPicker extends React.Component {
 
     this.onChange = this.onChange.bind(this)
     this.onBlur = this.onBlur.bind(this)
-    this.composeCategorizations = this.composeCategorizations.bind(this)
   }
 
   onChange (e) {
     this.setState({[e.target.name]: e.target.value})
   }
 
-  composeCategorizations () {
-    let newCats = this.props.categorizations
-    if (this.state.group) {
-      newCats[this.state.group] = newCats[this.state.group] || {}
-      if (this.state.category) {
-        newCats[this.state.group][this.state.category] = newCats[this.state.group][this.state.category] || {}
-        if (this.state.subcategory) {
-          newCats[this.state.group][this.state.category][this.state.subcategory] = true
-        }
-      }
-    }
-    return newCats
-  }
-
   onBlur () {
     this.props.getCategories()
-    // this.props.dispatch(updateCategories(this.composeCategorizations()))
     this.props.onChange({
       target: {
         name: this.props.name,
@@ -92,7 +76,7 @@ const mapStateToProps = (state) => {
 const mapDispatchToProps = (dispatch) => {
   return {
     getCategories () {
-      dispatch(getCategories())
+      dispatch(fetchCategories())
     }
   }
 }

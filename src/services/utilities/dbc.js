@@ -25,11 +25,32 @@ export class Transaction {
 class DBC {
   constructor (options={}) {
     let cb = () => {
-      let collectionOptions = {
-        autoupdate: true
-      }
+      let collectionOptions = {}
       this.accounts = this.findCollection('accounts', Object.assign({ unique: ['id'], indices: ['id']}, collectionOptions))
-      this.categories = this.findCollection('categories', collectionOptions)
+      this.categorizations = this.accounts.getDynamicView('categorizations')
+      if (!this.categorizations) {
+        function mapFn (acct) {
+          return acct.transactions.reduce((summary, transaction) => {
+            let cat = transaction.categorization
+            if (cat.group) {
+              summary[cat.group] = summary[cat.group] || {}
+              if (cat.category) {
+                summary[cat.group][cat.category] = summary[cat.group][cat.category] || {}
+                if (cat.subcategory) {
+                  summary[cat.group][cat.category][cat.subcategory] = true
+                }
+              }
+            }
+            return summary
+          }, {})
+        }
+        function reduceFn (summary = {}, accountSummary) {
+          return Object.assign(summary, accountSummary)
+        }
+        this.categorizations = this.accounts.addDynamicView('categorizations', { persistent: true })
+        this.categorizations.mapReduce(mapFn, reduceFn)
+      }
+      this.matchers = this.findCollection('matchers', collectionOptions)
       console.log('Database initialized.')
     }
 
@@ -56,8 +77,25 @@ class DBC {
     return this.accounts.find()
   }
 
-  getCategories () {
-    return this.categories.findOne() || this.categories.insert({categories: {}})
+  getCategorizations () {
+    return this.categorizations.data()
+  }
+
+  getMatchers () {
+    return this.matchers.find()
+  }
+
+  getMatcherFor (transaction) {
+    return this.matchers.where((matcher) => transaction.name.match(matcher.term))
+  }
+
+  isCategoryUsed (category) {
+    return this.accounts.findOne((acct) => {
+      return !!acct.transactions.find((t) => {
+        let cat = t.categorization
+        return cat.category
+      })
+    })
   }
 }
 

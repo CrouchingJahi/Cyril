@@ -1,10 +1,12 @@
 import React from 'react'
+import { connect } from 'react-redux'
 import { ipcRenderer } from 'electron'
 
+import { updateTransaction } from '~/store/actions'
 import { BackToMenuLink } from '~/router/link'
 import { Categorizer } from '~/components/categorizer'
 
-export default class UploadScreen extends React.Component {
+export class UploadScreen extends React.Component {
   constructor (props) {
     super(props)
 
@@ -15,6 +17,7 @@ export default class UploadScreen extends React.Component {
       formPhase: 1,
       fileIsValid: false,
       file: null,
+      account: '',
       newTransactions: [],
       currentPosition: 0
     }
@@ -25,6 +28,7 @@ export default class UploadScreen extends React.Component {
     ipcRenderer.on('upload-complete', (event, data) => {
       this.setState({
         formPhase: 2,
+        account: data.account,
         newTransactions: data.newTransactions
       })
       console.log('Upload data processed:', data)
@@ -67,6 +71,7 @@ export default class UploadScreen extends React.Component {
     this.setState({
       newTransactions
     })
+    this.props.dispatch(updateTransaction(this.state.account, newTransactions[this.state.currentPosition]))
   }
 
   render () {
@@ -87,7 +92,9 @@ export default class UploadScreen extends React.Component {
                 <button disabled={ this.state.currentPosition == 0 } onClick={this.previousTransaction}>&lt; Prev</button>
                 <span>{this.state.currentPosition + 1}/{this.state.newTransactions.length}</span>
                 <button disabled={ this.state.currentPosition == this.state.newTransactions.length - 1 } onClick={this.nextTransaction}>Next &gt;</button>
-                <Categorizer key={this.state.newTransactions[this.state.currentPosition].id} transaction={this.state.newTransactions[this.state.currentPosition]}
+                <Categorizer key={this.state.newTransactions[this.state.currentPosition].id}
+                             account={this.state.account}
+                             transaction={this.state.newTransactions[this.state.currentPosition]}
                              onChange={this.changeTransaction} />
               </div>
             </div>
@@ -99,3 +106,5 @@ export default class UploadScreen extends React.Component {
     )
   }
 }
+
+export default connect()(UploadScreen)

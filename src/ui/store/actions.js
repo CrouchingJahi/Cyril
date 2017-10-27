@@ -42,10 +42,9 @@ export function getCategories (data) {
   }
 }
 
-/*
-export function updateCategories (data) {
+export function updateTransaction (account, transaction) {
   return (dispatch) => {
-    ipcRenderer.send('update-categories', data)
+    ipcRenderer.send('update-transaction', { account, transaction })
     ipcRenderer.once('get-categories', (event, categories) => {
       dispatch(getCategories(categories))
     })
@@ -54,7 +53,6 @@ export function updateCategories (data) {
     }
   }
 }
-*/
 
 export function fetchAccounts () {
   return (dispatch) => {

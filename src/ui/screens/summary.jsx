@@ -31,7 +31,7 @@ export class TextSummary extends React.Component {
   }
 }
 
-export class SummaryPage extends React.Component {
+export class SummaryScreen extends React.Component {
   render () {
     return (
       <div id="summary">
@@ -50,4 +50,4 @@ const mapStateToProps = (state) => {
   }
 }
 
-export default connect(mapStateToProps)(SummaryPage)
+export default connect(mapStateToProps)(SummaryScreen)

@@ -14,3 +14,8 @@ In dev, the project will use `babel-register` in order to avoid having to recomp
 
 ### Prod
 For releases, the project will use a separate index.html that uses minified files that have been converted into JavaScript.
+
+---
+
+## To Do
+* Look into Recharts as a library for charts

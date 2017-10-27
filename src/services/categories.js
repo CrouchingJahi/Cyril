@@ -1,5 +1,5 @@
-import dbc from './dbc'
+import dbc from './utilities/dbc'
 
 export default (event) => {
-  event.sender.send('get-categories', dbc.getCategories())
+  event.sender.send('get-categories', dbc.getCategorizations())
 }

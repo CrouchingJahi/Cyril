@@ -6,7 +6,8 @@
   "scripts": {
     "start": "gulp serve",
     "dev": "gulp dev",
-    "test": "jest"
+    "test": "jest",
+    "dbcli": "CYRIL_ENV=manual node"
   },
   "repository": {
     "type": "git",
