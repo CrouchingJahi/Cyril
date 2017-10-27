@@ -60,3 +60,11 @@ a:hover {
 .small {
   font-size: 0.75rem;
 }
+
+#splash {
+  text-align: center;
+}
+
+#splash .logo {
+  width: 35vw;
+}

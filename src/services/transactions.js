@@ -3,7 +3,7 @@ import dbc from './utilities/dbc'
 export default (event, data) => {
   // update transaction in data.account, data.transaction
   let account = dbc.getAccount(data.account)
-  let ind = account.transactions.indexWhere((t) => t.id == data.transaction.id)
+  let ind = account.transactions.findIndex((t) => t.id == data.transaction.id)
   let oldCategorization = Object.assign({}, account.transactions[ind].categorization)
   account.transactions[ind].categorization = data.transaction.categorization
   dbc.accounts.update(account)
