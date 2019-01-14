@@ -1,0 +1,39 @@
+$black: #232B2D;
+$gray-dark: #333B3D;
+$gray-light: #676F62;
+$white: #EBEEED;
+$accent: #FFDF00;
+$accent2: #E4EED6;
+$theme-light: #C9DCC1;
+$theme-med: #9CB598;
+$theme-dark: #395330;
+$error: #ED481B;
+
+$bg: $gray-dark;
+
+:export {
+  bg: $bg;
+}
+
+/*
+@font-face {
+  font-family: "Elliot Sans";
+  src: url("assets/elliot_sans/ElliotSans-Light.ttf");
+  font-weight: 300;
+}
+@font-face {
+  font-family: "Elliot Sans";
+  src: url("assets/elliot_sans/ElliotSans-Regular.ttf");
+  font-weight: 400;
+}
+@font-face {
+  font-family: "Elliot Sans";
+  src: url("assets/elliot_sans/ElliotSans-Medium.ttf");
+  font-weight: 500;
+}
+@font-face {
+  font-family: "Elliot Sans";
+  src: url("assets/elliot_sans/ElliotSans-Bold.ttf");
+  font-weight: 700;
+}
+*/
