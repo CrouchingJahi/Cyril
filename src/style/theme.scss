@@ -1,15 +1,17 @@
-$black: #232B2D;
-$gray-dark: #333B3D;
-$gray-light: #676F62;
+$black: #131311;
 $white: #EBEEED;
+$theme-dark: #2F3425;
+$theme-med: #333B3D;
+$theme-light: #676F62;
+$theme2-light: #C9DCC1;
+$theme2-med: #9CB598;
+$theme2-dark: #395330;
 $accent: #FFDF00;
 $accent2: #E4EED6;
-$theme-light: #C9DCC1;
-$theme-med: #9CB598;
-$theme-dark: #395330;
 $error: #ED481B;
 
-$bg: $gray-dark;
+$bg: $theme-dark;
+$link: $theme2-med;
 
 :export {
   bg: $bg;

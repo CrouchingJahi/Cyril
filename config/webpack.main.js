@@ -13,7 +13,7 @@ const opts = {
         {
           modules: false,
           targets: {
-            // electron: require('electron/package.json').version,
+            electron: require('electron/package.json').version,
             node: 'current',
           }
         }
@@ -88,7 +88,6 @@ const config = {
   },
   plugins: [
     new webpack.HotModuleReplacementPlugin({ multiStep: false }),
-    // new webpack.WatchIgnorePlugin([])
   ]
 };
 

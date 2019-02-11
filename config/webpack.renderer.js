@@ -13,9 +13,8 @@ const opts = {
     title: 'Cyril',
     meta: {
       // "theme-color": '#ffcc00',
-      // 'Access-Control-Allow-Origin': 'http://localhost:3000'
     },
-    filename: 'index.html',
+    filename: paths.htmlOut,
     template: paths.template,
     alwaysWriteToDisk: true,
   },
@@ -28,6 +27,9 @@ const opts = {
         }
       ],
     ],
+    plugins: [
+      '@babel/plugin-proposal-class-properties',
+    ]
   }
 };
 

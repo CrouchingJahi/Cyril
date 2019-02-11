@@ -16,13 +16,14 @@ module.exports = {
   output: {
     pathinfo: true,
     path: paths.dist,
-    filename: 'renderer.dev.js',
-    publicPath: './',
+    filename: 'renderer.js',
+    publicPath: '/',
   },
   devServer: {
     contentBase: paths.dist,
     port: opts.port,
-    // publicPath: '/',
+    publicPath: '/',
+    watchContentBase: true,
     overlay: true,
     hot: true,
   },

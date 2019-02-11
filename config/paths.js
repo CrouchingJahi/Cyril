@@ -13,4 +13,5 @@ module.exports = {
   mainEntry: getPath('src', 'main', 'index.js'),
   rendererEntry: getPath('src', 'renderer', 'index.js'),
   template: getPath('src', 'renderer', 'index.html'),
+  htmlOut: getPath('dist', 'index.html'),
 };

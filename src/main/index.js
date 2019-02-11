@@ -17,11 +17,10 @@ const windowOptions = {
   // icon: 'images/icon.png',
   title: 'Cyril',
   // backgroundColor: style.bg,
-  backgroundColor: '#333B3D',
-  webPreferences: {
-    nodeIntegration: false,
-    // webSecurity: false,
-  }
+  backgroundColor: '#2F3425',
+  // webPreferences: {
+    // nodeIntegration: false,
+  // }
 }
 
 let mainWindow

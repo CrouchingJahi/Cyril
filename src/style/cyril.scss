@@ -1,21 +1,20 @@
 @import 'theme';
+@import 'splash';
+@import 'menu';
 
 body {
-  padding: 2rem;
   font-family: "Elliot Sans", sans-serif;
 
-  // &.theme-light {}
-  background-color: $black;
   color: $theme-light;
 }
 
 ::selection {
-  color: $theme-med;
-  background-color: $theme-dark;
+  color: $theme-light;
+  background-color: $theme-med;
 }
 
 a {
-  color: $theme-med;
+  color: $link;
   text-decoration: none;
 }
 
@@ -28,10 +27,8 @@ a:hover {
   font-size: 0.75rem;
 }
 
-#splash {
-  text-align: center;
-}
-
-#splash .logo {
-  width: 35vw;
+.link {
+  background: none;
+  border: none;
+  color: $link;
 }
