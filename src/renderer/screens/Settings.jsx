@@ -7,8 +7,8 @@ export default class SettingsScreen extends React.Component {
       <div id="settings">
         <header>
           <BackToMenuLink />
+          <h2>Settings</h2>
         </header>
-        <h2>Settings</h2>
       </div>
     )
   }

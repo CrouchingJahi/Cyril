@@ -48,6 +48,7 @@ const config = {
     extensions: ['.js', '.jsx'],
     alias: {
       '@': paths.renderer,
+      'assets': paths.assets
     }
   },
   node: {
@@ -111,6 +112,12 @@ const config = {
               }
             ]
           },
+          {
+            test: /\.ttf$/,
+            use: {
+              loader: 'file-loader'
+            }
+          }
         ],
       }
     ]

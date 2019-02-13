@@ -18,9 +18,6 @@ const windowOptions = {
   title: 'Cyril',
   // backgroundColor: style.bg,
   backgroundColor: '#2F3425',
-  // webPreferences: {
-    // nodeIntegration: false,
-  // }
 }
 
 let mainWindow

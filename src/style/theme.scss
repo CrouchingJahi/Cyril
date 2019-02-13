@@ -12,30 +12,29 @@ $error: #ED481B;
 
 $bg: $theme-dark;
 $link: $theme2-med;
+$link-hover: $theme2-light;
 
 :export {
   bg: $bg;
 }
 
-/*
 @font-face {
   font-family: "Elliot Sans";
-  src: url("assets/elliot_sans/ElliotSans-Light.ttf");
+  src: url("../assets/elliot_sans/ElliotSans-Light.ttf");
   font-weight: 300;
 }
 @font-face {
   font-family: "Elliot Sans";
-  src: url("assets/elliot_sans/ElliotSans-Regular.ttf");
+  src: url("../assets/elliot_sans/ElliotSans-Regular.ttf");
   font-weight: 400;
 }
 @font-face {
   font-family: "Elliot Sans";
-  src: url("assets/elliot_sans/ElliotSans-Medium.ttf");
+  src: url("../assets/elliot_sans/ElliotSans-Medium.ttf");
   font-weight: 500;
 }
 @font-face {
   font-family: "Elliot Sans";
-  src: url("assets/elliot_sans/ElliotSans-Bold.ttf");
+  src: url("../assets/elliot_sans/ElliotSans-Bold.ttf");
   font-weight: 700;
 }
-*/

@@ -24,7 +24,7 @@ export default class Link extends React.Component {
 export class BackToMenuLink extends React.Component {
   render() {
     return (
-      <Link className="link">Back to Menu</Link>
+      <Link className="link" to="menu">&#x25c4; Back to Menu</Link>
     )
   }
 }

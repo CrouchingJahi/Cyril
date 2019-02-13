@@ -14,7 +14,7 @@ export default class Router extends React.Component {
 
   changeRoute(route) {
     if (!route || !routes[route]) {
-      throw new Error(`Illegal route: ${route}`)
+      throw new Error(`Illegal route: "${route}"`)
     }
     this.setState({
       currentRoute: route
