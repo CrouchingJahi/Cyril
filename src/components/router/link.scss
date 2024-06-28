@@ -1,0 +1,17 @@
+@import '@/theme';
+
+.link {
+  background: none;
+  border: none;
+  color: $link;
+  cursor: pointer;
+
+  &:focus {
+    outline: none;
+  }
+
+  &:hover, &:focus {
+    color: $link-hover; 
+  }
+
+}

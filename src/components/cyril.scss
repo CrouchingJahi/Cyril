@@ -1,0 +1,47 @@
+@import './theme';
+
+@font-face {
+  font-family: "Elliot Sans";
+  src: url("../assets/elliot_sans/ElliotSans-Light.ttf");
+  font-weight: 300;
+}
+@font-face {
+  font-family: "Elliot Sans";
+  src: url("../assets/elliot_sans/ElliotSans-Regular.ttf");
+  font-weight: 400;
+}
+@font-face {
+  font-family: "Elliot Sans";
+  src: url("../assets/elliot_sans/ElliotSans-Medium.ttf");
+  font-weight: 500;
+}
+@font-face {
+  font-family: "Elliot Sans";
+  src: url("../assets/elliot_sans/ElliotSans-Bold.ttf");
+  font-weight: 700;
+}
+
+
+body {
+  font-family: "Elliot Sans", sans-serif;
+  color: $theme-light;
+}
+
+::selection {
+  color: $theme-light;
+  background-color: $theme-med;
+}
+
+a {
+  color: $link;
+  text-decoration: none;
+}
+
+a:hover {
+  cursor: pointer;
+  color: $white;
+}
+
+.small {
+  font-size: 0.75rem;
+}

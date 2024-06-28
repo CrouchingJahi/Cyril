@@ -1,0 +1,6 @@
+@import './theme';
+
+// Export sass variables for JS use and Electron config
+:export {
+  bgColor: $bg;
+}
