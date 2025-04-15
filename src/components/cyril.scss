@@ -1,4 +1,4 @@
-@import './theme';
+@use 'theme';
 
 @font-face {
   font-family: "Elliot Sans";
@@ -24,22 +24,23 @@
 
 body {
   font-family: "Elliot Sans", sans-serif;
-  color: $theme-light;
+  color: theme.$grn-light;
+  font-size: 16px;
 }
 
 ::selection {
-  color: $theme-light;
-  background-color: $theme-med;
+  color: theme.$grn-light;
+  background-color: theme.$grn-med;
 }
 
 a {
-  color: $link;
+  color: theme.$link;
   text-decoration: none;
 }
 
 a:hover {
   cursor: pointer;
-  color: $white;
+  color: theme.$white;
 }
 
 .small {
