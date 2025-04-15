@@ -1,11 +1,10 @@
-import React from 'react'
 import Link from '@/router/Link'
 
 import cyrilLogo from '@assets/Cyril.png'
 import './splash.scss'
 
 export default function SplashScreen () {
-  const version = window.cyrilAPI.version()
+  const version = window.cyrilAPI.getVersion()
 
   return <div id="splash">
     <h1>Cyril</h1>

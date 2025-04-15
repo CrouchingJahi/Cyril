@@ -16,8 +16,9 @@ contextBridge.exposeInMainWorld('ipcRenderer', {
 */
 
 contextBridge.exposeInMainWorld('cyrilAPI', {
-  version: () => ipcRenderer.sendSync('version'),
+  getVersion: () => ipcRenderer.sendSync('getVersion'),
   openGithubLink: () => ipcRenderer.send('openGithubLink'),
+  loginUser: (localUser) => ipcRenderer.send('loginUser', localUser),
 })
 
 /*

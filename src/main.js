@@ -1,12 +1,9 @@
 import { app, BrowserWindow, ipcMain, shell } from 'electron';
+import installExtension, { REACT_DEVELOPER_TOOLS } from 'electron-devtools-installer';
 import path from 'node:path';
 
 import style from './components/theme.module.scss';
-
-// Handle creating/removing shortcuts on Windows when installing/uninstalling.
-if (require('electron-squirrel-startup')) {
-  app.quit();
-}
+// import getDB from './database/initDatabase';
 
 const createWindow = () => {
   // Create the browser window.
@@ -33,9 +30,18 @@ const createWindow = () => {
 // This method will be called when Electron has finished
 // initialization and is ready to create browser windows.
 // Some APIs can only be used after this event occurs.
-app.whenReady().then(() => {
+app.whenReady().then(async () => {
+  return installExtension(REACT_DEVELOPER_TOOLS)
+    .then((name) => console.log(`Added Extension:  ${name}`))
+    .catch((err) => console.log('Extension error occurred: ', err));
+}).then(() => {
 
-  ipcMain.on('version', (event) => {
+  // Init storage
+  console.log(app.getPath('userData'));
+  // const db = getDB();
+
+  // Backend API functions
+  ipcMain.on('getVersion', (event) => {
     event.returnValue = app.getVersion();
   });
 
@@ -43,7 +49,23 @@ app.whenReady().then(() => {
     //TODO import this from package json
     const githubLink = 'https://github.com/CrouchingJahi/Cyril';
     shell.openExternal(githubLink);
-  })
+  });
+
+  ipcMain.on('loginUser', (event, localUser) => {
+    console.log('login user call', localUser);
+    // grab localStorage data from event call
+    if (localUser) {
+      // match local user?
+      /*
+      db.settings.findOne().exec().then(userSettings => {
+        event.returnValue = userSettings;
+      });
+      */
+    } else {
+      // store default user data
+      // db.settings.set('0', {});
+    }
+  });
 
   createWindow();
 
