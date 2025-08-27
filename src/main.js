@@ -3,7 +3,8 @@ import installExtension, { REACT_DEVELOPER_TOOLS } from 'electron-devtools-insta
 import path from 'node:path';
 
 import style from './components/theme.module.scss';
-// import getDB from './database/initDatabase';
+import { userSettings } from './utils/userSettings';
+import getDB from './database/db';
 
 const createWindow = () => {
   // Create the browser window.
@@ -37,8 +38,8 @@ app.whenReady().then(async () => {
 }).then(() => {
 
   // Init storage
-  console.log(app.getPath('userData'));
-  // const db = getDB();
+  const db = getDB();
+  // console.log(db.exec('SELECT * FROM users'))+
 
   // Backend API functions
   ipcMain.on('getVersion', (event) => {
@@ -56,14 +57,7 @@ app.whenReady().then(async () => {
     // grab localStorage data from event call
     if (localUser) {
       // match local user?
-      /*
-      db.settings.findOne().exec().then(userSettings => {
-        event.returnValue = userSettings;
-      });
-      */
-    } else {
-      // store default user data
-      // db.settings.set('0', {});
+      event.returnValue = userSettings;
     }
   });
 

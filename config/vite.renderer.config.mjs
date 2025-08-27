@@ -20,6 +20,13 @@ export default defineConfig((env) => {
       outDir: `.vite/renderer/${name}`,
     },
     plugins: [pluginExposeRenderer(name), react()],
+    css: {
+      preprocessorOptions: {
+        scss: {
+          api: 'modern'
+        }
+      }
+    },
     resolve: {
       preserveSymlinks: true,
       alias: {
