@@ -21,7 +21,7 @@ When electron-forge upgrades, the app will silently stop working. If it claims t
 ---
 
 ## To Do
-* Data storage - uploading transactions
+* Data storage - need a replacement for rxdb because it has a 5mb limit unless you pay for premium
 * Look into Recharts as a library for charts
 * Line chart as a default view for total account in/out
 * Budgeting view, to create budgets per category

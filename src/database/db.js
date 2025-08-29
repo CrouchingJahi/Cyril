@@ -1,30 +1,33 @@
-import path from 'path';
-import { Database, open } from 'sqlite';
+// import { getUserSettings } from '~/utils/userSettings'
+import { getRxDB } from './rxdb'
 
-import { userSettings } from '../utils/userSettings';
-import * as queries from './sqlQueries';
+// const userSettings = await getUserSettings()
 
-/*
-const userStore = new Store(userStoreSettings);
-export const userSettings = userStore.get('settings');
-export function updateUserSettings (newSettings) {
-  console.log('Updating user settings');
-  userStore.set('settings', newSettings);
+let db;
+
+export const getDB = async () => {
+  if (db) return db
+  db = await getRxDB()
+  return db
+}
+
+/* Schemas
+accounts {
+  id: string,
+  fid: string,
+}
+categories {
+  id: string,
+  catName: string,
+  catParent: string (references parent's id)
+}
+transactions {
+  id: string,
+  trnDate: Date,
+  trnAmount: number,
+  name: string,
+  memo: string,
+  trnType: string,
+  trnCategory: string (references category id)
 }
 */
-
-export default async function getDB () {
-  console.log('getDB call')
-  // Get the settings object
-  const db = await open({
-    filename: path.join(userSettings.dbLocation, 'vault.db'),
-    driver: Database
-  });
-  // If db is empty
-  const dbHasRecords = queries.dbHasRecords()
-  console.log('db has records?', dbHasRecords);
-  if (!dbHasRecords) {
-    queries.initDatabase(db);
-  }
-  return db;
-}

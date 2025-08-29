@@ -1,14 +1,14 @@
-import { verbose } from 'sqlite';
-
+/*
+Currently unused, but keeping in case this switches to an sqlite type
+*/
 export async function dbHasRecords () {
   return await db.exec('SELECT * FROM users');
 }
 
-export async function initDatabase (db) {
+export async function initializeDB (db) {
   console.log('DB init started');
 
   console.log(MAIN_WINDOW_VITE_DEV_SERVER_URL);
-  verbose();
 
   
   console.log('DB collections init');

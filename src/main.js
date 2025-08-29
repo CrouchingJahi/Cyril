@@ -3,8 +3,8 @@ import installExtension, { REACT_DEVELOPER_TOOLS } from 'electron-devtools-insta
 import path from 'node:path';
 
 import style from './components/theme.module.scss';
-import { userSettings } from './utils/userSettings';
-import getDB from './database/db';
+// import userSettings from '~/utils/userSettings';
+import { getDB } from './database/db';
 
 const createWindow = () => {
   // Create the browser window.
@@ -31,15 +31,17 @@ const createWindow = () => {
 // This method will be called when Electron has finished
 // initialization and is ready to create browser windows.
 // Some APIs can only be used after this event occurs.
-app.whenReady().then(async () => {
+/*
+react dev tools handler
+.then(async () => {
   return installExtension(REACT_DEVELOPER_TOOLS)
     .then((name) => console.log(`Added Extension:  ${name}`))
     .catch((err) => console.log('Extension error occurred: ', err));
-}).then(() => {
-
-  // Init storage
-  const db = getDB();
-  // console.log(db.exec('SELECT * FROM users'))+
+})
+*/
+app.whenReady().then(() => {
+  const db = getDB()
+  console.log('after db init', db)
 
   // Backend API functions
   ipcMain.on('getVersion', (event) => {
@@ -50,15 +52,6 @@ app.whenReady().then(async () => {
     //TODO import this from package json
     const githubLink = 'https://github.com/CrouchingJahi/Cyril';
     shell.openExternal(githubLink);
-  });
-
-  ipcMain.on('loginUser', (event, localUser) => {
-    console.log('login user call', localUser);
-    // grab localStorage data from event call
-    if (localUser) {
-      // match local user?
-      event.returnValue = userSettings;
-    }
   });
 
   createWindow();
