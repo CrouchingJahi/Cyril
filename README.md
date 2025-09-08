@@ -16,12 +16,14 @@ This project uses electron-forge for scaffolding and Vite to handle the dev proc
 
 ## Issues
 Most of the development is using a Windows machine, so I had some compatibility issues between WSL and various tools. Namely, Yarn
-When electron-forge upgrades, the app will silently stop working. If it claims to start successfully but no Electron window appears, check the global install of create-electron-app and potantially run `npm update -g create-electron-app`
+When electron-forge upgrades, the app will silently stop working. If it claims to start successfully but no Electron window appears, check the global install of create-electron-app and potentially run `npm update -g create-electron-app`
 
 ---
 
 ## To Do
 * Data storage - need a replacement for rxdb because it has a 5mb limit unless you pay for premium
+* DB migration function
+* DBs - Check LevelDB, electron-store, NeDB (had prev difficulty)
 * Look into Recharts as a library for charts
 * Line chart as a default view for total account in/out
 * Budgeting view, to create budgets per category

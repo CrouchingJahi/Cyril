@@ -13,6 +13,6 @@ export const routes = {
   upload: UploadScreen,
 }
 
-export const defaultRoute = 'upload'
+export const defaultRoute = 'splash'
 
 export const RouteContext = createContext()

@@ -8,7 +8,6 @@ export async function dbHasRecords () {
 export async function initializeDB (db) {
   console.log('DB init started');
 
-  console.log(MAIN_WINDOW_VITE_DEV_SERVER_URL);
 
   
   console.log('DB collections init');

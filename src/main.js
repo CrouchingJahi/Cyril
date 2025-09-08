@@ -1,10 +1,8 @@
 import { app, BrowserWindow, ipcMain, shell } from 'electron';
-import installExtension, { REACT_DEVELOPER_TOOLS } from 'electron-devtools-installer';
+// import installExtension, { REACT_DEVELOPER_TOOLS } from 'electron-devtools-installer';
 import path from 'node:path';
 
 import style from './components/theme.module.scss';
-// import userSettings from '~/utils/userSettings';
-import { getDB } from './database/db';
 
 const createWindow = () => {
   // Create the browser window.
@@ -14,6 +12,7 @@ const createWindow = () => {
     icon: 'assets/Cyril.ico',
     backgroundColor: style.bgColor,
     webPreferences: {
+      nodeIntegration: true,
       preload: path.join(__dirname, 'preload.js'),
     },
   });
@@ -39,9 +38,7 @@ react dev tools handler
     .catch((err) => console.log('Extension error occurred: ', err));
 })
 */
-app.whenReady().then(() => {
-  const db = getDB()
-  console.log('after db init', db)
+app.whenReady().then(async () => {
 
   // Backend API functions
   ipcMain.on('getVersion', (event) => {

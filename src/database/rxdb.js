@@ -7,17 +7,16 @@ export async function getRxDB () {
     storage: getRxStorageLocalstorage(),
   })
 
-  if (!db.accounts) {
-    await initializeDB()
+  if (!db.collections.accounts) {
+    await initializeDB(db)
   }
 
-  console.log('db initialized', db)
+  console.debug('RxDB initialized')
 
   return db
 }
 
-async function initializeDB () {
-  console.log('initializing db')
+async function initializeDB (db) {
   await db.addCollections({
     accounts: {
       schema: {
@@ -26,7 +25,7 @@ async function initializeDB () {
         primaryKey: 'id',
         type: 'object',
         properties: {
-          id: { type: 'string' },
+          id: { type: 'string', maxLength: 4 },
           fid: { type: 'string' },
         }
       }
@@ -38,7 +37,7 @@ async function initializeDB () {
         primaryKey: 'id',
         type: 'object',
         properties: {
-          id: { type: 'string' },
+          id: { type: 'string', maxLength: 4 },
           catName: { type: 'string' },
           catParent: { type: 'string' },
         }
@@ -51,7 +50,7 @@ async function initializeDB () {
         primaryKey: 'id',
         type: 'object',
         properties: {
-          id: { type: 'string' },
+          id: { type: 'string', maxLength: 32 },
           trnDate: { type: 'datetime' },
           trnAmount: { type: 'number' },
           name: { type: 'string' },

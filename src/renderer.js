@@ -27,7 +27,17 @@
  */
 import { createElement } from 'react';
 import { createRoot } from 'react-dom/client';
+
 import App from '@/App';
+import { getDB } from './database/db';
 
 const appNode = createRoot(document.getElementById('root'));
 appNode.render(createElement(App));
+
+initializeDB();
+
+// May need to emit event for vault init so components can wait for it
+async function initializeDB () {
+  const db = await getDB();
+  window.cyrilVault = db;
+}

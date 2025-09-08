@@ -5,10 +5,19 @@ import { getRxDB } from './rxdb'
 
 let db;
 
-export const getDB = async () => {
-  if (db) return db
-  db = await getRxDB()
+export async function getDB () {
+  if (!db)  {
+    db = await getRxDB()
+  }
   return db
+}
+
+export async function getUserAccounts () {
+  return db.accounts.find().exec()
+}
+
+export async function getTransactionCategories () {
+  return db.transactions.find().exec()
 }
 
 /* Schemas
