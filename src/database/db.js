@@ -15,6 +15,13 @@ export async function getDB () {
 export async function getUserAccounts () {
   return db.accounts.find().exec()
 }
+export async function addUserAccount (newAccount) {
+  db.accounts.insert({
+    id: db.accounts.count(),
+    name: newAccount.name,
+    fid: newAccount.fid,
+  })
+}
 
 export async function getTransactionCategories () {
   return db.transactions.find().exec()
@@ -24,6 +31,7 @@ export async function getTransactionCategories () {
 accounts {
   id: string,
   fid: string,
+  name: string,
 }
 categories {
   id: string,

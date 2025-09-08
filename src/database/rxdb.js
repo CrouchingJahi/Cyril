@@ -27,6 +27,7 @@ async function initializeDB (db) {
         properties: {
           id: { type: 'string', maxLength: 4 },
           fid: { type: 'string' },
+          name: { type: 'string' },
         }
       }
     },

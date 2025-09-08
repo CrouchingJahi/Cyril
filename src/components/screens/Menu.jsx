@@ -1,5 +1,7 @@
 import Link from '@/router/Link'
 
+import './menu.scss'
+
 const menuLinks = [
   { label: 'Settings', href: 'settings' },
   { label: 'Upload Transaction Data', href: 'upload'},

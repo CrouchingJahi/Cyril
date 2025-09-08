@@ -1,6 +1,7 @@
 import { app, BrowserWindow, ipcMain, shell } from 'electron';
 // import installExtension, { REACT_DEVELOPER_TOOLS } from 'electron-devtools-installer';
 import path from 'node:path';
+import { getUserSettings } from './utils/userSettings';
 
 import style from './components/theme.module.scss';
 
@@ -41,6 +42,12 @@ react dev tools handler
 app.whenReady().then(async () => {
 
   // Backend API functions
+  ipcMain.on('getUserSettings', (event) => {
+    getUserSettings().then(userSettings => {
+      event.returnValue = userSettings;
+    });
+  });
+
   ipcMain.on('getVersion', (event) => {
     event.returnValue = app.getVersion();
   });

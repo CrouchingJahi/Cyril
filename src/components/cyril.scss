@@ -26,11 +26,32 @@ body {
   font-family: "Elliot Sans", sans-serif;
   color: theme.$text;
   font-size: 16px;
+  margin: 0;
+  padding: 1rem;
 }
 
 ::selection {
-  color: theme.$grn-light;
-  background-color: theme.$grn-med;
+  color: theme.$grn2-light;
+  background-color: theme.$grn-light;
+}
+
+h2 {
+  margin: 1rem 0;
+}
+h3 {
+  margin: 0.5rem 0;
+}
+h4 {
+  margin: 0.25rem 0;
+}
+
+ul {
+  margin: 0;
+  padding-inline-start: 1em;
+}
+li::marker {
+  content: "¢";
+  font-weight: bold;
 }
 
 a {
@@ -41,6 +62,14 @@ a {
 a:hover {
   cursor: pointer;
   color: theme.$white;
+}
+
+input, select {
+  border-radius: 4px;
+  border: 2px solid theme.$grn-med;
+  background-color: theme.$white;
+  color: theme.$bg;
+  padding: 6px;
 }
 
 .small {

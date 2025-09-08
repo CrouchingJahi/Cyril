@@ -1,0 +1,16 @@
+#settings {
+
+  section {
+    margin: 1rem 0;
+  }
+
+  form {
+    display: flex;
+    flex-direction: column;
+    width: 20rem;
+  } 
+
+  label {
+    padding-bottom: 6px;
+  }
+}
