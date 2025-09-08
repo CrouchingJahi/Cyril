@@ -40,4 +40,5 @@ initializeDB();
 async function initializeDB () {
   const db = await getDB();
   window.cyrilVault = db;
+  window.dispatchEvent(new CustomEvent('VaultLoaded'))
 }
