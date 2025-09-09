@@ -5,12 +5,14 @@
   }
 
   form {
+    width: 20rem;
+  }
+  fieldset {
     display: flex;
     flex-direction: column;
-    width: 20rem;
-  } 
-
-  label {
-    padding-bottom: 6px;
+    border: none;
+    margin: 0;
+    padding: 0 0 0.5em;
   }
+
 }

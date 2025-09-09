@@ -39,10 +39,10 @@ h2 {
   margin: 1rem 0;
 }
 h3 {
-  margin: 0.5rem 0;
+  margin: 0.5rem 0 0.25rem;
 }
 h4 {
-  margin: 0.25rem 0;
+  margin: 0.25rem 0 0;
 }
 
 ul {
@@ -64,12 +64,25 @@ a:hover {
   color: theme.$white;
 }
 
+button {
+  border-radius: 4px;
+  border: 1px solid theme.$grn-dark;
+  background-color: theme.$grn2-light;
+  color: theme.$grn-dark;
+  padding: 0.5em 1em;
+  font-family: "Elliot Sans", sans-serif;
+  font-weight: bold;
+  cursor: pointer;
+}
+
 input, select {
   border-radius: 4px;
   border: 2px solid theme.$grn-med;
   background-color: theme.$white;
   color: theme.$bg;
-  padding: 6px;
+  padding: 0.5em;
+  font-family: "Elliot Sans", sans-serif;
+  font-weight: 500;
 }
 
 .small {
