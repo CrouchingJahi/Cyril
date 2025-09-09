@@ -8,9 +8,9 @@ export default function Router () {
   if (!route || !routes[route]) {
     throw new Error(`Illegal route: "${route}"`)
   }
-  let Route = routes[route]
+  const CurrentRoute = routes[route]
 
   return <RouteContext.Provider value={routerContext}>
-    <Route />
+    <CurrentRoute />
   </RouteContext.Provider>
 }

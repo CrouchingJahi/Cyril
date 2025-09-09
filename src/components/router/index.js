@@ -15,4 +15,4 @@ export const routes = {
 
 export const defaultRoute = 'splash'
 
-export const RouteContext = createContext()
+export const RouteContext = createContext({ currentRoute: defaultRoute })

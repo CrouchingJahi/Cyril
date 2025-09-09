@@ -21,6 +21,7 @@ When electron-forge upgrades, the app will silently stop working. If it claims t
 ---
 
 ## To Do
+* Settings - Need confirmation on deleting an account, figure out how to handle attached transactions
 * Transaction Categories - Create view because there could be hundreds. Sort by parent, then alphabetical
 * Data storage - need a replacement for rxdb because it has a 5mb limit unless you pay for premium
 * DB migration function
