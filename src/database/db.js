@@ -20,33 +20,51 @@ async function waitForInit () {
 export async function getDB () {
   if (!db)  {
     db = await getRxDB()
+    Object.assign(db, {
+      getUserAccounts, addUserAccount, removeUserAccount,
+      getTransactionCategories, addCategory
+    })
   }
   return db
 }
 
 export async function getUserAccounts () {
   await waitForInit()
-  return db.accounts.find().exec()
+  let results = await db.accounts.find().exec()
+  return results.map(rxDocument => rxDocument.toJSON())
 }
 export async function addUserAccount (newAccount) {
   await waitForInit()
+  let accountId = await db.accounts.count().exec()
   db.accounts.insert({
-    id: db.accounts.count(),
-    name: newAccount.name,
-    fid: newAccount.fid,
+    id: accountId,
+    name: newAccount.accountName,
+    fid: newAccount.accountFid,
+  }).then((res) => {
+    console.log(res)
+    return 'Successfully added account: ' + newAccount.name
   })
+}
+export async function removeUserAccount (accountId) {
+  // Check for any transactions under this account
+  console.log('removing account', accountId)
 }
 
 export async function getTransactionCategories () {
   await waitForInit()
-  return db.transactions.find().exec()
+  let results = await db.transactions.find().exec()
+  return results.map(rxDocument => rxDocument.toJSON())
 }
 export async function addCategory (newCategory) {
   await waitForInit()
+  let categoryId = await db.categories.count().exec()
   db.categories.insert({
-    id: db.categories.count(),
-    catName: newCategory.catName,
-    catParent: newCategory.catParent,
+    id: categoryId,
+    catName: newCategory.categoryName,
+    catParent: newCategory.categoryParent,
+  }).then((res) => {
+    console.log(res)
+    return 'Successfully added category: ' + newCategory.catName
   })
 }
 

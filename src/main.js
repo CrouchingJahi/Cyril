@@ -1,5 +1,5 @@
 import { app, BrowserWindow, ipcMain, shell } from 'electron';
-// import installExtension, { REACT_DEVELOPER_TOOLS } from 'electron-devtools-installer';
+import installExtension, { REACT_DEVELOPER_TOOLS } from 'electron-devtools-installer';
 import path from 'node:path';
 import { getUserSettings } from './utils/userSettings';
 
@@ -40,6 +40,10 @@ react dev tools handler
 })
 */
 app.whenReady().then(async () => {
+  return installExtension(REACT_DEVELOPER_TOOLS)
+    .then((name) => console.log(`Added Extension:  ${name}`))
+    .catch((err) => console.log('Extension error occurred: ', err));
+}).then(async () => {
 
   // Backend API functions
   ipcMain.on('getUserSettings', (event) => {
