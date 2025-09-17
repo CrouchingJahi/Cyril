@@ -36,9 +36,7 @@ appNode.render(createElement(App));
 
 initializeDB();
 
-// May need to emit event for vault init so components can wait for it
 async function initializeDB () {
   const db = await getDB();
   window.cyrilVault = db;
-  window.dispatchEvent(new CustomEvent('VaultLoaded'))
 }

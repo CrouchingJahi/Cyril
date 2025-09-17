@@ -1,7 +1,4 @@
-// import { getUserSettings } from '~/utils/userSettings'
-import { getRxDB } from './rxdb'
-
-// const userSettings = await getUserSettings()
+import * as RxDB from './rxdb'
 
 let db;
 
@@ -19,53 +16,42 @@ async function waitForInit () {
 
 export async function getDB () {
   if (!db)  {
-    db = await getRxDB()
+    db = await RxDB.getRxDB()
+    // Add methods to global object for debug purposes
     Object.assign(db, {
       getUserAccounts, addUserAccount, removeUserAccount,
-      getTransactionCategories, addCategory
+      getTransactionCategories, addCategory,
+      seedMockData,
     })
+    window.dispatchEvent(new CustomEvent('VaultLoaded'))
   }
   return db
 }
 
+// Passthrough methods for DB API
 export async function getUserAccounts () {
   await waitForInit()
-  let results = await db.accounts.find().exec()
-  return results.map(rxDocument => rxDocument.toJSON())
+  return RxDB.getUserAccounts(db)
 }
 export async function addUserAccount (newAccount) {
   await waitForInit()
-  let accountId = await db.accounts.count().exec()
-  db.accounts.insert({
-    id: accountId,
-    name: newAccount.accountName,
-    fid: newAccount.accountFid,
-  }).then((res) => {
-    console.log(res)
-    return 'Successfully added account: ' + newAccount.name
-  })
+  return RxDB.addUserAccount(db, newAccount)
 }
 export async function removeUserAccount (accountId) {
-  // Check for any transactions under this account
-  console.log('removing account', accountId)
+  await waitForInit()
+  return RxDB.removeUserAccount(db, accountId)
 }
-
 export async function getTransactionCategories () {
   await waitForInit()
-  let results = await db.transactions.find().exec()
-  return results.map(rxDocument => rxDocument.toJSON())
+  return RxDB.getTransactionCategories(db)
 }
 export async function addCategory (newCategory) {
   await waitForInit()
-  let categoryId = await db.categories.count().exec()
-  db.categories.insert({
-    id: categoryId,
-    catName: newCategory.categoryName,
-    catParent: newCategory.categoryParent,
-  }).then((res) => {
-    console.log(res)
-    return 'Successfully added category: ' + newCategory.catName
-  })
+  return RxDB.addCategory(db, newCategory)
+}
+export async function seedMockData () {
+  await waitForInit()
+  return RxDB.seedMockData(db)
 }
 
 /* Schemas
@@ -77,15 +63,16 @@ accounts {
 categories {
   id: string,
   catName: string,
-  catParent: string (references parent's id)
+  catAncestry: string, // comma separated list of category's parent ids, in ascending order, until root
 }
 transactions {
   id: string,
+  accountId: string, // id of account this transaction is listed under
   trnDate: Date,
   trnAmount: number,
   name: string,
   memo: string,
   trnType: string,
-  trnCategory: string (references category id)
+  trnCategoryId: string, // references category id
 }
 */

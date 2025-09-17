@@ -4,8 +4,5 @@ button.icon-button {
   border: none;
   background-color: transparent;
   padding: 0.5em;
-  
-  &.text {
-    color: theme.$text;
-  }
+  color: theme.$text;
 }

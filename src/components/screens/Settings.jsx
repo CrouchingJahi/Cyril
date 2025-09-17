@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import { getUserAccounts, getTransactionCategories, addUserAccount, addCategory, removeUserAccount } from '~/database/db'
 import { BackToMenuLink } from '@/router/Link'
 import IconButton from '@/ui/IconButton'
+import CategoryDisplay from '@/transactionCategories/CategoryDisplay'
 
 import './settings.scss'
 
@@ -26,9 +27,20 @@ export default function SettingsScreen () {
     event.target.reset()
   }
 
+  function buildAncestryString (parentId) {
+    if (!parentId) return ''
+    let ancestorCategory = transactionCategories.find(cat => cat.id == parentId)
+    if (ancestorCategory.catAncestry.length > 0) {
+      return `${parentId},${ancestorCategory.catAncestry}`
+    } else {
+      return parentId
+    }
+  }
+
   function handleAddCategory (event) {
     event.preventDefault()
     const formData = Object.fromEntries(new FormData(event.target))
+    formData.categoryAncestry = buildAncestryString(formData.categoryParent)
     addCategory(formData)
     event.target.reset()
   }
@@ -58,9 +70,7 @@ export default function SettingsScreen () {
     </section>
     <section>
       <h3>Transaction Categories</h3>
-      <ul>
-        { transactionCategories.map(category => <CategoryDisplay category={category} key={category.id} />) }
-      </ul>
+      <CategoryDisplay categories={transactionCategories} />
       <form id="add-category" onSubmit={handleAddCategory}>
         <h4>Add Category</h4>
         <fieldset>
@@ -71,7 +81,7 @@ export default function SettingsScreen () {
           <label htmlFor="categoryParent">Parent Category</label>
           <select name="categoryParent" id="categoryParent">
             <option value="">(None)</option>
-            { transactionCategories.map(category => <option key={category.id} value={category.id}>{ category.name }</option>)}
+            { transactionCategories.map(category => <option key={category.id} value={category.id}>{ category.catName }</option>)}
           </select>
         </fieldset>
         <button>Add Category</button>
@@ -85,8 +95,4 @@ function AccountDisplay ({account}) {
     { account.name }
     <IconButton preset="close" label="Delete Account" fn={() => removeUserAccount(account.id)} />
   </li>
-}
-
-function CategoryDisplay ({category}) {
-  return <li>{ category.id }</li>
 }

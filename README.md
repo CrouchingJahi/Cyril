@@ -1,6 +1,7 @@
 # Cyril
 A finance management desktop app created in JavaScript with Node, Electron, and React.
 Tells you about, and hopefully doesn't lie about, your recent spending habits so that you can go about your day entirely self conscious about every dollar you spend.
+This app saves all data locally and does NOT send it anywhere else. It doesn't connect to the internet, and currently depends on the user uploading their own .qfx/.csv files.
 
 ## To Run
 `npm install` (once) _or_ `npm install --platform=win32` with windows or WSL development
@@ -21,7 +22,7 @@ When electron-forge upgrades, the app will silently stop working. If it claims t
 ---
 
 ## To Do
-* Settings - Need confirmation on deleting an account, figure out how to handle attached transactions
+* Settings - Need confirmation on deleting an account, figure out how to handle attached transactions, figure out best way to update new view of transactions after adding or deleting
 * Transaction Categories - Create view because there could be hundreds. Sort by parent, then alphabetical
 * Data storage - need a replacement for rxdb because it has a 5mb limit unless you pay for premium
 * DB migration function
