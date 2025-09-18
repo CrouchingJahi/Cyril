@@ -17,7 +17,10 @@ This project uses electron-forge for scaffolding and Vite to handle the dev proc
 
 ## Issues
 Most of the development is using a Windows machine, so I had some compatibility issues between WSL and various tools. Namely, Yarn
+
 When electron-forge upgrades, the app will silently stop working. If it claims to start successfully but no Electron window appears, check the global install of create-electron-app and potentially run `npm update -g create-electron-app`
+
+React DevTools issues - https://github.com/electron/electron/issues/41613
 
 ---
 

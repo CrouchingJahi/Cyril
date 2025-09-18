@@ -40,7 +40,7 @@ react dev tools handler
 })
 */
 app.whenReady().then(async () => {
-  return installExtension(REACT_DEVELOPER_TOOLS)
+  await installExtension(REACT_DEVELOPER_TOOLS)
     .then((name) => console.log(`Added Extension:  ${name}`))
     .catch((err) => console.log('Extension error occurred: ', err));
 }).then(async () => {

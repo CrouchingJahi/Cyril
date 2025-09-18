@@ -1,7 +1,6 @@
 import { useState } from 'react'
 // import { ipcRenderer } from 'electron'
 import { BackToMenuLink } from '@/router/Link'
-import TransactionTabBar from '@/transactionTabBar/TransactionTabBar'
 
 export default function UploadScreen () {
   const [formPhase, setFormPhase] = useState('menu')
@@ -47,7 +46,7 @@ export default function UploadScreen () {
       }
     </main>
     <footer>
-      <TransactionTabBar />
+      {/* <TransactionTabBar /> */}
     </footer>
   </div>
 }
