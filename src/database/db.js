@@ -49,6 +49,10 @@ export async function addCategory (newCategory) {
   await waitForInit()
   return RxDB.addCategory(db, newCategory)
 }
+export async function addTransaction (newTransaction) {
+  await waitForInit()
+  return RxDB.addTransaction(db, newTransaction)
+}
 export async function seedMockData () {
   await waitForInit()
   return RxDB.seedMockData(db)
@@ -70,9 +74,9 @@ transactions {
   accountId: string, // id of account this transaction is listed under
   trnDate: Date,
   trnAmount: number,
-  name: string,
-  memo: string,
+  trnName: string,
+  trnMemo: string,
   trnType: string,
-  trnCategoryId: string, // references category id
+  categoryId: string, // references category id
 }
 */

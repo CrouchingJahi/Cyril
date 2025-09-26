@@ -4,12 +4,19 @@ import createCategoryTree from '~/utils/createCategoryTree'
 
 import './categoryDisplay.scss'
 
-/*
-Show transaction categories in a way that makes the tree structure navigable
-First, displays the root categories in a scrollable list
-*/
-export default function CategoryDisplay ({ categories }) {
-  const categoryTree = useMemo(() => createCategoryTree(categories), [categories])
+/**
+ * Show transaction categories in a way that makes the tree structure navigable
+ * Displays the root categories in a scrollable list. Categories with children are selectable.
+ * When selecting a child, that category name will be on  allow the user to select one to see further into the tree.
+
+ * @param categoryList Array of transaction category objects
+ * @param selected (opt) The ID of the current selection
+ * @param selectFn (opt) The function to set the state of the selected catgory 
+ * 
+ * If selected is undefined, it will just display the navigable category tree.
+ */
+export default function CategoryDisplay ({ categoryList, selected, selectFn }) {
+  const categoryTree = useMemo(() => createCategoryTree(categoryList), [categoryList])
   const [currentCategoryLevel, setCurrentCategoryLevel] = useState(0)
   // Array where each slot is the selected node of that tree level
   const [selectedCategories, setSelectedCategories] = useState([])
@@ -21,10 +28,11 @@ export default function CategoryDisplay ({ categories }) {
     setCurrentCategoryLevel(catLevel)
   }
 
-  function deselectCategory () {
-    const newSelectedCategories = selectedCategories.slice(0, selectedCategories.length - 1)
+  // Remove selection of all category levels past catLevel
+  function deselectCategory (catLevel = currentCategoryLevel) {
+    const newSelectedCategories = selectedCategories.slice(0, catLevel + 1)
     setSelectedCategories(newSelectedCategories)
-    setCurrentCategoryLevel(currentCategoryLevel - 1)
+    setCurrentCategoryLevel(catLevel)
   }
 
   if (categoryTree) {
@@ -45,7 +53,7 @@ export default function CategoryDisplay ({ categories }) {
     }
 
     const catIds = Object.keys(treeNode)
-    const catList = categories.filter(cat => catIds.includes(cat.id))
+    const catList = categoryList.filter(cat => catIds.includes(cat.id))
 
     return <ul className="category-level">
       { catList.map(category => {
@@ -61,12 +69,9 @@ export default function CategoryDisplay ({ categories }) {
 
   function ParentCategoryTier ({level}) {
     const selectionId = selectedCategories[level]
-    const selectedNode = categories.find(cat => cat.id == selectionId)
+    const selectedNode = categoryList.find(cat => cat.id == selectionId)
     return <div className="category-level collapsed">
-      { level === currentCategoryLevel - 1 ?
-        <IconButton preset='lArrow' text={selectedNode.catName} fn={() => deselectCategory()} /> :
-        <div className="grandparent">{ selectedNode.catName }</div>
-      }
+      <IconButton preset='lArrow' text={selectedNode.catName} fn={() => deselectCategory(level)} />
     </div>
   }
 }

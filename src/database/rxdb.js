@@ -101,6 +101,19 @@ export async function addCategory (db, newCategory) {
   })
 }
 
+export async function addTransaction (db, newTransaction) {
+  db.transactions.insert({
+    id: newTransaction.fitid,
+    accountId: newTransaction.accountId,
+    categoryId: newTransaction.categoryId,
+    trnDate: newTransaction.trnDate,
+    trnAmount: newTransaction.trnAmount,
+    trnName: newTransaction.trnName,
+    trnMemo: newTransaction.trnMemo,
+    trnType: newTransaction.trnType,
+  })
+}
+
 export async function seedMockData (db) {
   db.categories.bulkInsert([
     {

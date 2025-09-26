@@ -70,7 +70,7 @@ export default function SettingsScreen () {
     </section>
     <section>
       <h3>Transaction Categories</h3>
-      <CategoryDisplay categories={transactionCategories} />
+      <CategoryDisplay categoryList={transactionCategories} />
       <form id="add-category" onSubmit={handleAddCategory}>
         <h4>Add Category</h4>
         <fieldset>
