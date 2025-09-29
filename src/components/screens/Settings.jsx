@@ -93,6 +93,6 @@ export default function SettingsScreen () {
 function AccountDisplay ({account}) {
   return <li className="account-listing">
     { account.name }
-    <IconButton preset="close" label="Delete Account" fn={() => removeUserAccount(account.id)} />
+    <IconButton preset="close" className="text-accent" label="Delete Account" fn={() => removeUserAccount(account.id)} />
   </li>
 }

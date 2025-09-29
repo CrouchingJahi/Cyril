@@ -2,18 +2,47 @@
 
 .category-display {
   display: flex;
-  gap: 6px;
-  height: 8em;
+  height: 10em;
 }
-
-.category-level {
-  overflow-y: auto;
-
-  .grandparent {
-    padding: 0.5em 0;
-    color: theme.$text-faded;
+.tree-branch-lines {
+  line-height: 1.5;
+  padding: 0.25rem 0;
+  > div {
+    padding: 0.25rem 0;
   }
-  &.collapsed {
-    font-size: 14px;
+}
+.category-level {
+  line-height: 1.5;
+  overflow-y: auto;
+  padding: 0.25rem 0;
+  transition: width theme.$transitions;
+  width: fit-content;
+
+  &.current {
+    color: theme.$link;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .category-choice {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    transition: color theme.$transitions-quick;
+
+    &:hover, &.selected {
+      color: theme.$accent;
+    }
+  }
+  .category-name {
+    flex-grow: 1;
+    text-align: left;
+  }
+  .child-link {
+    transition: padding theme.$transitions-quick;
+    padding: 0.5em 1em;
+    &:hover {
+      padding: 0.5em 0 0.5em 2em;
+    }
   }
 }

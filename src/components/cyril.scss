@@ -42,16 +42,20 @@ h3 {
   margin: 0.5rem 0 0.25rem;
 }
 h4 {
-  margin: 0.25rem 0 0;
+  margin: 0.25rem 0;
 }
 
 ul {
   margin: 0;
   padding-inline-start: 1em;
-}
-li::marker {
-  content: "¢";
-  font-weight: bold;
+
+  li {
+    padding-left: 0.5em;
+  }
+  li::marker {
+    content: "¢";
+    font-weight: bold;
+  }
 }
 
 a {
@@ -64,15 +68,35 @@ a:hover {
   color: theme.$white;
 }
 
+fieldset {
+  display: flex;
+  flex-direction: column;
+  border: none;
+}
+
 button {
-  border-radius: 4px;
-  border: 1px solid theme.$grn-dark;
+  border-radius: 6px;
+  border: 2px solid theme.$grn-dark;
   background-color: theme.$grn2-light;
   color: theme.$grn-dark;
-  padding: 0.5em 1em;
-  font-family: "Elliot Sans", sans-serif;
-  font-weight: bold;
   cursor: pointer;
+  font-family: "Elliot Sans", sans-serif;
+  font-size: 1rem;
+  font-weight: bold;
+  line-height: 1.5;
+  padding: 0.5em 1em;
+
+  &:focus, &:hover {
+    border-color: theme.$grn-med;
+  }
+
+  &.unstyled {
+    background-color: transparent;
+    border: none;
+    color: currentColor;
+    font-weight: normal;
+    padding: 0.25em 0;
+  }
 }
 
 input, select {
@@ -84,7 +108,23 @@ input, select {
   font-family: "Elliot Sans", sans-serif;
   font-weight: 500;
 }
+input[type="file"] {
+  display: none;
+}
 
-.small {
+.text-accent {
+  color: theme.$accent;
+}
+.text-small {
   font-size: 0.75rem;
+}
+
+.list {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.fit-width {
+  width: fit-content;
 }
