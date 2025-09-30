@@ -63,6 +63,7 @@ accounts {
   id: string,
   fid: string,
   name: string,
+  org: string,
 }
 categories {
   id: string,
@@ -72,11 +73,11 @@ categories {
 transactions {
   id: string,
   accountId: string, // id of account this transaction is listed under
+  categoryId: string, // references category id
   trnDate: Date,
   trnAmount: number,
   trnName: string,
   trnMemo: string,
   trnType: string,
-  categoryId: string, // references category id
 }
 */

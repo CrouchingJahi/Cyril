@@ -74,7 +74,7 @@ fieldset {
   border: none;
 }
 
-button {
+button, .button {
   border-radius: 6px;
   border: 2px solid theme.$grn-dark;
   background-color: theme.$grn2-light;
@@ -87,6 +87,10 @@ button {
   padding: 0.5em 1em;
   transition: theme.$transitions-quick;
   transition-property: color, background-color, border-color;
+
+  &:disabled {
+    opacity: 0.5;
+  }
 
   &:focus, &:hover {
     border-color: theme.$grn-med;

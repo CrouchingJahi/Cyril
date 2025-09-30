@@ -3,7 +3,7 @@ import './iconButton.scss'
 const buttonPresets = {
   close: '&#10006;',
   back: '&#x25c4;',
-  lArrow: '&larr;',
+  lArrow: '&#8701;',
   rArrow: '&#8702;',
 }
 
@@ -13,7 +13,7 @@ function decodeHtml (text) {
   return decoder.value
 }
 
-export default function IconButton ({ text, preset, label, className, fn }) {
+export default function IconButton ({ text, preset, label, className, disabled, fn }) {
   const buttonClasses = ['icon-button']
   const buttonContent = preset && decodeHtml(buttonPresets[preset])
   if (typeof buttonContent == 'string') {
@@ -23,7 +23,7 @@ export default function IconButton ({ text, preset, label, className, fn }) {
     buttonClasses.push(className)
   }
 
-  return <button className={buttonClasses.join(' ')} label={label} onClick={fn}>
+  return <button className={buttonClasses.join(' ')} label={label} disabled={disabled} onClick={fn} type="button">
     { buttonContent }
     { text }
   </button>

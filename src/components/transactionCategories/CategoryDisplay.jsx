@@ -36,9 +36,7 @@ export default function CategoryDisplay ({ categoryList, selected, selectFn }) {
   }
 
   function selectNode (catId) {
-    if (selectFn) {
-      selectFn(catId)
-    }
+    selectFn(selected == catId ? null : catId)
   }
 
   if (categoryTree) {

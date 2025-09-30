@@ -114,6 +114,12 @@ export async function addTransaction (db, newTransaction) {
   })
 }
 
+/*
+export async function addBulkTransactions (db, newTransactions) {
+  db.transactions.bulkInsert(newTransactions)
+}
+*/
+
 export async function seedMockData (db) {
   db.categories.bulkInsert([
     {
