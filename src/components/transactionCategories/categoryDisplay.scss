@@ -24,25 +24,41 @@
     flex-direction: column;
   }
 
-  .category-choice {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    transition: color theme.$transitions-quick;
-
-    &:hover, &.selected {
+  &.parent {
+    .selected {
       color: theme.$accent;
+      text-decoration: underline;
+    }
+
+    &:hover {
+      color: theme.$link;
+    }
+  }
+
+  .category-choice {
+    align-items: center;
+    display: flex;
+    gap: 0.5rem;
+
+    &.selected .category-name {
+      color: theme.$accent;
+      text-decoration: underline;
     }
   }
   .category-name {
     flex-grow: 1;
     text-align: left;
+
+    &:hover, .selected & {
+      color: theme.$accent;
+    }
   }
+
   .child-link {
+    padding: 0.25em 1em;
     transition: padding theme.$transitions-quick;
-    padding: 0.5em 1em;
     &:hover {
-      padding: 0.5em 0 0.5em 2em;
+      padding: 0.25em 0 0.25em 2em;
     }
   }
 }

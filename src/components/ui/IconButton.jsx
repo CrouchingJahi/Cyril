@@ -4,7 +4,7 @@ const buttonPresets = {
   close: '&#10006;',
   back: '&#x25c4;',
   lArrow: '&larr;',
-  rArrow: '&#8611;',
+  rArrow: '&#8702;',
 }
 
 function decodeHtml (text) {

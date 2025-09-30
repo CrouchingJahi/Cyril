@@ -85,6 +85,8 @@ button {
   font-weight: bold;
   line-height: 1.5;
   padding: 0.5em 1em;
+  transition: theme.$transitions-quick;
+  transition-property: color, background-color, border-color;
 
   &:focus, &:hover {
     border-color: theme.$grn-med;

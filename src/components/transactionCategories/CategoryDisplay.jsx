@@ -70,7 +70,6 @@ export default function CategoryDisplay ({ categoryList, selected, selectFn }) {
           const hasChildren = Object.keys(childTree).length > 0
           return <div className={`category-choice ${selected == category.id ? 'selected' : ''}`} key={category.id}>
             <button className="unstyled category-name" onClick={() => selectNode(category.id)}>
-              { level > 0 && <span>&#9655;</span> }
               <span>{ category.catName }</span>
             </button>
             { hasChildren && <IconButton preset='rArrow' className="child-link" fn={() => selectCategory(level + 1, category.id)} /> }
@@ -82,11 +81,11 @@ export default function CategoryDisplay ({ categoryList, selected, selectFn }) {
 
   function ChildBranchLines ({nodes}) {
     return <div className="tree-branch-lines">
-      { nodes == 1 && <div>&#9472;</div> }
+      { nodes == 1 && <div>&#9472;&#9655;&nbsp;</div> }
       { nodes > 1 && Array.from({length: nodes}).map((_, ind) => {
-        return ind == 0 ? <div key={ind}>&#9516;</div>
-          : ind == nodes - 1 ? <div key={ind}>&#9492;</div>
-          : <div key={ind}>&#9500;</div>
+        return ind == 0 ? <div key={ind}>&#9516;&#9655;&nbsp;</div>
+          : ind == nodes - 1 ? <div key={ind}>&#9492;&#9655;&nbsp;</div>
+          : <div key={ind}>&#9500;&#9655;&nbsp;</div>
       }) }
     </div>
   }
@@ -99,9 +98,9 @@ export default function CategoryDisplay ({ categoryList, selected, selectFn }) {
     const selectedNode = categoryList.find(cat => cat.id == selectionId)
     return <div className="category-level parent">
       <button className="unstyled" onClick={() => deselectCategory(level)}>
-        { level == 0 ? <span>&#128923;</span> : <span>&#9472;</span> }
-        { selectedNode.catName }
-        <span>&#9472;</span>
+        { level == 0 ? <span>&#128923;&nbsp;</span> : <span>&#9472;&nbsp;</span> }
+        <span className={selected == selectedNode.id ? 'selected' : ''}>{ selectedNode.catName }</span>
+        <span>&nbsp;&#9472;</span>
       </button>
     </div>
   }
