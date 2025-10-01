@@ -17,5 +17,9 @@ $text-faded: $grn-light;
 $link: $grn2-light;
 $link-hover: $accent2;
 
-$transitions: 0.5s ease-in-out;
-$transitions-quick: 0.25s ease-out;
+$transition-duration: 0.5s;
+$transition-duration-quick: 0.25s;
+$transition-function: ease-out;
+
+$transitions: $transition-duration $transition-function;
+$transitions-quick: $transition-duration-quick $transition-function;

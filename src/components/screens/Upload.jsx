@@ -1,7 +1,8 @@
 import { useEffect, useState, useRef } from 'react'
-import { getUserAccounts, getTransactionCategories } from '~/database/db'
+import { getUserAccounts, getCategories, addUserAccount, addTransaction, addStringMatcher } from '~/database/db'
 import parseQfx from '~/utils/parseQfx'
 import CategoryDisplay from '@/transactionCategories/CategoryDisplay'
+import CategoryMatcher from '../transactionCategories/CategoryMatcher'
 import Link, { BackToMenuLink } from '@/router/Link'
 import IconButton from '@/ui/IconButton'
 
@@ -15,18 +16,20 @@ const formPhases = {
 /**
  * Allows the user to upload transactions either via file or manually.
  * 
+ * @todo create AccountSelector component with option to create new
  * @todo flesh out auto categorizer
+ * @todo detect duplicate transactions on file upload
  * @todo support more file formats - .ofx, .csv
  */
 export default function UploadScreen () {
   const [userAccounts, setUserAccounts] = useState([])
-  const [transactionCategories, setTransactionCategories] = useState([])
+  const [categories, setCategories] = useState([])
   const [formPhase, setFormPhase] = useState(formPhases.menu)
   const [transactionDataToCategorize, setTransactionDataToCategorize] = useState(null)
 
   useEffect(() => {
     getUserAccounts().then(setUserAccounts)
-    getTransactionCategories().then(setTransactionCategories)
+    getCategories().then(setCategories)
   }, [])
 
   // Callback for the server to send parsed transaction info that needs to be categorized
@@ -57,7 +60,7 @@ export default function UploadScreen () {
   function UploadMenu () {
     return <div>
       <p>What would you like to do?</p>
-      <div className="list fit-width">
+      <div className="list width-fit">
         <button onClick={() => setFormPhase(formPhases.uploadFile)}>Upload transaction files</button>
         <button onClick={() => setFormPhase(formPhases.uploadManual)}>Manually enter transactions</button>
       </div>
@@ -66,15 +69,18 @@ export default function UploadScreen () {
 
   function UploadManualForm() {
     const [selectedCategory, setSelectedCategory] = useState(null)
-    const selectedCategoryName = selectedCategory ? transactionCategories.find(cat => cat.id == selectedCategory).catName : '(None Selected)'
+    const selectedCategoryName = selectedCategory ? categories.find(cat => cat.id == selectedCategory).catName : '(None Selected)'
 
     function submitManual (event) {
       event.preventDefault()
-      let formData = new FormData(event.target)
-      let trx = Object.fromEntries(formData.entries())
-      trx.categoryId = selectedCategory
-      console.log(trx)
-      // addTransaction(trx)
+      let formData = Object.fromEntries(new FormData(event.target))
+      let txn = {
+        ...formData,
+        categoryId: selectedCategory,
+      }
+
+      console.log(txn)
+      addTransaction(txn)
       // on success, show screen with button to go back to menu or upload another
       // setFormPhase(formPhases.menu)
     }
@@ -84,27 +90,36 @@ export default function UploadScreen () {
         <label>Account:</label>
         <select name="accountId">
           { userAccounts.map(acct => <option key={acct.id} value={acct.id}>{ acct.name }</option>) }
+          {/* New account - create AccountSelector component */}
         </select>
       </fieldset>
       <fieldset>
         <label>Category: { selectedCategoryName }</label>
-        <CategoryDisplay categoryList={transactionCategories} selected={selectedCategory} selectFn={setSelectedCategory} />
+        <CategoryDisplay categoryList={categories} selected={selectedCategory} selectFn={setSelectedCategory} />
+      </fieldset>
+      <fieldset>
+        <label>FITID:</label>
+        <input name="id" type="text" />
+      </fieldset>
+      <fieldset>
+        <label>Date:</label>
+        <input name="txnDate" type="date" />
       </fieldset>
       <fieldset>
         <label>Transaction Name:</label>
-        <input name="trnName" type="text" />
+        <input name="txnName" type="text" />
       </fieldset>
       <fieldset>
         <label>Amount:</label>
-        <input name="trnAmount" type="number" step="0.01" />
+        <input name="txnAmount" type="number" step="0.01" />
       </fieldset>
       <fieldset>
         <label>Memo:</label>
-        <input name="trnMemo" type="text" />
+        <input name="txnMemo" type="text" />
       </fieldset>
       <fieldset>
         <label>Transaction Type:</label>
-        <input name="trnType" type="text" />
+        <input name="txnType" type="text" />
       </fieldset>
       <button>Add Transaction</button>
     </form>
@@ -125,7 +140,7 @@ export default function UploadScreen () {
 
     return <form onSubmit={submitFile}>
       <p>Accepts .qfx files</p>
-      <fieldset className="fit-width">
+      <fieldset className="width-fit no-padding">
         <label htmlFor="fileUpload">
           <div className="button">Upload File</div>
         </label>
@@ -150,18 +165,40 @@ export default function UploadScreen () {
     const userAccountMatch = userAccounts.find(acct => acct.fid == transactionDataToCategorize.accountId)
     const numOfTransactions = transactionDataToCategorize.transactions.length
     const [selectedCategories, setSelectedCategories] = useState(Array.from({length: numOfTransactions}))
-    const [trxIndex, setTrxIndex] = useState(0)
+    const [txnIndex, setTxnIndex] = useState(0)
 
-    function saveTransaction (selectedCategory) {
+    function saveTransaction () {
       const formData = Object.fromEntries(new FormData(uploadCategorizerRef.current).entries())
+      const txnObject = {
+        id: formData.fitid,
+        accountId: formData.accountId == '_new_' ? formData.newAccountId : formData.accountId,
+        categoryId: selectedCategories[txnIndex],
+        txnDate: formData.date,
+        txnAmount: formData.amount,
+        txnName: formData.name,
+        txnMemo: formData.memo,
+        txnType: formData.type,
+      }
 
-      console.log(formData, selectedCategory)
-      /*
-      addTransaction({
-        accountId: formData.accountId,
-        categoryId: selectedCategories[trxIndex],
-      })
-      */
+      if (formData.regexMatch) {
+        addStringMatcher({
+          pattern: formData.regexMatch,
+          categoryId: selectedCategories[txnIndex],
+        })
+      }
+
+      if (formData.accountId === '_new_') {
+        addUserAccount({
+          id: formData.newAccountId,
+          name: formData.newAccountName,
+          org: formData.newAccountOrg,
+        }).then((account) => {
+          txnObject.accountId = account.id
+          addTransaction(txnObject)
+        })
+      } else {
+        addTransaction(txnObject)
+      }
     }
 
     function setSelectedCategoryAtIndex (ind) {
@@ -174,62 +211,122 @@ export default function UploadScreen () {
 
     return <div className="upload-categorizer">
       <form ref={uploadCategorizerRef}>
-        <div>{ numOfTransactions } transactions found to categorize</div>
         <fieldset>
           <label>Account:</label>
-          <select name="accountId" defaultValue={userAccountMatch?.id}>
+          <select name="accountId" className="width-m" defaultValue={userAccountMatch?.id}>
             { userAccounts.map(acct => <option key={acct.id} value={acct.id}>{ acct.name }</option>) }
-            {/* Create new account option */}
+            {/* { !userAccountMatch && <option value="_new_">(Create New)</option> } */}
           </select>
         </fieldset>
         <div className="transaction-list">
-          Transaction {trxIndex + 1}
-          <TransactionToCategorize
-            transaction={transactionDataToCategorize.transactions[trxIndex]}
-            saveFn={saveTransaction}
-            selectedCategory={selectedCategories[trxIndex]}
-            selectFn={setSelectedCategoryAtIndex(trxIndex)}
+          <div className="pagination flex align-center">
+            <IconButton preset="lArrow" className="text-l" fn={() => setTxnIndex(txnIndex - 1)} disabled={txnIndex == 0} />
+            <h4>Transaction {txnIndex + 1} of {numOfTransactions}:</h4>
+            <IconButton preset="rArrow" className="text-l" fn={() => setTxnIndex(txnIndex + 1)} disabled={txnIndex == numOfTransactions - 1} />
+          </div>
+          <TransactionToCategorize key={txnIndex}
+            transaction={transactionDataToCategorize.transactions[txnIndex]}
+            selectedCategory={selectedCategories[txnIndex]}
+            selectFn={setSelectedCategoryAtIndex(txnIndex)}
           />
-          <div className="pagination">
-            <IconButton preset="lArrow" fn={() => setTrxIndex(trxIndex - 1)} disabled={trxIndex == 0} />
-            <IconButton preset="rArrow" fn={() => setTrxIndex(trxIndex + 1)} disabled={trxIndex == numOfTransactions - 1} />
+          <div className="flex padding-s">
+            <button type="button" className="width-fit" onClick={saveTransaction}>
+              Save This Transaction
+            </button>
+            {/* Success icon */}
           </div>
         </div>
       </form>
     </div>
   }
 
-  function TransactionToCategorize ({transaction, saveFn, selectedCategory, selectFn}) {
-    const selectedCategoryName = selectedCategory ? transactionCategories.find(cat => cat.id == selectedCategory).catName : '(None Selected)'
-    const formattedDate = transaction.date.toISOString().split('T')[0]
+  function EditableField ({fieldName, type = 'text', transaction, modifiedFields, setModifiedFields}) {
+    return <>{ modifiedFields[fieldName] ?
+      <input name={fieldName}
+        type={type}
+        value={modifiedFields[fieldName]}
+        onChange={(e) => setModifiedFields({...modifiedFields, [fieldName]: e.target.value})}
+      /> :
+      <div>
+        <IconButton preset="edit" fn={() => setModifiedFields({...modifiedFields, [fieldName]: transaction[fieldName]})} />
+        { transaction[fieldName] }
+        <input type="hidden" name={fieldName} value={transaction[fieldName]} readOnly />
+      </div>
+    }</>
+  }
+
+  function TransactionToCategorize ({transaction, selectedCategory, selectFn}) {
+    const selectedCategoryObj = selectedCategory ? categories.find(cat => cat.id == selectedCategory) : null
+    const [modifiedFields, setModifiedFields] = useState({})
 
     // should change this to controlled input that passes state up
-    return <div>
+    return <div className="transaction-to-categorize">
+      <div className="flex">
+        <div className="flex-even">
+          <fieldset>
+            <label>FITID:</label>
+            <EditableField key="fitid"
+              fieldName="fitid"
+              transaction={transaction}
+              modifiedFields={modifiedFields}
+              setModifiedFields={setModifiedFields}
+            />
+          </fieldset>
+          <fieldset>
+            <label>Name:</label>
+            <EditableField key="name"
+              fieldName="name"
+              transaction={transaction}
+              modifiedFields={modifiedFields}
+              setModifiedFields={setModifiedFields}
+            />
+          </fieldset>
+          <fieldset>
+            <label>Date:</label>
+            <EditableField key="date"
+              fieldName="date"
+              type="date"
+              transaction={transaction}
+              modifiedFields={modifiedFields}
+              setModifiedFields={setModifiedFields}
+            />
+          </fieldset>
+        </div>
+        <div className="flex-even">
+          <fieldset>
+            <label>Amount:</label>
+            <EditableField key="amount"
+              fieldName="amount"
+              transaction={transaction}
+              modifiedFields={modifiedFields}
+              setModifiedFields={setModifiedFields}
+            />
+          </fieldset>
+          <fieldset>
+            <label>Type:</label>
+            <EditableField key="type"
+              fieldName="type"
+              transaction={transaction}
+              modifiedFields={modifiedFields}
+              setModifiedFields={setModifiedFields}
+            />
+          </fieldset>
+          <fieldset>
+            <label>Memo:</label>
+            <EditableField key="memo"
+              fieldName="memo"
+              transaction={transaction}
+              modifiedFields={modifiedFields}
+              setModifiedFields={setModifiedFields}
+            />
+          </fieldset>
+        </div>
+      </div>
       <fieldset>
-        <label>Name:</label>
-        <input name="trnName" defaultValue={transaction.name} />
+        <label><h4>Category: { selectedCategoryObj ? selectedCategoryObj.catName : '(None Selected)' }</h4></label>
+        <CategoryDisplay categoryList={categories} selected={selectedCategory} selectFn={selectFn} />
+        { selectedCategoryObj && <CategoryMatcher txnName={modifiedFields.name || transaction.name} /> }
       </fieldset>
-      <fieldset>
-        <label>Memo:</label>
-        <input name="trnMemo" defaultValue={transaction.memo} />
-      </fieldset>
-      <fieldset>
-        <label>Type:</label>
-        <input name="trnType" defaultValue={transaction.type} />
-      </fieldset>
-      <fieldset>
-        <label>Amount:</label>
-        <input name="trnAmount" defaultValue={transaction.amount} />
-      </fieldset>
-      <fieldset>
-        <label>Date:</label>
-        <input name="trnDate" type="date" defaultValue={formattedDate} />
-      </fieldset>
-      <fieldset>
-        <label>Category: { selectedCategoryName }</label>
-        <CategoryDisplay categoryList={transactionCategories} selected={selectedCategory} selectFn={selectFn} />
-      </fieldset>
-      <button type="button" onClick={() => saveFn(selectedCategory)}>Save This Transaction</button>
     </div>
   }
 }

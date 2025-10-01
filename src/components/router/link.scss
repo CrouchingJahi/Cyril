@@ -8,6 +8,10 @@
   font-size: 1rem;
   font-weight: normal;
 
+  &.back-to-menu {
+    padding-left: 0;
+  }
+
   &:focus {
     outline: none;
   }

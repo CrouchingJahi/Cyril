@@ -36,7 +36,9 @@ export default function CategoryDisplay ({ categoryList, selected, selectFn }) {
   }
 
   function selectNode (catId) {
-    selectFn(selected == catId ? null : catId)
+    if (typeof selectFn == 'function') {
+      selectFn(selected == catId ? null : catId)
+    }
   }
 
   if (categoryTree) {
@@ -88,16 +90,13 @@ export default function CategoryDisplay ({ categoryList, selected, selectFn }) {
     </div>
   }
 
-  /**
-   * @todo show lines branching from parent to current category entries
-   */
   function ParentCategoryTier ({level}) {
     const selectionId = selectedCategories[level]
     const selectedNode = categoryList.find(cat => cat.id == selectionId)
     return <div className="category-level parent">
-      <button className="unstyled" onClick={() => deselectCategory(level)}>
+      <button className="unstyled category-parent-link" onClick={() => deselectCategory(level)}>
         { level == 0 ? <span>&#128923;&nbsp;</span> : <span>&#9472;&nbsp;</span> }
-        <span className={selected == selectedNode.id ? 'selected' : ''}>{ selectedNode.catName }</span>
+        <span className={`category-parent-name ${selected == selectedNode.id ? 'selected' : ''}`}>{ selectedNode.catName }</span>
         <span>&nbsp;&#9472;</span>
       </button>
     </div>

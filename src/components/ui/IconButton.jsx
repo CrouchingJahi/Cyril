@@ -5,6 +5,7 @@ const buttonPresets = {
   back: '&#x25c4;',
   lArrow: '&#8701;',
   rArrow: '&#8702;',
+  edit: '&#9998;',
 }
 
 function decodeHtml (text) {

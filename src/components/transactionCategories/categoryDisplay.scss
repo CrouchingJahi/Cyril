@@ -29,9 +29,13 @@
       color: theme.$accent;
       text-decoration: underline;
     }
+  }
 
+  .category-parent-link {
     &:hover {
-      color: theme.$link;
+      .category-parent-name {
+        color: theme.$link;
+      }
     }
   }
 

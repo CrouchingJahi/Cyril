@@ -61,6 +61,19 @@ async function initializeDB (db) {
           trnCategoryId: { type: 'string' },
         }
       }
+    },
+    stringMatchers: {
+      schema: {
+        version: 0,
+        title: 'regex string matchers schema',
+        primaryKey: 'id',
+        type: 'object',
+        properties: {
+          id: { type: 'string', maxLength: 10 },
+          pattern: { type: 'string' },
+          categoryId: { type: 'string' },
+        }
+      }
     }
   })
 }
@@ -85,7 +98,7 @@ export async function removeUserAccount (db, accountId) {
   console.log('removing account', accountId)
 }
 
-export async function getTransactionCategories (db) {
+export async function getCategories (db) {
   let results = await db.categories.find().exec()
   return results.map(rxDocument => rxDocument.toJSON())
 }
@@ -102,23 +115,22 @@ export async function addCategory (db, newCategory) {
 }
 
 export async function addTransaction (db, newTransaction) {
-  db.transactions.insert({
-    id: newTransaction.fitid,
-    accountId: newTransaction.accountId,
-    categoryId: newTransaction.categoryId,
-    trnDate: newTransaction.trnDate,
-    trnAmount: newTransaction.trnAmount,
-    trnName: newTransaction.trnName,
-    trnMemo: newTransaction.trnMemo,
-    trnType: newTransaction.trnType,
-  })
+  db.transactions.insert(newTransaction)
 }
 
-/*
 export async function addBulkTransactions (db, newTransactions) {
   db.transactions.bulkInsert(newTransactions)
 }
-*/
+
+export async function getStringMatchers (db) {
+  let results = db.stringMatchers.find().exec()
+  return results.map(rxDocument => rxDocument.toJSON())
+}
+
+export async function addStringMatcher (db, matcher) {
+  let id = await db.stringMatchers.count().exec()
+  return db.stringMatchers.insert({ id, ...matcher })
+}
 
 export async function seedMockData (db) {
   db.categories.bulkInsert([

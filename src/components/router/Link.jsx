@@ -15,5 +15,5 @@ export default function Link ({ to, className, children}) {
 }
 
 export function BackToMenuLink () {
-  return <Link to="menu">&#8617; Back to Menu</Link>
+  return <Link className="back-to-menu" to="menu">&#8617; Back to Menu</Link>
 }

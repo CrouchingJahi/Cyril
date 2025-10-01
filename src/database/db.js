@@ -20,7 +20,8 @@ export async function getDB () {
     // Add methods to global object for debug purposes
     Object.assign(db, {
       getUserAccounts, addUserAccount, removeUserAccount,
-      getTransactionCategories, addCategory,
+      getCategories, addCategory,
+      getStringMatchers, addStringMatcher,
       seedMockData,
     })
     window.dispatchEvent(new CustomEvent('VaultLoaded'))
@@ -41,9 +42,9 @@ export async function removeUserAccount (accountId) {
   await waitForInit()
   return RxDB.removeUserAccount(db, accountId)
 }
-export async function getTransactionCategories () {
+export async function getCategories () {
   await waitForInit()
-  return RxDB.getTransactionCategories(db)
+  return RxDB.getCategories(db)
 }
 export async function addCategory (newCategory) {
   await waitForInit()
@@ -53,6 +54,14 @@ export async function addTransaction (newTransaction) {
   await waitForInit()
   return RxDB.addTransaction(db, newTransaction)
 }
+export async function getStringMatchers () {
+  await waitForInit()
+  return RxDB.getStringMatchers(db)
+}
+export async function addStringMatcher (matcher) {
+  await waitForInit()
+  return RxDB.addStringMatcher(db, matcher)
+}
 export async function seedMockData () {
   await waitForInit()
   return RxDB.seedMockData(db)
@@ -61,7 +70,6 @@ export async function seedMockData () {
 /* Schemas
 accounts {
   id: string,
-  fid: string,
   name: string,
   org: string,
 }
@@ -74,10 +82,15 @@ transactions {
   id: string,
   accountId: string, // id of account this transaction is listed under
   categoryId: string, // references category id
-  trnDate: Date,
-  trnAmount: number,
-  trnName: string,
-  trnMemo: string,
-  trnType: string,
+  txnDate: string, // ISO string YYYY-MM-DD
+  txnAmount: number,
+  txnName: string,
+  txnMemo: string,
+  txnType: string,
+}
+stringMatchers {
+  id: string,
+  pattern: string, // RegExp to match transaction name
+  categoryId: string, // references category id
 }
 */

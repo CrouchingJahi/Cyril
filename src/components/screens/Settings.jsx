@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { getUserAccounts, getTransactionCategories, addUserAccount, addCategory, removeUserAccount } from '~/database/db'
+import { getUserAccounts, getCategories, addUserAccount, addCategory, removeUserAccount } from '~/database/db'
 import { BackToMenuLink } from '@/router/Link'
 import IconButton from '@/ui/IconButton'
 import CategoryDisplay from '@/transactionCategories/CategoryDisplay'
@@ -13,11 +13,11 @@ Transaction Categories (options to add/modify)
 */
 export default function SettingsScreen () {
   const [userAccounts, setUserAccounts] = useState([])
-  const [transactionCategories, setTransactionCategories] = useState([])
+  const [categories, setCategories] = useState([])
 
   useEffect(() => {
     getUserAccounts().then(setUserAccounts)
-    getTransactionCategories().then(setTransactionCategories)
+    getCategories().then(setCategories)
   }, [])
 
   function handleAddAccount (event) {
@@ -29,7 +29,7 @@ export default function SettingsScreen () {
 
   function buildAncestryString (parentId) {
     if (!parentId) return ''
-    let ancestorCategory = transactionCategories.find(cat => cat.id == parentId)
+    let ancestorCategory = categories.find(cat => cat.id == parentId)
     if (ancestorCategory.catAncestry.length > 0) {
       return `${parentId},${ancestorCategory.catAncestry}`
     } else {
@@ -70,7 +70,7 @@ export default function SettingsScreen () {
     </section>
     <section>
       <h3>Transaction Categories</h3>
-      <CategoryDisplay categoryList={transactionCategories} />
+      <CategoryDisplay categoryList={categories} />
       <form id="add-category" onSubmit={handleAddCategory}>
         <h4>Add Category</h4>
         <fieldset>
@@ -81,7 +81,7 @@ export default function SettingsScreen () {
           <label htmlFor="categoryParent">Parent Category</label>
           <select name="categoryParent" id="categoryParent">
             <option value="">(None)</option>
-            { transactionCategories.map(category => <option key={category.id} value={category.id}>{ category.catName }</option>)}
+            { categories.map(category => <option key={category.id} value={category.id}>{ category.catName }</option>)}
           </select>
         </fieldset>
         <button>Add Category</button>
