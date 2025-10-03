@@ -50,6 +50,14 @@ export async function addCategory (newCategory) {
   await waitForInit()
   return RxDB.addCategory(db, newCategory)
 }
+export async function modifyCategory (category) {
+  await waitForInit()
+  return RxDB.modifyCategory(db, category)
+}
+export async function getTransactionCountForAccount (accountId) {
+  await waitForInit()
+  return RxDB.getTransactionCountForAccount(db, accountId)
+}
 export async function addTransaction (newTransaction) {
   await waitForInit()
   return RxDB.addTransaction(db, newTransaction)

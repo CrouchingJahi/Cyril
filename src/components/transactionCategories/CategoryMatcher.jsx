@@ -20,12 +20,12 @@ export default function CategoryMatcher ({ txnName = '' }) {
     setMatcher(e.target.value)
   }
 
-  return <div className="category-matcher">
-    <label htmlFor="regexMatch">Create Regex Matcher</label>
+  return <fieldset className="category-matcher">
+    <label htmlFor="regexMatch">Create Regex Matcher:</label>
     <div className={ isMatching ? 'text-accent' : '' }>{ txnName }</div>
     <div className="flex align-center gap-s">
       <input name="regexMatch" value={matcher} onChange={handleMatcherChange} />
       { isMatching && <span className="text-accent"><b>&#10003;</b></span> }
     </div>
-  </div>
+  </fieldset>
 }

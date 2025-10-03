@@ -1,7 +1,5 @@
 import Link from '@/router/Link'
 
-import './menu.scss'
-
 const menuLinks = [
   { label: 'Settings', href: 'settings' },
   { label: 'Upload Transaction Data', href: 'upload'},
@@ -11,7 +9,7 @@ const menuLinks = [
 export default function MenuScreen () {
     return <div id="menu">
       <header>
-        <h2>Menu</h2>
+        <h1>Menu</h1>
       </header>
       <main>
         <ul>

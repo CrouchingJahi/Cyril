@@ -83,19 +83,22 @@ export async function getUserAccounts (db) {
   return results.map(rxDocument => rxDocument.toJSON())
 }
 export async function addUserAccount (db, newAccount) {
-  let accountId = await db.accounts.count().exec()
-  db.accounts.insert({
-    id: '' + accountId,
+  let result = await db.accounts.insert({
+    id: newAccount.accountFid,
     name: newAccount.accountName,
-    fid: newAccount.accountFid,
-  }).then((res) => {
-    console.log(res)
-    return 'Successfully added account: ' + newAccount.name
+    org: newAccount.accountOrg,
   })
+  return result.toJSON()
 }
 export async function removeUserAccount (db, accountId) {
-  // Check for any transactions under this account
-  console.log('removing account', accountId)
+  console.log('beginning remove query')
+  let trxResult = await db.transactions.find({
+    selector: {
+      accountId: { $eq: accountId }
+    }
+  }).remove()
+  let acctResult = await db.accounts.findOne(accountId).remove()
+  return [trxResult, acctResult]
 }
 
 export async function getCategories (db) {
@@ -104,70 +107,41 @@ export async function getCategories (db) {
 }
 export async function addCategory (db, newCategory) {
   let categoryId = await db.categories.count().exec()
-  db.categories.insert({
+  let result = await db.categories.insert({
     id: '' + categoryId,
-    catName: newCategory.categoryName,
-    catAncestry: newCategory.categoryAncestry,
-  }).then((res) => {
-    console.log(res)
-    return 'Successfully added category: ' + newCategory.catName
+    ...newCategory,
   })
+  return result.toJSON()
+}
+export async function modifyCategory(db, category) {
+  let foundCategory = await db.categories.findOne(category.id).exec()
+  let result = await foundCategory.patch(category)
+  return result.toJSON()
 }
 
+export async function getTransactionCountForAccount (db, accountId) {
+  let results = db.transactions.count({
+    selector: {
+      accountId: { $eq: accountId }
+    }
+  }).exec()
+  return results
+}
 export async function addTransaction (db, newTransaction) {
-  db.transactions.insert(newTransaction)
+  return db.transactions.insert(newTransaction)
 }
 
 export async function addBulkTransactions (db, newTransactions) {
-  db.transactions.bulkInsert(newTransactions)
+  return db.transactions.bulkInsert(newTransactions)
 }
 
 export async function getStringMatchers (db) {
-  let results = db.stringMatchers.find().exec()
+  let results = await db.stringMatchers.find().exec()
   return results.map(rxDocument => rxDocument.toJSON())
 }
 
 export async function addStringMatcher (db, matcher) {
   let id = await db.stringMatchers.count().exec()
-  return db.stringMatchers.insert({ id, ...matcher })
-}
-
-export async function seedMockData (db) {
-  db.categories.bulkInsert([
-    {
-      id: '0',
-      catName: 'root 1',
-      catAncestry: '',
-    },
-    {
-      id: '1',
-      catName: 'broad cat 1',
-      catAncestry: '0',
-    },
-    {
-      id: '2',
-      catName: 'root 2',
-      catAncestry: ''
-    },
-    {
-      id: '3',
-      catName: 'root 3',
-      catAncestry: ''
-    },
-    {
-      id: '4',
-      catName: 'leaf 1',
-      catAncestry: '1,0'
-    },
-    {
-      id: '5',
-      catName: 'leaf 2',
-      catAncestry: '1,0'
-    },
-    {
-      id: '6',
-      catName: 'other leaf',
-      catAncestry: '3'
-    },
-  ])
+  let result = await db.stringMatchers.insert({ id, ...matcher })
+  return result.toJSON()
 }

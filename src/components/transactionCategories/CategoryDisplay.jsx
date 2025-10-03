@@ -10,12 +10,12 @@ import './categoryDisplay.scss'
  * When selecting a child, that category name will be on  allow the user to select one to see further into the tree.
 
  * @param categoryList Array of transaction category objects
- * @param selected (opt) The ID of the current selection
- * @param selectFn (opt) The function to set the state of the selected catgory 
+ * @param activeCatId (opt) The ID of the current selection - to use this display as a category picker input
+ * @param setActiveFn (opt) The function to set the state of the selected catgory 
  * 
  * If selected is undefined, it will just display the navigable category tree.
  */
-export default function CategoryDisplay ({ categoryList, selected, selectFn }) {
+export default function CategoryDisplay ({ categoryList, activeCatId, setActiveFn }) {
   const categoryTree = useMemo(() => createCategoryTree(categoryList), [categoryList])
   const [currentCategoryLevel, setCurrentCategoryLevel] = useState(0)
   // Array where each slot is the selected node of that tree level
@@ -36,8 +36,8 @@ export default function CategoryDisplay ({ categoryList, selected, selectFn }) {
   }
 
   function selectNode (catId) {
-    if (typeof selectFn == 'function') {
-      selectFn(selected == catId ? null : catId)
+    if (typeof setActiveFn == 'function') {
+      setActiveFn(activeCatId == catId ? null : catId)
     }
   }
 
@@ -68,7 +68,7 @@ export default function CategoryDisplay ({ categoryList, selected, selectFn }) {
         { catList.map(category => {
           const childTree = treeNode[category.id]
           const hasChildren = Object.keys(childTree).length > 0
-          return <div className={`category-choice ${selected == category.id ? 'selected' : ''}`} key={category.id}>
+          return <div className={`category-choice ${activeCatId == category.id ? 'selected' : ''}`} key={category.id}>
             <button className="unstyled category-name" onClick={() => selectNode(category.id)}>
               <span>{ category.catName }</span>
             </button>
@@ -96,7 +96,7 @@ export default function CategoryDisplay ({ categoryList, selected, selectFn }) {
     return <div className="category-level parent">
       <button className="unstyled category-parent-link" onClick={() => deselectCategory(level)}>
         { level == 0 ? <span>&#128923;&nbsp;</span> : <span>&#9472;&nbsp;</span> }
-        <span className={`category-parent-name ${selected == selectedNode.id ? 'selected' : ''}`}>{ selectedNode.catName }</span>
+        <span className={`category-parent-name ${activeCatId == selectedNode.id ? 'selected' : ''}`}>{ selectedNode.catName }</span>
         <span>&nbsp;&#9472;</span>
       </button>
     </div>

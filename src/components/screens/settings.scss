@@ -1,11 +1,12 @@
 #settings {
 
-  section {
-    margin: 1rem 0;
+  main {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
   }
 
   form {
-    width: 20rem;
     margin-top: 1rem;
   }
   fieldset {

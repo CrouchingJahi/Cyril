@@ -3,8 +3,9 @@ import { getUserAccounts, getCategories, addUserAccount, addTransaction, addStri
 import parseQfx from '~/utils/parseQfx'
 import CategoryDisplay from '@/transactionCategories/CategoryDisplay'
 import CategoryMatcher from '../transactionCategories/CategoryMatcher'
-import Link, { BackToMenuLink } from '@/router/Link'
+import { BackToMenuLink } from '@/router/Link'
 import IconButton from '@/ui/IconButton'
+import LoadingIcon from '@/ui/LoadingIcon'
 
 const formPhases = {
   menu: 'menu',
@@ -44,10 +45,6 @@ export default function UploadScreen () {
       <h2>Upload</h2>
     </header>
     <main>
-      { !userAccounts.length && <div>
-          <p>No user accounts found. Go to the <Link to="settings">Settings</Link> page to add a user account.</p>
-        </div>
-      }
       { formPhase === formPhases.menu ? <UploadMenu />
        : formPhase === formPhases.uploadFile ? <UploadFileForm />
        : formPhase === formPhases.uploadManual ? <UploadManualForm />
@@ -95,7 +92,7 @@ export default function UploadScreen () {
       </fieldset>
       <fieldset>
         <label>Category: { selectedCategoryName }</label>
-        <CategoryDisplay categoryList={categories} selected={selectedCategory} selectFn={setSelectedCategory} />
+        <CategoryDisplay categoryList={categories} activeCatId={selectedCategory} setActiveFn={setSelectedCategory} />
       </fieldset>
       <fieldset>
         <label>FITID:</label>
@@ -158,8 +155,7 @@ export default function UploadScreen () {
 
   function UploadCategorizerForm () {
     if (!transactionDataToCategorize) {
-      // Loading screen
-      return null
+      return <LoadingIcon />
     }
     const uploadCategorizerRef = useRef(null)
     const userAccountMatch = userAccounts.find(acct => acct.fid == transactionDataToCategorize.accountId)
@@ -261,72 +257,68 @@ export default function UploadScreen () {
 
     // should change this to controlled input that passes state up
     return <div className="transaction-to-categorize">
-      <div className="flex">
-        <div className="flex-even">
-          <fieldset>
-            <label>FITID:</label>
-            <EditableField key="fitid"
-              fieldName="fitid"
-              transaction={transaction}
-              modifiedFields={modifiedFields}
-              setModifiedFields={setModifiedFields}
-            />
-          </fieldset>
-          <fieldset>
-            <label>Name:</label>
-            <EditableField key="name"
-              fieldName="name"
-              transaction={transaction}
-              modifiedFields={modifiedFields}
-              setModifiedFields={setModifiedFields}
-            />
-          </fieldset>
-          <fieldset>
-            <label>Date:</label>
-            <EditableField key="date"
-              fieldName="date"
-              type="date"
-              transaction={transaction}
-              modifiedFields={modifiedFields}
-              setModifiedFields={setModifiedFields}
-            />
-          </fieldset>
-        </div>
-        <div className="flex-even">
-          <fieldset>
-            <label>Amount:</label>
-            <EditableField key="amount"
-              fieldName="amount"
-              transaction={transaction}
-              modifiedFields={modifiedFields}
-              setModifiedFields={setModifiedFields}
-            />
-          </fieldset>
-          <fieldset>
-            <label>Type:</label>
-            <EditableField key="type"
-              fieldName="type"
-              transaction={transaction}
-              modifiedFields={modifiedFields}
-              setModifiedFields={setModifiedFields}
-            />
-          </fieldset>
-          <fieldset>
-            <label>Memo:</label>
-            <EditableField key="memo"
-              fieldName="memo"
-              transaction={transaction}
-              modifiedFields={modifiedFields}
-              setModifiedFields={setModifiedFields}
-            />
-          </fieldset>
-        </div>
-      </div>
-      <fieldset>
-        <label><h4>Category: { selectedCategoryObj ? selectedCategoryObj.catName : '(None Selected)' }</h4></label>
-        <CategoryDisplay categoryList={categories} selected={selectedCategory} selectFn={selectFn} />
+      <div className="grid cols-2">
+        <fieldset>
+          <label>FITID:</label>
+          <EditableField key="fitid"
+            fieldName="fitid"
+            transaction={transaction}
+            modifiedFields={modifiedFields}
+            setModifiedFields={setModifiedFields}
+          />
+        </fieldset>
+        <fieldset>
+          <label>Amount:</label>
+          <EditableField key="amount"
+            fieldName="amount"
+            transaction={transaction}
+            modifiedFields={modifiedFields}
+            setModifiedFields={setModifiedFields}
+          />
+        </fieldset>
+        <fieldset>
+          <label>Name:</label>
+          <EditableField key="name"
+            fieldName="name"
+            transaction={transaction}
+            modifiedFields={modifiedFields}
+            setModifiedFields={setModifiedFields}
+          />
+        </fieldset>
+        <fieldset>
+          <label>Type:</label>
+          <EditableField key="type"
+            fieldName="type"
+            transaction={transaction}
+            modifiedFields={modifiedFields}
+            setModifiedFields={setModifiedFields}
+          />
+        </fieldset>
+        <fieldset>
+          <label>Date:</label>
+          <EditableField key="date"
+            fieldName="date"
+            type="date"
+            transaction={transaction}
+            modifiedFields={modifiedFields}
+            setModifiedFields={setModifiedFields}
+          />
+        </fieldset>
+        <fieldset>
+          <label>Memo:</label>
+          <EditableField key="memo"
+            fieldName="memo"
+            transaction={transaction}
+            modifiedFields={modifiedFields}
+            setModifiedFields={setModifiedFields}
+          />
+        </fieldset>
+        <fieldset>
+          <label><h4>Category: { selectedCategoryObj ? selectedCategoryObj.catName : '(None Selected)' }</h4></label>
+          <CategoryDisplay categoryList={categories} activeCatId={selectedCategory} setActiveFn={selectFn} />
+        </fieldset>
         { selectedCategoryObj && <CategoryMatcher txnName={modifiedFields.name || transaction.name} /> }
-      </fieldset>
+      </div>
     </div>
   }
 }
