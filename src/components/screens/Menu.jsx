@@ -10,11 +10,15 @@ const menuLinks = [
 
 export default function MenuScreen () {
     return <div id="menu">
-      <h2>Menu</h2>
-      <ul className="nav-menu">
-        { menuLinks.map(link =>
-          <li key={link.href}><Link to={link.href}>{link.label}</Link></li>
-        ) }
-      </ul>
+      <header>
+        <h2>Menu</h2>
+      </header>
+      <main>
+        <ul>
+          { menuLinks.map(link =>
+            <li key={link.href}><Link to={link.href}>{link.label}</Link></li>
+          ) }
+        </ul>
+      </main>
     </div>
 }
