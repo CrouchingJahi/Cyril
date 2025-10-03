@@ -1,6 +1,7 @@
 import { app, BrowserWindow, ipcMain, shell } from 'electron';
 import installExtension, { REACT_DEVELOPER_TOOLS } from 'electron-devtools-installer';
 import path from 'node:path';
+import { createBackupFile, readBackupFile } from './utils/backupFile';
 import { getUserSettings } from './utils/userSettings';
 
 import style from './components/theme.module.scss';
@@ -61,6 +62,12 @@ app.whenReady().then(async () => {
     const githubLink = 'https://github.com/CrouchingJahi/Cyril';
     shell.openExternal(githubLink);
   });
+
+  ipcMain.on('createBackupFile', (event, backupObject) => {
+    createBackupFile(backupObject);
+  });
+
+  ipcMain.handle('readBackupFile', readBackupFile);
 
   createWindow();
 

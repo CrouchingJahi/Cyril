@@ -119,6 +119,18 @@ export async function modifyCategory(db, category) {
   return result.toJSON()
 }
 
+export async function getTransactions (db, accountId) {
+  let query;
+  if (accountId) {
+    query = {
+      selector: {
+        accountId: { $eq: accountId }
+      }
+    }
+  }
+  let results = await db.transactions.find(query).exec()
+  return results.map(rxDocument => rxDocument.toJSON())
+}
 export async function getTransactionCountForAccount (db, accountId) {
   let results = db.transactions.count({
     selector: {
@@ -144,4 +156,16 @@ export async function addStringMatcher (db, matcher) {
   let id = await db.stringMatchers.count().exec()
   let result = await db.stringMatchers.insert({ id, ...matcher })
   return result.toJSON()
+}
+
+export async function loadFromBackup (db, backupData) {
+  function loadCollection (name) {
+    if (backupData[name].length > 0) {
+      db[name].bulkInsert(backupData[name])
+    }
+  }
+  loadCollection('accounts')
+  loadCollection('categories')
+  loadCollection('stringMatchers')
+  loadCollection('transactions')
 }

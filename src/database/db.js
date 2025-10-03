@@ -1,4 +1,5 @@
 import * as RxDB from './rxdb'
+import createBackupObject from './createBackupObject'
 
 let db;
 
@@ -22,11 +23,41 @@ export async function getDB () {
       getUserAccounts, addUserAccount, removeUserAccount,
       getCategories, addCategory,
       getStringMatchers, addStringMatcher,
-      seedMockData,
+      createBackup, loadFromBackup,
     })
     window.dispatchEvent(new CustomEvent('VaultLoaded'))
   }
   return db
+}
+
+/**
+ * 
+ * @returns An object containing the database's contents, with the collections as the keys
+ */
+async function createBackupObject () {
+  const backupObject = {}
+  return Promise.all([
+    getUserAccounts(),
+    getCategories(),
+    getStringMatchers(),
+    getTransactions(),
+  ]).then(([accounts, categories, stringMatchers, transactions]) => {
+    backupObject.accounts = accounts
+    backupObject.categories = categories
+    backupObject.stringMatchers = stringMatchers
+    backupObject.transactions = transactions
+    return backupObject
+  })
+}
+export function createBackup () {
+  createBackupObject().then(backupObj => {
+    window.cyrilAPI.createBackupFile(backupObj)
+  })
+}
+export function loadFromBackup () {
+  window.cyrilAPI.readBackupFile().then(backupData => {
+    RxDB.loadFromBackup(db, backupData)
+  })
 }
 
 // Passthrough methods for DB API
@@ -53,6 +84,11 @@ export async function addCategory (newCategory) {
 export async function modifyCategory (category) {
   await waitForInit()
   return RxDB.modifyCategory(db, category)
+}
+// accountId is optional - if null, return all transactions
+export async function getTransactions(accountId) {
+  await waitForInit()
+  return RxDB.getTransactions(db, accountId)
 }
 export async function getTransactionCountForAccount (accountId) {
   await waitForInit()

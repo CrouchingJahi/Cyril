@@ -19,6 +19,8 @@ contextBridge.exposeInMainWorld('cyrilAPI', {
   getVersion: () => ipcRenderer.sendSync('getVersion'),
   openGithubLink: () => ipcRenderer.send('openGithubLink'),
   loginUser: (localUser) => ipcRenderer.send('loginUser', localUser),
+  createBackupFile: (backupObj) => ipcRenderer.send('createBackupFile', backupObj),
+  readBackupFile: () => ipcRenderer.invoke('readBackupFile'),
 })
 
 /*
