@@ -1,5 +1,4 @@
 import * as RxDB from './rxdb'
-import createBackupObject from './createBackupObject'
 
 let db;
 
