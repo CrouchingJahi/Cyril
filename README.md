@@ -28,8 +28,8 @@ React DevTools issues - https://github.com/electron/electron/issues/41613
 ---
 
 ## To Do
-* Settings - Need confirmation on deleting an account, figure out how to handle attached transactions, figure out best way to update new view of transactions after adding or deleting
-* Transaction CategoryDisplay - Fancify and add animations
+* Settings - Need to figure out best way to update new view of transactions after adding or deleting
+* CategoryDisplay - Fancify and add animations
 * Data storage - need a replacement for rxdb because it has a 5mb limit unless you pay for premium
 * DB migration function
 * DBs - Check LevelDB, electron-store, NeDB (had prev difficulty)

@@ -29,10 +29,7 @@ export async function getDB () {
   return db
 }
 
-/**
- * 
- * @returns An object containing the database's contents, with the collections as the keys
- */
+// An object containing the database's contents, with the collections as the keys
 async function createBackupObject () {
   const backupObject = {}
   return Promise.all([
@@ -48,14 +45,16 @@ async function createBackupObject () {
     return backupObject
   })
 }
-export function createBackup () {
-  createBackupObject().then(backupObj => {
-    window.cyrilAPI.createBackupFile(backupObj)
+export async function createBackup () {
+  return createBackupObject().then(backupObj => {
+    return window.cyrilAPI.createBackupFile(backupObj).then(filePath => {
+      return { filePath, backupObj }
+    })
   })
 }
-export function loadFromBackup () {
+export function loadFromBackup (whichCollections) {
   window.cyrilAPI.readBackupFile().then(backupData => {
-    RxDB.loadFromBackup(db, backupData)
+    RxDB.loadFromBackup(db, backupData, whichCollections)
   })
 }
 

@@ -68,7 +68,7 @@ export default function CategoryDisplay ({ categoryList, activeCatId, setActiveF
         { catList.map(category => {
           const childTree = treeNode[category.id]
           const hasChildren = Object.keys(childTree).length > 0
-          return <div className={`category-choice ${activeCatId == category.id ? 'selected' : ''}`} key={category.id}>
+          return <div className={`category-choice ${activeCatId == category.id ? 'selected' : ''}`} key={category.id + category.catName}>
             <button className="unstyled category-name" onClick={() => selectNode(category.id)}>
               <span>{ category.catName }</span>
             </button>

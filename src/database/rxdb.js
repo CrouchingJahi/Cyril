@@ -91,7 +91,6 @@ export async function addUserAccount (db, newAccount) {
   return result.toJSON()
 }
 export async function removeUserAccount (db, accountId) {
-  console.log('beginning remove query')
   let trxResult = await db.transactions.find({
     selector: {
       accountId: { $eq: accountId }
@@ -109,7 +108,8 @@ export async function addCategory (db, newCategory) {
   let categoryId = await db.categories.count().exec()
   let result = await db.categories.insert({
     id: '' + categoryId,
-    ...newCategory,
+    catName: newCategory.catName,
+    catAncestry: newCategory.catAncestry,
   })
   return result.toJSON()
 }
@@ -158,14 +158,18 @@ export async function addStringMatcher (db, matcher) {
   return result.toJSON()
 }
 
-export async function loadFromBackup (db, backupData) {
+export async function loadFromBackup (db, backupData, whichCollections) {
   function loadCollection (name) {
     if (backupData[name].length > 0) {
       db[name].bulkInsert(backupData[name])
     }
   }
-  loadCollection('accounts')
-  loadCollection('categories')
-  loadCollection('stringMatchers')
-  loadCollection('transactions')
+  if (!whichCollections || whichCollections == 'all') {
+    loadCollection('accounts')
+    loadCollection('categories')
+    loadCollection('stringMatchers')
+    loadCollection('transactions')
+  } else {
+    whichCollections.split(',').forEach(coll => loadCollection(coll))
+  }
 }

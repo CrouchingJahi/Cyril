@@ -1,18 +1,16 @@
 import fs from 'node:fs/promises'
-import path from 'path'
-import { app } from 'electron'
-
-const fileName = 'vault.json'
-const filePath = path.join(app.getPath('userData'), fileName)
+import { getUserSettings } from '~/utils/userSettings'
 
 /**
  * Backend function to write the given backup object to a json file
  */
 export async function createBackupFile (backupObject) {
-  return fs.writeFile(filePath, JSON.stringify(backupObject))
+  await fs.writeFile(filePath, JSON.stringify(backupObject))
+  return filePath
 }
 
-export async function readBackupFile () {
+export async function readBackupFile (pathName) {
+  const filePath = pathName || getUserSettings().backupFile.filePath
   let fileString = await fs.readFile(filePath, 'utf8')
   return JSON.parse(fileString)
 }

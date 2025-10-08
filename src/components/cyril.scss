@@ -22,9 +22,9 @@
 }
 
 html {
+  height: 100vh;
   scrollbar-color: theme.$grn2-dark theme.$black;
 }
-
 header {
   padding: 0 1rem;
 }
@@ -87,9 +87,11 @@ a:hover {
 }
 
 fieldset {
+  border: none;
   display: flex;
   flex-direction: column;
-  border: none;
+  margin: 0;
+  padding: 0 0 0.5em;
 }
 
 button, .button {
@@ -104,7 +106,7 @@ button, .button {
   padding: 0.5em 1em;
   transition-duration: theme.$transition-duration-quick;
   transition-timing-function: theme.$transition-function;
-  transition-property: color, background-color, border-color;
+  transition-property: color, background-color, border-color, transform;
 
   &:disabled {
     opacity: 0.5;
@@ -114,7 +116,15 @@ button, .button {
   }
 
   &:focus, &:hover {
-    border-color: theme.$grn-med;
+    transform: scale(1.1);
+  }
+
+  &.secondary {
+    background-color: theme.$grn2-dark;
+  }
+  &.danger {
+    color: theme.$red;
+    border-color: theme.$red;
   }
 
   &.unstyled {
@@ -139,6 +149,9 @@ input[type="file"] {
   display: none;
 }
 
+.text-danger {
+  color: theme.$red;
+}
 .text-accent {
   color: theme.$accent;
 }
@@ -165,6 +178,10 @@ input[type="file"] {
   display: flex;
   flex-direction: column;
   gap: 1rem;
+
+  &.narrow {
+    gap: 0.5rem;
+  }
 }
 .flex {
   display: flex;
@@ -190,6 +207,9 @@ input[type="file"] {
 }
 .width-l {
   width: 40rem;
+}
+.margin-y {
+  margin: 0.5em 0;
 }
 .padding-s {
   padding: 0.5em;

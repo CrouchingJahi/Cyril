@@ -2,7 +2,9 @@
 
 .category-display {
   display: flex;
-  height: 10em;
+  min-height: 2em;
+  max-height: 12em;
+  margin-bottom: 0.5rem;
 }
 .tree-branch-lines {
   line-height: 1.5;
@@ -13,10 +15,9 @@
 }
 .category-level {
   line-height: 1.5;
-  overflow-y: auto;
+  overflow: hidden auto;
   padding: 0.25rem 0;
   transition: width theme.$transitions;
-  width: fit-content;
 
   &.current {
     color: theme.$link;
@@ -43,6 +44,7 @@
     align-items: center;
     display: flex;
     gap: 0.5rem;
+    padding: 0.25rem;
 
     &.selected .category-name {
       color: theme.$accent;
@@ -52,6 +54,7 @@
   .category-name {
     flex-grow: 1;
     text-align: left;
+    padding: 0 0.5rem;
 
     &:hover, .selected & {
       color: theme.$accent;

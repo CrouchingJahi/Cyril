@@ -2,21 +2,28 @@ import { app, BrowserWindow, ipcMain, shell } from 'electron';
 import installExtension, { REACT_DEVELOPER_TOOLS } from 'electron-devtools-installer';
 import path from 'node:path';
 import { createBackupFile, readBackupFile } from './utils/backupFile';
-import { getUserSettings } from './utils/userSettings';
+import { getUserSettings, saveUserWindowPosition } from './utils/userSettings';
 
 import style from './components/theme.module.scss';
 
-const createWindow = () => {
+const createWindow = async () => {
+  const userSettings = await getUserSettings()
   // Create the browser window.
   const mainWindow = new BrowserWindow({
-    width: 1024,
-    height: 768,
+    x: userSettings.windowPosition.x,
+    y: userSettings.windowPosition.y,
+    width: userSettings.windowPosition.w,
+    height: userSettings.windowPosition.h,
     icon: 'assets/Cyril.ico',
     backgroundColor: style.bgColor,
     webPreferences: {
       nodeIntegration: true,
       preload: path.join(__dirname, 'preload.js'),
     },
+  });
+
+  mainWindow.on('close', () => {
+    saveUserWindowPosition(mainWindow.getBounds());
   });
 
   // and load the index.html of the app.
@@ -44,13 +51,11 @@ app.whenReady().then(async () => {
   await installExtension(REACT_DEVELOPER_TOOLS)
     .then((name) => console.log(`Added Extension:  ${name}`))
     .catch((err) => console.log('Extension error occurred: ', err));
-}).then(async () => {
+}).then(() => {
 
   // Backend API functions
-  ipcMain.on('getUserSettings', (event) => {
-    getUserSettings().then(userSettings => {
-      event.returnValue = userSettings;
-    });
+  ipcMain.on('getUserSettings', async (event) => {
+    event.returnValue = await getUserSettings();
   });
 
   ipcMain.on('getVersion', (event) => {
@@ -63,11 +68,15 @@ app.whenReady().then(async () => {
     shell.openExternal(githubLink);
   });
 
-  ipcMain.on('createBackupFile', (event, backupObject) => {
-    createBackupFile(backupObject);
+  ipcMain.handle('createBackupFile', async (event, backupObject) => {
+    return createBackupFile(backupObject);
   });
 
-  ipcMain.handle('readBackupFile', readBackupFile);
+  ipcMain.handle('readBackupFile', async (event, filePath) => {
+    console.log(arguments.length)
+    console.log(filePath)
+    return readBackupFile(filePath);
+  });
 
   createWindow();
 

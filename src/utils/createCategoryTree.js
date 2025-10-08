@@ -1,17 +1,10 @@
 // Displays all of the available transaction categories in a tree format, given the category array
 // Creates a tree where the category id is the name and the value is an object of its children
-/* expected output from mock data
-  {
-    0: { 1: { 4: {}, 5: {} } },
-    2: {},
-    3: { 6: {} }
-  }
-*/
 export default function createCategoryTree (data) {
   let usedEntries = []
 
   return data.reduce((tree, category) => {
-    if (usedEntries.includes(category)) return
+    if (usedEntries.includes(category)) return tree
 
     let treePointer = tree
     let catAncestry = category.catAncestry?.length > 0 ? category.catAncestry.split(',') : []

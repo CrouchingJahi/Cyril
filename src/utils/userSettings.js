@@ -1,32 +1,40 @@
 import path from 'path'
 import fs from 'node:fs/promises'
-import { app } from 'electron'
+import { app, screen } from 'electron'
 
-const defaultSettings = {
-  dbLocation: app.getPath('userData'),
-};
+let initialized = false
+const userSettings = {}
 
 const settingsFilePath = path.join(app.getPath('userData'), 'cyril.json')
 
 async function readSettingsFile () {
   return fs.readFile(settingsFilePath, 'utf8').then((data) => {
-    return data
+    return JSON.parse(data)
   })
 }
-
 async function writeSettingsFile (newSettings) {
   return fs.writeFile(settingsFilePath, JSON.stringify(newSettings))
 }
 
-const userSettings = {}
-
-let initialized = false
-
+function createDefaultSettings () {
+  const thisDisplay = screen.getDisplayNearestPoint(screen.getCursorScreenPoint())
+  return {
+    backupFile: {
+      filePath: path.join(app.getPath('userData'), 'vault.json')
+    },
+    windowPosition: {
+      x: thisDisplay.bounds.x,
+      y: thisDisplay.bounds.y,
+      w: thisDisplay.workAreaSize.width / 2,
+      h: thisDisplay.workAreaSize.height,
+    },
+  }
+}
 async function initializeSettings () {
+  const defaultSettings = createDefaultSettings()
+
   return readSettingsFile().then(data => {
-    if (data) {
-      Object.assign(userSettings, JSON.parse(data))
-    }
+    Object.assign(userSettings, data || {})
 
     // Update stored settings with any missing keys
     let keyDifferences = false
@@ -58,4 +66,16 @@ export async function getUserSettings () {
     initialized = true
     return userSettings
   }
+}
+
+export async function saveUserWindowPosition (position) {
+  Object.assign(userSettings, {
+    windowPosition: {
+      x: position.x,
+      y: position.y,
+      w: position.width,
+      h: position.height,
+    }
+  })
+  writeSettingsFile(userSettings)
 }

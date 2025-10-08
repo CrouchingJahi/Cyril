@@ -1,4 +1,7 @@
 #splash {
+  display: grid;
+  margin-top: 10vh;
+  place-items: center;
   text-align: center;
 
   .logo {

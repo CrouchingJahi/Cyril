@@ -1,20 +1,5 @@
 #settings {
-
-  main {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 1rem;
+  h3 {
+    margin: 0.25rem 0;
   }
-
-  form {
-    margin-top: 1rem;
-  }
-  fieldset {
-    display: flex;
-    flex-direction: column;
-    border: none;
-    margin: 0;
-    padding: 0 0 0.5em;
-  }
-
 }
