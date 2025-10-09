@@ -28,6 +28,7 @@ React DevTools issues - https://github.com/electron/electron/issues/41613
 ---
 
 ## To Do
+* Forms - Tabbable Checkboxes
 * Settings - Need to figure out best way to update new view of transactions after adding or deleting
 * CategoryDisplay - Fancify and add animations
 * Data storage - need a replacement for rxdb because it has a 5mb limit unless you pay for premium

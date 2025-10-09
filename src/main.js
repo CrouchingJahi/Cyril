@@ -73,8 +73,6 @@ app.whenReady().then(async () => {
   });
 
   ipcMain.handle('readBackupFile', async (event, filePath) => {
-    console.log(arguments.length)
-    console.log(filePath)
     return readBackupFile(filePath);
   });
 

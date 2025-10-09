@@ -137,7 +137,7 @@ export default function UploadScreen () {
 
     return <form onSubmit={submitFile}>
       <p>Accepts .qfx files</p>
-      <fieldset className="width-fit no-padding">
+      <fieldset className="width-fit pad-no">
         <label htmlFor="fileUpload">
           <div className="button">Upload File</div>
         </label>
@@ -225,7 +225,7 @@ export default function UploadScreen () {
             selectedCategory={selectedCategories[txnIndex]}
             selectFn={setSelectedCategoryAtIndex(txnIndex)}
           />
-          <div className="flex padding-s">
+          <div className="flex pad-s">
             <button type="button" className="width-fit" onClick={saveTransaction}>
               Save This Transaction
             </button>

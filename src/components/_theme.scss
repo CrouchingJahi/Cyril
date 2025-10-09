@@ -3,29 +3,41 @@ $black: #131311;
 $white: #EBEEED;
 $dark: #1D2519;
 
-$grn-dark: #2F3425;
-$grn-med: #333B3D;
-$grn-light: #676F62;
-$grn2-light: #C9DCC1;
-$grn2-med: #9CB598;
-$grn2-dark: #395330;
+$grn-light: #C9DCC1;
+$grn-med: #9CB598;
+$grn-dark: #395330;
 
-$red: #8C1E2F;
-$red-dark: #5C353B;
+$moss-light: #676F62;
+$moss-med: #333B3D;
+$moss-dark: #2F3425;
+
 $accent: #FFDF00;
 $accent2: #E4EED6;
-$error: #ED481B;
+$red: #8C1E2F;
+$red-dark: #5C353B;
+$red-bright: #ED481B;
 
 // Context-Named Colors
 $bg: $dark;
-$text: $grn2-med;
-$text-faded: $grn-light;
-$link: $grn2-light;
+$modal-bg: $grn-dark;
+$text: $grn-med;
+$text-faded: $moss-light;
+$icons: $moss-med;
+$link: $grn-light;
 $link-hover: $accent2;
+$forms-main: $grn-light;
+$forms-secondary: $grn-dark;
+$forms-border: $moss-dark;
 
 // Fonts
-$text-med: 16px;
-$text-xmed: 18px;
+$text-med: 1rem;
+$text-xmed: 1.25rem;
+
+// Standardized Numbers
+$border-radius: 6px;
+
+// Transformations
+$trans-zoom: scale(calc(17/16));
 
 // Animations
 $transition-duration: 0.5s;

@@ -1,7 +1,8 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useRef } from 'react'
 import * as db from '~/database/db'
 import { BackToMenuLink } from '@/router/Link'
 import IconButton from '@/ui/IconButton'
+import Modal from '@/ui/Modal'
 import CategoryDisplay from '@/transactionCategories/CategoryDisplay'
 
 import './settings.scss'
@@ -48,7 +49,14 @@ export default function SettingsScreen () {
 function DataOptions () {
   const [backupFileImportData, setBackupFileImportData] = useState(null)
   const [backupSaved, setBackupSaved] = useState(null)
-  const [openClearDataModal, setOpenClearDataModal] = useState(false)
+  const backupFileImportModalRef = useRef(null)
+  const clearDataModalRef = useRef(null)
+
+  useEffect(() => {
+    if (backupFileImportData) {
+      backupFileImportModalRef.current.open()
+    }
+  }, [backupFileImportData])
 
   function handleLoadBackup (e) {
     e.preventDefault()
@@ -75,7 +83,7 @@ function DataOptions () {
 
   function handleClearDataModal (e) {
     e.preventDefault()
-    setOpenClearDataModal(true)
+    clearDataModalRef.current.open()
   }
 
   function handleClearAll () {}
@@ -83,95 +91,97 @@ function DataOptions () {
 
   return <section>
     <h3>Data</h3>
-    <div>
+    <div className="pad-bottom">
       <h4>Load Backup File</h4>
-        <div>File: (.json)</div>
-        <fieldset className="width-fit">
-          <label htmlFor="backupFile" className="button">
-            Upload Backup File
-          </label>
-          <input id="backupFile"
-            name="backupFile"
-            type="file" accept="json"
-            onChange={handleLoadBackup}
-          />
-        </fieldset>
-        { backupFileImportData && <BackupFileImportModal /> }
+      <div>File: (.json)</div>
+      <input id="backupFile"
+        name="backupFile"
+        type="file" accept="json"
+        onChange={handleLoadBackup}
+      />
+      <label htmlFor="backupFile" className="block button width-fit">
+        Upload Backup File
+      </label>
+      <BackupFileImportModal />
     </div>
-    <div>
+    <div className="pad-bottom">
       <h4>Save Backup File</h4>
-      <fieldset className="width-fit">
-        <button onClick={handleSaveBackup} disabled={!!backupSaved}>Save</button>
-      </fieldset>
-      { backupSaved && <span>Backup saved: { backupSaved.filePath }</span> }
+      <button className="width-fit" onClick={handleSaveBackup} disabled={!!backupSaved}>Save</button>
+      { backupSaved && <>
+        <div>Backup saved!<br/>{ backupSaved.filePath }</div>
+      </> }
     </div>
-    <div>
+    <div className="pad-bottom">
       <h4>Clear Cyril Data</h4>
-      <fieldset className="width-fit">
-        <button className="danger" onClick={handleClearDataModal}>Clear Data</button>
-      </fieldset>
-      { openClearDataModal && <ClearDataModal /> }
+      <button className="width-fit danger" onClick={handleClearDataModal}>Clear Data</button>
+      <ClearDataModal />
     </div>
   </section>
 
   function BackupFileImportModal () {
     function handleConfirmImport (e) {
-      e.preventDefault()
-      let formData = Object.fromEntries(new FormData(e.target).entries())
-      cyrilVault.loadFromBackup(Object.keys(formData).join(','))
+      if (e.nativeEvent.submitter.value != 'cancel') {
+        let formData = Object.fromEntries(new FormData(e.target).entries())
+        cyrilVault.loadFromBackup(Object.keys(formData).join(','))
+      }
     }
 
-    return <dialog id="backup-file-input-modal" open={!!backupFileImportData} onClose={() => setBackupFileImportData(null)}>
-      <div>Choose which backup data to import</div>
-      <form onSubmit={handleConfirmImport}>
-        <ul className="list narrow margin-y">
-          <ImportDataTableCheckbox tableKey="accounts" tableName="Accounts" />
-          <ImportDataTableCheckbox tableKey="categories" tableName="Categories" />
-          <ImportDataTableCheckbox tableKey="stringMatchers" tableName="Regex Matchers" />
-          <ImportDataTableCheckbox tableKey="transactions" tableName="Transactions" />
-        </ul>
-        <div className="flex gap-s">
-          <button>Import All</button>
-          <button value="cancel" className="secondary" onClick={() => backupFileImportData(null)}>Cancel</button>
-        </div>
-      </form>
-    </dialog>
+    return <Modal modalId="backup-file-import-modal" modalRef={backupFileImportModalRef} closeFn={() => setBackupFileImportData(null)}>
+      { !!backupFileImportData && <>
+        <div>Choose which backup data to import</div>
+        <form method="dialog" onSubmit={handleConfirmImport}>
+          <div className="list narrow margin-y">
+            <ImportDataTableCheckbox tableKey="accounts" tableName="Accounts" />
+            <ImportDataTableCheckbox tableKey="categories" tableName="Categories" />
+            <ImportDataTableCheckbox tableKey="stringMatchers" tableName="Regex Matchers" />
+            <ImportDataTableCheckbox tableKey="transactions" tableName="Transactions" />
+          </div>
+          <div className="flex gap-s">
+            <button name="action" value="import">Import Selected Tables</button>
+            <button name="action" value="cancel" type="reset" className="secondary" onClick={() => backupFileImportModalRef.current.close()}>Cancel</button>
+          </div>
+        </form>
+      </> }
+    </Modal>
 
     function ImportDataTableCheckbox ({tableKey, tableName }) {
-      return backupFileImportData[tableKey].length == 0 ? null : <li>
-        <label className="flex" htmlFor={tableKey}>
-          <input type="checkbox" name={tableKey} />
+      return backupFileImportData[tableKey].length == 0 ? null : <div>
+        <input type="checkbox" id={`import-${tableKey}`} name={tableKey} defaultChecked="on" tabIndex="0" />
+        <label htmlFor={`import-${tableKey}`}>
           { tableName } ({ backupFileImportData[tableKey].length })
         </label>
-      </li>
+      </div>
     }
   }
 
   function ClearDataModal () {
-    return <dialog id="clear-data-modal" open={!!openClearDataModal} onClose={() => setOpenClearDataModal(false)}>
-      <h4>Clear Cyril Data</h4>
-      <p>Are you sure you cant to clear all data? This cannot be undone, so make sure your backup is created.</p>
-      <p></p>
-      <p>This includes:</p>
-      <ul>
-        <li>Accounts</li>
-        <li>Categories</li>
-        <li>Transactions</li>
-        <li>Regex Matchers</li>
-      </ul>
-      <p></p>
-      <div className="flex gap-s">
-        <button onClick={handleClearAll}>Clear All</button>
-        <button onClick={handleClearTransactions}>Clear Transactions</button>
-        <button value="cancel" onClick={() => setOpenClearDataModal(false)}>Cancel</button>
-      </div>
-    </dialog>
+    return <Modal modalId="clear-data-modal" modalRef={clearDataModalRef} className="border-danger">
+      <form method="dialog">
+        <h4>Clear Cyril Data</h4>
+        <p>Are you sure you cant to clear all data? This cannot be undone, so make sure your backup is created.</p>
+        <p></p>
+        <p>This includes:</p>
+        <ul>
+          <li>Accounts</li>
+          <li>Categories</li>
+          <li>Transactions</li>
+          <li>Regex Matchers</li>
+        </ul>
+        <p></p>
+        <div className="flex gap-s">
+          <button className="danger" onClick={handleClearAll}>Clear All</button>
+          <button className="danger" onClick={handleClearTransactions}>Clear Transactions</button>
+          <button value="cancel" onClick={() => clearDataModalRef.current.close()}>Cancel</button>
+        </div>
+      </form>
+    </Modal>
   }
 }
 
 function AccountOptions ({accounts, setAccounts}) {
   const [confirmationDialogItem, setConfirmationDialogItem] = useState(null)
   const [transactionsForDeletionAccount, setTransactionsForDeletionAccount] = useState(0)
+  const confirmDeleteAccountDialogRef = useRef(null)
 
   useEffect(() => {
     if (confirmationDialogItem) {
@@ -206,7 +216,7 @@ function AccountOptions ({accounts, setAccounts}) {
         </li>) }
       </ul>
     }
-    { confirmationDialogItem && <ConfirmDeleteAccountDialog /> }
+    <ConfirmDeleteAccountDialog />
     <form id="add-account" onSubmit={handleAddAccount}>
       <h4>Add Account</h4>
       <fieldset>
@@ -226,14 +236,16 @@ function AccountOptions ({accounts, setAccounts}) {
   </section>
 
   function ConfirmDeleteAccountDialog () {
-    return <dialog id="remove-account-confirmation" open={!!confirmationDialogItem} onClose={() => setConfirmationDialogItem(null) }>
-      <p>Are you sure you want to remove this account?</p>
-      <p>{ confirmationDialogItem.name }</p>
-      { transactionsForDeletionAccount > 0 && <p>This account has {transactionsForDeletionAccount} transactions associated with it that will also be removed.</p> }
-      <div className="flex gap-s">
-        <button onClick={() => confirmDeleteAccount(confirmationDialogItem.id)}>OK</button>
-        <button value="cancel" onClick={() => setConfirmationDialogItem(null)}>Cancel</button>
-      </div>
+    return <dialog id="remove-account-confirmation" ref={confirmDeleteAccountDialogRef} onClose={() => setConfirmationDialogItem(null) }>
+      { confirmationDialogItem && <form method="dialog">
+        <p>Are you sure you want to remove this account?</p>
+        <p>{ confirmationDialogItem.name }</p>
+        { transactionsForDeletionAccount > 0 && <p>This account has {transactionsForDeletionAccount} transactions associated with it that will also be removed.</p> }
+        <div className="flex gap-s">
+          <button onClick={() => confirmDeleteAccount(confirmationDialogItem.id)}>OK</button>
+          <button value="cancel" onClick={() => setConfirmationDialogItem(null)}>Cancel</button>
+        </div>
+      </form> }
     </dialog>
   }
 }
