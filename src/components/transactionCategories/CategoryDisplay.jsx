@@ -64,7 +64,7 @@ export default function CategoryDisplay ({ categoryList, activeCatId, setActiveF
     // need a UX for distinguishing between selecting the category and viewing child categories
     return <>
       { level > 0 && <ChildBranchLines nodes={catList.length} /> }
-      <div className="category-level current">
+      <div className="category-level current" tabIndex="0">
         { catList.map(category => {
           const childTree = treeNode[category.id]
           const hasChildren = Object.keys(childTree).length > 0

@@ -67,6 +67,10 @@ export async function addUserAccount (newAccount) {
   await waitForInit()
   return RxDB.addUserAccount(db, newAccount)
 }
+export async function editUserAccount (account) {
+  await waitForInit()
+  return RxDB.editUserAccount(db, account)
+}
 export async function removeUserAccount (accountId) {
   await waitForInit()
   return RxDB.removeUserAccount(db, accountId)

@@ -3,11 +3,12 @@ import { createPortal } from 'react-dom'
 
 /**
  * 
- * @param ref A ref to handle the modal with
+ * @param modalRef A ref used to control this element
  * @param modalId The ID of the dialog element
+ * @param closeFn A function to perform any cleanup that needs done when the modal closes
  * @param className Classes to attach to the dialog class name
  */
-export default function Modal ({modalRef, modalId, closeFn, className, children }) {
+export default function Modal ({ modalRef, modalId, closeFn, className, children }) {
   useImperativeHandle(modalRef, () => {
     return {
       open: () => dialogRef.current.showModal(),
@@ -21,5 +22,5 @@ export default function Modal ({modalRef, modalId, closeFn, className, children 
 
   return createPortal(<dialog id={modalId} ref={dialogRef} {...dialogProps}>
     { children }
-  </dialog>, document.body)
+  </dialog>, document.getElementById("modals"))
 }

@@ -1,7 +1,6 @@
 import { useEffect, useState, useRef } from 'react'
 import * as db from '~/database/db'
 import { BackToMenuLink } from '@/router/Link'
-import IconButton from '@/ui/IconButton'
 import Modal from '@/ui/Modal'
 import CategoryDisplay from '@/transactionCategories/CategoryDisplay'
 
@@ -14,6 +13,7 @@ import './settings.scss'
  * 
  * @todo dont clear full form when a category is selected (add category name)
  * @todo fix screen update on modify category
+ * @todo ability to transfer transactions to another account
  */
 export default function SettingsScreen () {
   const [userAccounts, setUserAccounts] = useState([])
@@ -179,17 +179,39 @@ function DataOptions () {
 }
 
 function AccountOptions ({accounts, setAccounts}) {
-  const [confirmationDialogItem, setConfirmationDialogItem] = useState(null)
-  const [transactionsForDeletionAccount, setTransactionsForDeletionAccount] = useState(0)
+  const [activeAccount, setActiveAccount] = useState(null)
+  const [activeAccountInfo, setActiveAccountInfo] = useState(null)
   const confirmDeleteAccountDialogRef = useRef(null)
+  const accountDetailsModalRef = useRef(null)
 
   useEffect(() => {
-    if (confirmationDialogItem) {
-      db.getTransactionCountForAccount(confirmationDialogItem.id).then(setTransactionsForDeletionAccount)
-    } else {
-      setTransactionsForDeletionAccount(0)
+    if (activeAccountInfo) {
+      accountDetailsModalRef.current.open()
     }
-  }, [confirmationDialogItem])
+  }, [activeAccountInfo])
+
+  function handleOpenAccountDetails (account) {
+    setActiveAccount(account)
+    db.getTransactionCountForAccount(account.id).then(trxCount => {
+      setActiveAccountInfo({
+        trxCount
+      })
+    })
+  }
+
+  function handleAccountDetailsSubmit (event) {
+    event.preventDefault()
+    const btnClicked = event.nativeEvent.submitter.value
+    if (btnClicked == 'edit') {
+      handleEditAccount(event)
+    } else if (btnClicked == 'delete') {
+      handleDeleteAccount()
+    } else if (btnClicked == 'cancel') {
+      setActiveAccount(null)
+      setActiveAccountInfo(null)
+      accountDetailsModalRef.current.close()
+    }
+  }
 
   function handleAddAccount (event) {
     event.preventDefault()
@@ -200,9 +222,28 @@ function AccountOptions ({accounts, setAccounts}) {
     event.target.reset()
   }
 
-  function confirmDeleteAccount(accountId) {
+  function handleEditAccount (event) {
+    const formData = Object.fromEntries(new FormData(event.target))
+    db.editUserAccount(formData).then(res => {
+      const acctIndex = accounts.indexOf(acct => acct.id == activeAccount.id)
+      let accountsCopy = [...accounts]
+      accountsCopy[acctIndex] = res;
+      setAccounts(accountsCopy)
+      accountDetailsModalRef.current.close()
+    })
+  }
+
+  function handleDeleteAccount () {
+    confirmDeleteAccountDialogRef.current.open()
+  }
+
+  function confirmDeleteAccount (accountId) {
     db.removeUserAccount(accountId).then(([trxResult, acctResult]) => {
       setAccounts(accounts.filter(acct => acct.id != acctResult.id))
+      confirmDeleteAccountDialogRef.current.close()
+      accountDetailsModalRef.current.close()
+      setActiveAccount(null)
+      setActiveAccountInfo(null)
     })
   }
 
@@ -211,11 +252,11 @@ function AccountOptions ({accounts, setAccounts}) {
     { accounts.length == 0 ? <p>No accounts have been created yet.</p> :
       <ul>
         { accounts.map(account => <li key={account.id} className="account-listing">
-          { account.name }
-          <IconButton preset="close" className="text-accent" label="Delete Account" fn={() => setConfirmationDialogItem(account)} />
+          <button type="button" className="link pad-s" onClick={() => handleOpenAccountDetails(account)}>{ account.name }</button>
         </li>) }
       </ul>
     }
+    <AccountDetailsModal />
     <ConfirmDeleteAccountDialog />
     <form id="add-account" onSubmit={handleAddAccount}>
       <h4>Add Account</h4>
@@ -235,18 +276,51 @@ function AccountOptions ({accounts, setAccounts}) {
     </form>
   </section>
 
-  function ConfirmDeleteAccountDialog () {
-    return <dialog id="remove-account-confirmation" ref={confirmDeleteAccountDialogRef} onClose={() => setConfirmationDialogItem(null) }>
-      { confirmationDialogItem && <form method="dialog">
-        <p>Are you sure you want to remove this account?</p>
-        <p>{ confirmationDialogItem.name }</p>
-        { transactionsForDeletionAccount > 0 && <p>This account has {transactionsForDeletionAccount} transactions associated with it that will also be removed.</p> }
-        <div className="flex gap-s">
-          <button onClick={() => confirmDeleteAccount(confirmationDialogItem.id)}>OK</button>
-          <button value="cancel" onClick={() => setConfirmationDialogItem(null)}>Cancel</button>
+  function AccountDetailsModal () {
+    const shouldRender = !!activeAccount
+    return <Modal modalId="account-details-modal" modalRef={accountDetailsModalRef} onClose={() => console.log('close event for account details')}>
+      { shouldRender && <form method="dialog" onSubmit={handleAccountDetailsSubmit}>
+        <h4>Account Details</h4>
+        <div>
+          This account has { activeAccountInfo?.trxCount || 0 } transactions associated with it.
+          {/* Transactions - Ability to transfer to another account? */}
+        </div>
+        <div className="pad-bottom">
+          <h5>Edit Account</h5>
+          <fieldset>
+            <div>Account number cannot be edited. Create a new account for a new FID.</div>
+            <input name="id" type="hidden" value={activeAccount.id} />
+          </fieldset>
+          <fieldset>
+            <label>Nickname</label>
+            <input name="name" defaultValue={activeAccount.name} />
+          </fieldset>
+          <fieldset>
+            <label>Organization</label>
+            <input name="org" defaultValue={activeAccount.org} />
+          </fieldset>
+        </div>
+        <div className="flex gap-s pad-bottom">
+          <button value="edit">Edit Account</button>
+          <button value="delete" className="danger">Delete Account</button>
+          <button value="cancel">Cancel</button>
         </div>
       </form> }
-    </dialog>
+    </Modal>
+  }
+
+  function ConfirmDeleteAccountDialog () {
+    const shouldRender = !!activeAccount
+    return <Modal modalId="remove-account-confirmation" modalRef={confirmDeleteAccountDialogRef}>
+      { shouldRender && <form method="dialog">
+        <p>Are you sure you want to remove this account?</p>
+        <p>{ activeAccount.name }</p>
+        <div className="flex gap-s">
+          <button onClick={() => confirmDeleteAccount(activeAccount.id)}>OK</button>
+          <button value="cancel" onClick={() => confirmDeleteAccountDialogRef.current.close()}>Cancel</button>
+        </div>
+      </form> }
+    </Modal>
   }
 }
 

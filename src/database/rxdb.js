@@ -90,6 +90,10 @@ export async function addUserAccount (db, newAccount) {
   })
   return result.toJSON()
 }
+export async function editUserAccount (db, account) {
+  let result = await db.accounts.find(account.id).patch(account)
+  return result[0].toJSON()
+}
 export async function removeUserAccount (db, accountId) {
   let trxResult = await db.transactions.find({
     selector: {
