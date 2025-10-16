@@ -34,6 +34,7 @@ React DevTools issues - https://github.com/electron/electron/issues/41613
 * Data storage - need a replacement for rxdb because it has a 5mb limit unless you pay for premium
 * DB migration function
 * DBs - Check LevelDB, electron-store, NeDB (had prev difficulty)
+* Initial Window settings - check screen aspect ratio for vertical screens, create max dimensions
 * Look into Recharts as a library for charts
 * Line chart as a default view for total account in/out
 * Budgeting view, to create budgets per category

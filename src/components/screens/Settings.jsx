@@ -278,7 +278,7 @@ function AccountOptions ({accounts, setAccounts}) {
 
   function AccountDetailsModal () {
     const shouldRender = !!activeAccount
-    return <Modal modalId="account-details-modal" modalRef={accountDetailsModalRef} onClose={() => console.log('close event for account details')}>
+    return <Modal modalId="account-details-modal" modalRef={accountDetailsModalRef} closeFn={() => setActiveAccount(null)}>
       { shouldRender && <form method="dialog" onSubmit={handleAccountDetailsSubmit}>
         <h4>Account Details</h4>
         <div>
@@ -303,7 +303,7 @@ function AccountOptions ({accounts, setAccounts}) {
         <div className="flex gap-s pad-bottom">
           <button value="edit">Edit Account</button>
           <button value="delete" className="danger">Delete Account</button>
-          <button value="cancel">Cancel</button>
+          <button value="cancel" type="button" onClick={() => accountDetailsModalRef.current.close()}>Cancel</button>
         </div>
       </form> }
     </Modal>

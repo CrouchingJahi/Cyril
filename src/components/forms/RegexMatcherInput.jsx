@@ -5,7 +5,7 @@ import { useState } from 'react'
  * 
  * @todo highlight the part of catName that matches
  */
-export default function CategoryMatcher ({ txnName = '' }) {
+export default function RegexMatcherInput ({ txnName = '' }) {
   const [matcher, setMatcher] = useState('')
   const isMatching = (() => {
     // since this reevaluates at each key press, need to catch errors for invalid regex

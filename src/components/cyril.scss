@@ -74,6 +74,10 @@ h5 {
   font-size: 1em;
   margin: 0;
 }
+h6 {
+  font-size: 0.875em;
+  margin: 0;
+}
 
 // Links
 a {
@@ -138,14 +142,14 @@ button, .button {
 input, select {
   border-radius: theme.$border-radius;
   border: 2px solid theme.$forms-border;
-  background-color: theme.$white;
+  background-color: theme.$forms-bg;
   color: theme.$bg;
   padding: 0.5em;
   font-family: "Elliot Sans", sans-serif;
   font-weight: 500;
 }
-// Checkbox input uses visibility instead of display none so its element can stay interactable
-input[type="checkbox"] {
+// Checkbox and radio inputs use visibility instead of display none so its element can stay interactable
+input[type="checkbox"], input[type="radio"] {
   position: absolute;
   visibility: hidden;
 
@@ -162,21 +166,41 @@ input[type="checkbox"] {
 
     &::before {
       content: "";
-      background-color: theme.$white;
+      background-color: theme.$forms-bg;
       border: 2px solid theme.$black;
-      border-radius: theme.$border-radius;
       color: theme.$black;
       display: inline-block;
       font-size: 1.5rem;
+      font-weight: bold;
       height: 1rem;
       line-height: 1rem;
       width: 1rem;
     }
   }
+}
+
+input[type="checkbox"] {
+  + label {
+    &::before {
+      border-radius: theme.$border-radius;
+    }
+  }
   &:checked + label {
     &::before {
       content: "\2713";
-      font-weight: bold;
+    }
+  }
+}
+input[type="radio"] {
+  + label {
+    &::before {
+      border-radius: 50%;
+      font-size: 1.625rem;
+    }
+  }
+  &:checked + label {
+    &::before {
+      content: "\25CF";
     }
   }
 }

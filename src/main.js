@@ -76,6 +76,10 @@ app.whenReady().then(async () => {
     return readBackupFile(filePath);
   });
 
+  ipcMain.on('openAppFolder', () => {
+    shell.showItemInFolder(app.getAppPath('userData'))
+  })
+
   createWindow();
 
   // On OS X it's common to re-create a window in the app when the

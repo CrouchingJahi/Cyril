@@ -1,17 +1,24 @@
 import { useEffect, useState, useRef } from 'react'
-import { getUserAccounts, getCategories, addUserAccount, addTransaction, addStringMatcher } from '~/database/db'
+import * as db from '~/database/db'
 import parseQfx from '~/utils/parseQfx'
+import RegexMatcherInput from '@/forms/RegexMatcherInput'
 import CategoryDisplay from '@/transactionCategories/CategoryDisplay'
-import CategoryMatcher from '../transactionCategories/CategoryMatcher'
+import TransactionMatcher from '@/transactionCategories/TransactionMatcher'
 import { BackToMenuLink } from '@/router/Link'
 import IconButton from '@/ui/IconButton'
 import LoadingIcon from '@/ui/LoadingIcon'
+import AccountSelector from '../forms/AccountSelector'
 
 const formPhases = {
   menu: 'menu',
   uploadFile: 'uploadFile',
   uploadManual: 'uploadManual',
   categorize: 'categorize',
+  success: 'success',
+}
+const matcherOptions = {
+  enterNew: 'enterNewMatcher',
+  autoMatch: 'useAutoMatcher',
 }
 
 /**
@@ -25,12 +32,14 @@ const formPhases = {
 export default function UploadScreen () {
   const [userAccounts, setUserAccounts] = useState([])
   const [categories, setCategories] = useState([])
+  const [stringMatchers, setStringMatchers] = useState([])
   const [formPhase, setFormPhase] = useState(formPhases.menu)
   const [transactionDataToCategorize, setTransactionDataToCategorize] = useState(null)
 
   useEffect(() => {
-    getUserAccounts().then(setUserAccounts)
-    getCategories().then(setCategories)
+    db.getUserAccounts().then(setUserAccounts)
+    db.getCategories().then(setCategories)
+    db.getStringMatchers().then(setStringMatchers)
   }, [])
 
   // Callback for the server to send parsed transaction info that needs to be categorized
@@ -49,6 +58,7 @@ export default function UploadScreen () {
        : formPhase === formPhases.uploadFile ? <UploadFileForm />
        : formPhase === formPhases.uploadManual ? <UploadManualForm />
        : formPhase === formPhases.categorize ? <UploadCategorizerForm />
+       : formPhase === formPhases.success ? <UploadSuccessMessage />
        : <div>Error</div>
       }
     </main>
@@ -64,62 +74,89 @@ export default function UploadScreen () {
     </div>
   }
 
-  function UploadManualForm() {
-    const [selectedCategory, setSelectedCategory] = useState(null)
-    const selectedCategoryName = selectedCategory ? categories.find(cat => cat.id == selectedCategory).catName : '(None Selected)'
-
+  function UploadManualForm () {
+    const defaultMatcherOption = stringMatchers.length > 0 ? matcherOptions.autoMatch : matcherOptions.enterNew
+    const [txnName, setTxnName] = useState('')
+    const [selectedAccountId, setSelectedAccountId] = useState('')
+    const [selectedRegexMatcher, setSelectedRegexMatcher] = useState(defaultMatcherOption)
+    const [selectedCategoryId, setSelectedCategoryId] = useState(null)
+    const selectedCategory = selectedCategoryId ? categories.find(cat => cat.id == selectedCategoryId) : null
+    
     function submitManual (event) {
       event.preventDefault()
       let formData = Object.fromEntries(new FormData(event.target))
       let txn = {
         ...formData,
-        categoryId: selectedCategory,
+        categoryId: selectedCategoryId,
       }
 
       console.log(txn)
-      addTransaction(txn)
+      db.addTransaction(txn)
       // on success, show screen with button to go back to menu or upload another
       // setFormPhase(formPhases.menu)
     }
 
+    function handleMatcherChecked (event) {
+      setSelectedRegexMatcher(event.target.value)
+    }
+
     return <form onSubmit={submitManual}>
-      <fieldset>
-        <label>Account:</label>
-        <select name="accountId">
-          { userAccounts.map(acct => <option key={acct.id} value={acct.id}>{ acct.name }</option>) }
-          {/* New account - create AccountSelector component */}
-        </select>
-      </fieldset>
-      <fieldset>
-        <label>Category: { selectedCategoryName }</label>
-        <CategoryDisplay categoryList={categories} activeCatId={selectedCategory} setActiveFn={setSelectedCategory} />
-      </fieldset>
-      <fieldset>
-        <label>FITID:</label>
-        <input name="id" type="text" />
-      </fieldset>
-      <fieldset>
-        <label>Date:</label>
-        <input name="txnDate" type="date" />
-      </fieldset>
-      <fieldset>
-        <label>Transaction Name:</label>
-        <input name="txnName" type="text" />
-      </fieldset>
-      <fieldset>
-        <label>Amount:</label>
-        <input name="txnAmount" type="number" step="0.01" />
-      </fieldset>
-      <fieldset>
-        <label>Memo:</label>
-        <input name="txnMemo" type="text" />
-      </fieldset>
-      <fieldset>
-        <label>Transaction Type:</label>
-        <input name="txnType" type="text" />
-      </fieldset>
+      <div className="grid cols-2">
+        <AccountSelector name="accountId" accounts={userAccounts} setAccounts={setUserAccounts} selectedAccountId={selectedAccountId} setSelectedAccountId={setSelectedAccountId} />
+        <fieldset>
+          <label>Date:</label>
+          <input name="txnDate" type="date" />
+        </fieldset>
+        <fieldset>
+          <label>FITID:</label>
+          <input name="id" type="text" />
+        </fieldset>
+        <fieldset>
+          <label>Amount:</label>
+          <input name="txnAmount" type="number" step="0.01" />
+        </fieldset>
+        <fieldset>
+          <label>Memo:</label>
+          <input name="txnMemo" type="text" />
+        </fieldset>
+        <fieldset>
+          <label>Transaction Type:</label>
+          <input name="txnType" type="text" />
+        </fieldset>
+        <fieldset>
+          <label>Transaction Name:</label>
+          <input name="txnName" type="text" value={txnName} onChange={e => setTxnName(e.target.value)} />
+        </fieldset>
+        <fieldset className="margin-y flex gap-s">
+          <MatcherRadioOption optionName={matcherOptions.autoMatch}>
+            Automatically Match Name To Category?
+          </MatcherRadioOption>
+          <MatcherRadioOption optionName={matcherOptions.enterNew}>
+            Enter New Matcher?
+          </MatcherRadioOption>
+        </fieldset>
+        <fieldset>
+          <label><h4>Category: { selectedCategory ? selectedCategory.catName : '(None Selected)' }</h4></label>
+          <CategoryDisplay categoryList={categories} activeCatId={selectedCategoryId} setActiveFn={setSelectedCategoryId} />
+        </fieldset>
+        { selectedRegexMatcher == matcherOptions.autoMatch && <fieldset>
+          <TransactionMatcher stringMatchers={stringMatchers} categories={categories} transactionName={txnName} />
+        </fieldset> }
+        { selectedRegexMatcher == matcherOptions.enterNew && <RegexMatcherInput txnName={txnName} />}
+      </div>
       <button>Add Transaction</button>
     </form>
+
+    function MatcherRadioOption ({ optionName, children }) {
+      return <div>
+        <input type="radio" id={`regexMatcher-${optionName}`}
+          name="regexMatcher" value={optionName}
+          checked={selectedRegexMatcher == optionName}
+          onChange={handleMatcherChecked}
+        />
+        <label htmlFor={`regexMatcher-${optionName}`}>{ children }</label>
+      </div>
+    }
   }
 
   function UploadFileForm () {
@@ -158,8 +195,8 @@ export default function UploadScreen () {
       return <LoadingIcon />
     }
     const uploadCategorizerRef = useRef(null)
-    const userAccountMatch = userAccounts.find(acct => acct.fid == transactionDataToCategorize.accountId)
     const numOfTransactions = transactionDataToCategorize.transactions.length
+    const [selectedAccountId, setSelectedAccountId] = useState(transactionDataToCategorize.accountId)
     const [selectedCategories, setSelectedCategories] = useState(Array.from({length: numOfTransactions}))
     const [txnIndex, setTxnIndex] = useState(0)
 
@@ -177,23 +214,23 @@ export default function UploadScreen () {
       }
 
       if (formData.regexMatch) {
-        addStringMatcher({
+        db.addStringMatcher({
           pattern: formData.regexMatch,
           categoryId: selectedCategories[txnIndex],
         })
       }
 
       if (formData.accountId === '_new_') {
-        addUserAccount({
+        db.addUserAccount({
           id: formData.newAccountId,
           name: formData.newAccountName,
           org: formData.newAccountOrg,
         }).then((account) => {
           txnObject.accountId = account.id
-          addTransaction(txnObject)
+          db.addTransaction(txnObject)
         })
       } else {
-        addTransaction(txnObject)
+        db.addTransaction(txnObject)
       }
     }
 
@@ -207,13 +244,7 @@ export default function UploadScreen () {
 
     return <div className="upload-categorizer">
       <form ref={uploadCategorizerRef}>
-        <fieldset>
-          <label>Account:</label>
-          <select name="accountId" className="width-m" defaultValue={userAccountMatch?.id}>
-            { userAccounts.map(acct => <option key={acct.id} value={acct.id}>{ acct.name }</option>) }
-            {/* { !userAccountMatch && <option value="_new_">(Create New)</option> } */}
-          </select>
-        </fieldset>
+        <AccountSelector name="accountId" accounts={userAccounts} setAccounts={setUserAccounts} selectedAccountId={selectedAccountId} setSelectedAccountId={setSelectedAccountId} />
         <div className="transaction-list">
           <div className="pagination flex align-center">
             <IconButton preset="lArrow" className="text-l" fn={() => setTxnIndex(txnIndex - 1)} disabled={txnIndex == 0} />
@@ -317,8 +348,15 @@ export default function UploadScreen () {
           <label><h4>Category: { selectedCategoryObj ? selectedCategoryObj.catName : '(None Selected)' }</h4></label>
           <CategoryDisplay categoryList={categories} activeCatId={selectedCategory} setActiveFn={selectFn} />
         </fieldset>
-        { selectedCategoryObj && <CategoryMatcher txnName={modifiedFields.name || transaction.name} /> }
+        { selectedCategoryObj && <RegexMatcherInput txnName={modifiedFields.name || transaction.name} /> }
       </div>
+    </div>
+  }
+
+  function UploadSuccessMessage () {
+    return <div>
+      <p>Transaction upload successful!</p>
+      <button onClick={() => setFormPhase(formPhases.menu)}>Upload More</button>
     </div>
   }
 }
