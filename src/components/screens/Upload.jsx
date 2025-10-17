@@ -1,13 +1,13 @@
 import { useEffect, useState, useRef } from 'react'
 import * as db from '~/database/db'
-import parseQfx from '~/utils/parseQfx'
+import parseTransactionFile from '~/utils/parseTransactionFile'
+import AccountSelector from '@/forms/AccountSelector'
 import RegexMatcherInput from '@/forms/RegexMatcherInput'
 import CategoryDisplay from '@/transactionCategories/CategoryDisplay'
 import TransactionMatcher from '@/transactionCategories/TransactionMatcher'
 import { BackToMenuLink } from '@/router/Link'
 import IconButton from '@/ui/IconButton'
 import LoadingIcon from '@/ui/LoadingIcon'
-import AccountSelector from '../forms/AccountSelector'
 
 const formPhases = {
   menu: 'menu',
@@ -90,10 +90,9 @@ export default function UploadScreen () {
         categoryId: selectedCategoryId,
       }
 
-      console.log(txn)
-      db.addTransaction(txn)
-      // on success, show screen with button to go back to menu or upload another
-      // setFormPhase(formPhases.menu)
+      db.addTransaction(txn).then(() => {
+        setFormPhase(formPhases.success)
+      })
     }
 
     function handleMatcherChecked (event) {
@@ -169,7 +168,7 @@ export default function UploadScreen () {
     function submitFile (event) {
       event.preventDefault()
 
-      parseQfx(selectedFile).then(processFileTransactions)
+      parseTransactionFile(selectedFile)
     }
 
     return <form onSubmit={submitFile}>

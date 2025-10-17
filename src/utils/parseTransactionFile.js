@@ -1,16 +1,45 @@
 /**
+ * 
+ * @param fileData 
+ */
+export default function parseTransactionFile (file) {
+  if (file.name.endsWith('.qfx')) {
+    parseQfx(selectedFile).then(processFileTransactions)
+  } else if (file.name.endsWith('.csv')) {
+    parseCsv(selectedFile).then(processFileTransactions)
+  }
+}
+
+/**
+ * Parse a .csv file
+ * The first line will be the column names
+ * CSV files don't offer FI or account info, only transactions
+ */
+async function parseCsv (file) {
+  return new Promise((resolve, reject => {
+    const fileReader = new FileReader()
+    fileReader.onload = () => {
+    }
+    fileReader.onerror = (e) => {
+      reject(e)
+    }
+    fileReader.readAsText(file)
+  }))
+}
+
+/**
  * Parse a .qfx file to return the contained data
- * {
+ * @returns {
  *   headers: file metadata (unused so far but kept just in case)
  *   fi: { org, fid } // Info about the financial institution this is from
- *   accountId: FID of this account
+ *   accountId: ID of this account
  *   transaction: []
  * }
  */
-export default async function parseQfx(fileData) {
+async function parseQfx(file) {
   return new Promise ((resolve, reject) => {
     const fileReader = new FileReader()
-    fileReader.onload = (e) => {
+    fileReader.onload = () => {
       const parsedData = {}
       const splitString = fileReader.result.split('<OFX>')
       const qfxTree = parseQfxTreeFromSgml('<OFX>' + splitString[1])
@@ -38,7 +67,7 @@ export default async function parseQfx(fileData) {
     fileReader.onerror = (e) => {
       reject(e)
     }
-    fileReader.readAsText(fileData)
+    fileReader.readAsText(file)
   })
 }
 
