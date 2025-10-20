@@ -4,9 +4,9 @@
  */
 export default function parseTransactionFile (file) {
   if (file.name.endsWith('.qfx')) {
-    parseQfx(selectedFile).then(processFileTransactions)
+    return parseQfx(file)
   } else if (file.name.endsWith('.csv')) {
-    parseCsv(selectedFile).then(processFileTransactions)
+    return parseCsv(file)
   }
 }
 
@@ -16,24 +16,38 @@ export default function parseTransactionFile (file) {
  * CSV files don't offer FI or account info, only transactions
  */
 async function parseCsv (file) {
-  return new Promise((resolve, reject => {
+  return new Promise((resolve, reject) => {
     const fileReader = new FileReader()
     fileReader.onload = () => {
+      const lines = fileReader.result.replaceAll('"', '').split('\n')
+      const parsedData = {}
+      // The first line contains the headers
+      parsedData.csvHeaders = lines.shift().toLowerCase().split(',')
+      parsedData.transactions = lines.map(csvLine => {
+        return csvLine.split(',').reduce((trx, csvCell, index) => {
+          trx[parsedData.csvHeaders[index]] = csvCell
+          return trx
+        }, {})
+      })
+      resolve(parsedData)
     }
     fileReader.onerror = (e) => {
       reject(e)
     }
     fileReader.readAsText(file)
-  }))
+  })
 }
 
 /**
  * Parse a .qfx file to return the contained data
  * @returns {
  *   headers: file metadata (unused so far but kept just in case)
- *   fi: { org, fid } // Info about the financial institution this is from
- *   accountId: ID of this account
- *   transaction: []
+ *   account: {
+ *     id: ID of this account
+ *     org: name of the FI
+ *     fid: FID of the FI (currently unused)
+ *   }
+ *   transactions: []
  * }
  */
 async function parseQfx(file) {
@@ -46,11 +60,11 @@ async function parseQfx(file) {
 
       // Parse useful data from qfx tree
       parsedData.headers = parseFileHeaders(splitString[0])
-      parsedData.fi = {
+      parsedData.account = {
+        id: qfxTree.querySelector('CCACCTFROM').textContent.trim(),
         org: qfxTree.querySelector('FI ORG').textContent.trim(),
         fid: qfxTree.querySelector('FI FID').textContent.trim(),
       }
-      parsedData.accountId = qfxTree.querySelector('CCACCTFROM').textContent.trim()
       parsedData.transactions = []
       qfxTree.querySelectorAll('BANKTRANLIST STMTTRN').forEach(trxNode => {
         parsedData.transactions.push({

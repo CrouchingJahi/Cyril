@@ -225,6 +225,9 @@ input[type="file"] {
 .text-danger {
   color: theme.$red;
 }
+.border-accent {
+  border-color: theme.$accent;
+}
 .text-accent {
   color: theme.$accent;
 }
@@ -275,6 +278,9 @@ ul {
 }
 .flex-even {
   flex: 1;
+}
+.row {
+  flex-direction: row;
 }
 .align-center {
   align-items: center;

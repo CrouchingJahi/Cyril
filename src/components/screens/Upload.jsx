@@ -24,10 +24,9 @@ const matcherOptions = {
 /**
  * Allows the user to upload transactions either via file or manually.
  * 
- * @todo create AccountSelector component with option to create new
  * @todo flesh out auto categorizer
  * @todo detect duplicate transactions on file upload
- * @todo support more file formats - .ofx, .csv
+ * @todo auto-highlight matcher in RegexMatcherInput when one was auto matched
  */
 export default function UploadScreen () {
   const [userAccounts, setUserAccounts] = useState([])
@@ -168,23 +167,24 @@ export default function UploadScreen () {
     function submitFile (event) {
       event.preventDefault()
 
-      parseTransactionFile(selectedFile)
+      parseTransactionFile(selectedFile).then(processFileTransactions)
     }
 
     return <form onSubmit={submitFile}>
-      <p>Accepts .qfx files</p>
-      <fieldset className="width-fit pad-no">
+      <p>Accepts .qfx & .csv files</p>
+      <fieldset className="width-fit pad-bottom gap-s row">
         <label htmlFor="fileUpload">
           <div className="button">Upload File</div>
         </label>
         <input type="file"
           id="fileUpload"
           name="fileUpload"
-          accept=".qfx"
+          className={selectedFile ? 'border-accent' : ''}
+          accept=".qfx,.csv"
           onChange={handleFileChange}
         />
+        <p>{ selectedFile && `Selected: ${selectedFile.name}` }&nbsp;</p>
       </fieldset>
-      <p>{ selectedFile && `Selected: ${selectedFile.name}` }&nbsp;</p>
       <button type="submit" disabled={!selectedFile}>Process File</button>
     </form>
   }
@@ -193,14 +193,31 @@ export default function UploadScreen () {
     if (!transactionDataToCategorize) {
       return <LoadingIcon />
     }
-    const uploadCategorizerRef = useRef(null)
+    const uploadCategorizerFormRef = useRef(null)
     const numOfTransactions = transactionDataToCategorize.transactions.length
-    const [selectedAccountId, setSelectedAccountId] = useState(transactionDataToCategorize.accountId)
+    // If the file contains account id, check for a matching one in db. If none is created yet, preselect "Import" option
+    const defaultAccountId = transactionDataToCategorize.account ? userAccounts.find(acct => acct.id == transactionDataToCategorize.account.id) || '_import' : userAccounts.length > 0 ? userAccounts[0] : ''
+    const [selectedAccountId, setSelectedAccountId] = useState(defaultAccountId)
     const [selectedCategories, setSelectedCategories] = useState(Array.from({length: numOfTransactions}))
     const [txnIndex, setTxnIndex] = useState(0)
+    const [allTxns, setAllTxns] = useState([])
+    const thisTxn = transactionDataToCategorize.transactions[txnIndex]
+    const autoMatch = stringMatchers.find(regex => thisTxn.name.match(regex.pattern))
+    const txnAlreadySaved = allTxns.some(txn => txn.id == thisTxn.fitid)
+
+    useEffect(() => {
+      db.getTransactions().then(setAllTxns)
+    }, [])
+
+    useEffect(() => {
+      // Auto select matching categories if one hasn't already been selected
+      if (!selectedCategories[txnIndex] && autoMatch) {
+        setSelectedCategoryAtIndex(txnIndex)(autoMatch.categoryId)
+      }
+    }, [txnIndex])
 
     function saveTransaction () {
-      const formData = Object.fromEntries(new FormData(uploadCategorizerRef.current).entries())
+      const formData = Object.fromEntries(new FormData(uploadCategorizerFormRef.current).entries())
       const txnObject = {
         id: formData.fitid,
         accountId: formData.accountId == '_new_' ? formData.newAccountId : formData.accountId,
@@ -242,18 +259,22 @@ export default function UploadScreen () {
     }
 
     return <div className="upload-categorizer">
-      <form ref={uploadCategorizerRef}>
-        <AccountSelector name="accountId" accounts={userAccounts} setAccounts={setUserAccounts} selectedAccountId={selectedAccountId} setSelectedAccountId={setSelectedAccountId} />
+      <form ref={uploadCategorizerFormRef}>
+        <div className="width-fit">
+          <AccountSelector name="accountId" accounts={userAccounts} setAccounts={setUserAccounts} selectedAccountId={selectedAccountId} setSelectedAccountId={setSelectedAccountId} importingAccount={transactionDataToCategorize.account} />
+        </div>
         <div className="transaction-list">
           <div className="pagination flex align-center">
             <IconButton preset="lArrow" className="text-l" fn={() => setTxnIndex(txnIndex - 1)} disabled={txnIndex == 0} />
             <h4>Transaction {txnIndex + 1} of {numOfTransactions}:</h4>
             <IconButton preset="rArrow" className="text-l" fn={() => setTxnIndex(txnIndex + 1)} disabled={txnIndex == numOfTransactions - 1} />
           </div>
+          { txnAlreadySaved && <p className="text-accent">This transaction is already saved.</p> }
           <TransactionToCategorize key={txnIndex}
-            transaction={transactionDataToCategorize.transactions[txnIndex]}
+            transaction={thisTxn}
             selectedCategory={selectedCategories[txnIndex]}
             selectFn={setSelectedCategoryAtIndex(txnIndex)}
+            autoMatch={autoMatch}
           />
           <div className="flex pad-s">
             <button type="button" className="width-fit" onClick={saveTransaction}>
@@ -281,7 +302,7 @@ export default function UploadScreen () {
     }</>
   }
 
-  function TransactionToCategorize ({transaction, selectedCategory, selectFn}) {
+  function TransactionToCategorize ({transaction, selectedCategory, selectFn, autoMatch}) {
     const selectedCategoryObj = selectedCategory ? categories.find(cat => cat.id == selectedCategory) : null
     const [modifiedFields, setModifiedFields] = useState({})
 
@@ -347,7 +368,7 @@ export default function UploadScreen () {
           <label><h4>Category: { selectedCategoryObj ? selectedCategoryObj.catName : '(None Selected)' }</h4></label>
           <CategoryDisplay categoryList={categories} activeCatId={selectedCategory} setActiveFn={selectFn} />
         </fieldset>
-        { selectedCategoryObj && <RegexMatcherInput txnName={modifiedFields.name || transaction.name} /> }
+        { selectedCategoryObj && <RegexMatcherInput txnName={modifiedFields.name || transaction.name} prefill={autoMatch?.pattern} /> }
       </div>
     </div>
   }

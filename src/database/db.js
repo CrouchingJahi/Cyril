@@ -22,6 +22,7 @@ export async function getDB () {
       getUserAccounts, addUserAccount, removeUserAccount,
       getCategories, addCategory,
       getStringMatchers, addStringMatcher,
+      getTransactions,
       createBackup, loadFromBackup,
     })
     window.dispatchEvent(new CustomEvent('VaultLoaded'))

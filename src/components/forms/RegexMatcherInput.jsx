@@ -5,8 +5,8 @@ import { useState } from 'react'
  * 
  * @todo highlight the part of catName that matches
  */
-export default function RegexMatcherInput ({ txnName = '' }) {
-  const [matcher, setMatcher] = useState('')
+export default function RegexMatcherInput ({ txnName = '', prefill }) {
+  const [matcher, setMatcher] = useState(prefill || '')
   const isMatching = (() => {
     // since this reevaluates at each key press, need to catch errors for invalid regex
     try {

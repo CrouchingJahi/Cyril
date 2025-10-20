@@ -1,6 +1,6 @@
 
 export default function TransactionMatcher({stringMatchers, categories, transactionName}) {
-  const matches = stringMatchers.filter(regex => transactionName.matches(regex.pattern)).map(matcher => {
+  const matches = stringMatchers.filter(regex => transactionName.matchAll(regex.pattern)).map(matcher => {
     return {
       ...matcher,
       category: categories.find(cat => cat.id == matcher.categoryId),

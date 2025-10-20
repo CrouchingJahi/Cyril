@@ -157,6 +157,13 @@ export async function getStringMatchers (db) {
 }
 
 export async function addStringMatcher (db, matcher) {
+  let matcherAlreadyExists = await db.stringMatchers.find({
+    selector: {
+      pattern: { $eq: matcher.pattern }
+    }
+  }).exec()
+  if (matcherAlreadyExists) return
+
   let id = await db.stringMatchers.count().exec()
   let result = await db.stringMatchers.insert({ id, ...matcher })
   return result.toJSON()
