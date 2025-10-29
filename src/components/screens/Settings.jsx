@@ -4,8 +4,6 @@ import { BackToMenuLink } from '@/router/Link'
 import Modal from '@/ui/Modal'
 import CategoryDisplay from '@/transactionCategories/CategoryDisplay'
 
-import './settings.scss'
-
 /**
  * Settings:
  * Spending Account (options to add/modify/remove, attach to APIs)
@@ -29,7 +27,7 @@ export default function SettingsScreen () {
   return <div id="settings">
     <header>
       <BackToMenuLink />
-      <h2>Settings</h2>
+      <h1>Settings</h1>
     </header>
     <main className="grid cols-2">
       <DataOptions />
@@ -90,7 +88,7 @@ function DataOptions () {
   function handleClearTransactions () {}
 
   return <section>
-    <h3>Data</h3>
+    <h2>Data</h2>
     <div className="pad-bottom">
       <h4>Load Backup File</h4>
       <div>File: (.json)</div>
@@ -138,7 +136,7 @@ function DataOptions () {
           </div>
           <div className="flex gap-s">
             <button name="action" value="import">Import Selected Tables</button>
-            <button name="action" value="cancel" type="reset" className="secondary" onClick={() => backupFileImportModalRef.current.close()}>Cancel</button>
+            <button name="action" value="cancel" type="reset" className="light" onClick={() => backupFileImportModalRef.current.close()}>Cancel</button>
           </div>
         </form>
       </> }
@@ -157,7 +155,7 @@ function DataOptions () {
   function ClearDataModal () {
     return <Modal modalId="clear-data-modal" modalRef={clearDataModalRef} className="border-danger">
       <form method="dialog">
-        <h4>Clear Cyril Data</h4>
+        <h3>Clear Cyril Data</h3>
         <p>Are you sure you cant to clear all data? This cannot be undone, so make sure your backup is created.</p>
         <p></p>
         <p>This includes:</p>
@@ -248,18 +246,18 @@ function AccountOptions ({accounts, setAccounts}) {
   }
 
   return <section>
-    <h3>Accounts</h3>
+    <h2>Accounts</h2>
     { accounts.length == 0 ? <p>No accounts have been created yet.</p> :
       <ul>
         { accounts.map(account => <li key={account.id} className="account-listing">
-          <button type="button" className="link pad-s" onClick={() => handleOpenAccountDetails(account)}>{ account.name }</button>
+          <button type="button" className="unstyled link pad-s" onClick={() => handleOpenAccountDetails(account)}>{ account.name }</button>
         </li>) }
       </ul>
     }
     <AccountDetailsModal />
     <ConfirmDeleteAccountDialog />
     <form id="add-account" onSubmit={handleAddAccount}>
-      <h4>Add Account</h4>
+      <h3>Add Account</h3>
       <fieldset>
         <label htmlFor="accountName">Nickname</label>
         <input name="accountName" id="accountName" required />
@@ -280,13 +278,11 @@ function AccountOptions ({accounts, setAccounts}) {
     const shouldRender = !!activeAccount
     return <Modal modalId="account-details-modal" modalRef={accountDetailsModalRef} closeFn={() => setActiveAccount(null)}>
       { shouldRender && <form method="dialog" onSubmit={handleAccountDetailsSubmit}>
-        <h4>Account Details</h4>
-        <div>
-          This account has { activeAccountInfo?.trxCount || 0 } transactions associated with it.
-          {/* Transactions - Ability to transfer to another account? */}
-        </div>
+        <h2>Account Details</h2>
+        <p>This account has { activeAccountInfo?.trxCount || 0 } transactions associated with it.</p>
+        {/* Transactions - Ability to transfer to another account? */}
         <div className="pad-bottom">
-          <h5>Edit Account</h5>
+          <h4>Edit Account</h4>
           <fieldset>
             <div>Account number cannot be edited. Create a new account for a new FID.</div>
             <input name="id" type="hidden" value={activeAccount.id} />
@@ -300,7 +296,7 @@ function AccountOptions ({accounts, setAccounts}) {
             <input name="org" defaultValue={activeAccount.org} />
           </fieldset>
         </div>
-        <div className="flex gap-s pad-bottom">
+        <div className="flex gap-s">
           <button value="edit">Edit Account</button>
           <button value="delete" className="danger">Delete Account</button>
           <button value="cancel" type="button" onClick={() => accountDetailsModalRef.current.close()}>Cancel</button>
@@ -335,7 +331,7 @@ function CategoryOptions ({categories, setCategories, stringMatchers, setStringM
 
   return <>
     <section>
-      <h3>Transaction Categories</h3>
+      <h2>Transaction Categories</h2>
       { categories.length == 0 ? <p>No categories exist yet.</p> :
         <>
           <CategoryDisplay categoryList={categories} activeCatId={activeCategoryId} setActiveFn={setActiveCategoryId} />
@@ -426,7 +422,8 @@ function CategoryOptions ({categories, setCategories, stringMatchers, setStringM
 
     return <section>
       <form id="add-category" onSubmit={handleAddCategory}>
-        <h4>Add Category</h4>
+        <p>&nbsp;</p>
+        <h3>Add Category</h3>
         <fieldset>
           <label htmlFor="catName">Name</label>
           <input name="catName" required />

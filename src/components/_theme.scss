@@ -3,39 +3,43 @@ $black: #131311;
 $white: #EBEEED;
 $dark: #1D2519;
 
-$grn-light: #C9DCC1;
-$grn-med: #9CB598;
+$grn-xlight: #C9DCC1;
+$grn-light: #9CB598;
+$grn-med: #6A8464;
 $grn-dark: #395330;
 
+$moss-xlight: #E4EED6;
 $moss-light: #676F62;
 $moss-med: #333B3D;
 $moss-dark: #2F3425;
 
-$accent: #FFDF00;
-$accent2: #E4EED6;
-$red: #8C1E2F;
-$red-dark: #5C353B;
-$red-bright: #ED481B;
+$golden: #FFDF00;
+$red-light: #ED481B;
+$red-med: #87323F;
+$red-dark: #470711;
 
 // Context-Named Colors
 $bg: $dark;
 $modal-bg: $grn-dark;
-$text: $grn-med;
-$text-faded: $moss-light;
+$text: $grn-light;
+$text-highlight: $moss-xlight;
+$selection: $moss-light;
+$accent: $golden;
+$danger: $red-dark;
 $icons: $moss-med;
-$link: $grn-light;
-$link-hover: $accent2;
-$forms-bg: $white;
-$forms-main: $grn-light;
-$forms-secondary: $grn-dark;
-$forms-border: $moss-dark;
+$link: $grn-xlight;
+$link-hover: $moss-xlight;
+$forms-bg: $grn-xlight;
+$forms-main: $grn-dark;
+$forms-secondary: $grn-med;
+$forms-border: $black;
 
 // Fonts
 $text-med: 1rem;
 $text-xmed: 1.25rem;
 
 // Standardized Numbers
-$border-radius: 6px;
+$border-radius: 0.5rem;
 
 // Transformations
 $trans-zoom: scale(calc(17/16));

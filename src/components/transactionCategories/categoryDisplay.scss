@@ -5,70 +5,76 @@
   min-height: 2em;
   max-height: 12em;
   margin-bottom: 0.5rem;
-}
-.tree-branch-lines {
-  line-height: 1.5;
-  padding: 0.25rem 0;
-  > div {
+
+  .tree-branch-lines {
+    line-height: 1.5;
     padding: 0.25rem 0;
-  }
-}
-.category-level {
-  line-height: 1.5;
-  overflow: hidden auto;
-  padding: 0.25rem 0;
-  transition: width theme.$transitions;
-
-  &.current {
-    color: theme.$link;
-    display: flex;
-    flex-direction: column;
-  }
-
-  &.parent {
-    .selected {
-      color: theme.$accent;
-      text-decoration: underline;
+    > div {
+      padding: 0.25rem 0;
     }
   }
 
-  .category-parent-link {
-    padding: 0.25em 0 0.25em 0.25em;
+  .category-level {
+    line-height: 1.5;
+    overflow: hidden auto;
+    padding: 0.25rem 0;
+    transition: width theme.$transitions;
 
-    &:hover {
-      .category-parent-name {
-        color: theme.$link;
+    &.current {
+      color: theme.$link;
+      display: flex;
+      flex-direction: column;
+    }
+
+    &.parent {
+      .selected {
+        color: theme.$accent;
+        text-decoration: underline;
       }
     }
-  }
 
-  .category-choice {
-    align-items: center;
-    display: flex;
-    gap: 0.5rem;
-    padding: 0.25rem;
+    .category-parent-link {
+      padding: 0.25em 0 0.25em 0.25em;
 
-    &.selected .category-name {
-      color: theme.$accent;
-      text-decoration: underline;
+      &:hover {
+        .category-parent-name {
+          color: theme.$link;
+        }
+      }
     }
-  }
-  .category-name {
-    flex-grow: 1;
-    text-align: left;
-    padding: 0 0.5rem;
 
-    &:hover, .selected & {
-      color: theme.$link-hover;
+    .category-choice {
+      align-items: center;
+      display: flex;
+      gap: 0.5rem;
+      padding: 0.25rem;
+
+      &.selected .category-name {
+        color: theme.$accent;
+        text-decoration: underline;
+      }
     }
-  }
+    .category-name {
+      flex-grow: 1;
+      text-align: left;
+      padding: 0 0.5rem;
 
-  .child-link {
-    padding: 0.25em 1em;
-    transition: padding theme.$transitions-quick;
-    &:hover {
-      color: theme.$link-hover;
-      padding: 0.25em 0.125em 0.25em 1.875em;
+      &.extended {
+        padding-right: 3rem;
+      }
+
+      &:hover, .selected & {
+        color: theme.$link-hover;
+      }
+    }
+
+    .child-link {
+      padding: 0.25em 1em;
+      transition: padding theme.$transitions-quick;
+      &:hover, &:focus {
+        color: theme.$link-hover;
+        padding: 0.25em 0.125em 0.25em 1.875em;
+      }
     }
   }
 }

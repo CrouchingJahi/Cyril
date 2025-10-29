@@ -50,7 +50,7 @@ export default function UploadScreen () {
   return <div id="upload">
     <header>
       <BackToMenuLink />
-      <h2>Upload</h2>
+      <h1>Upload</h1>
     </header>
     <main>
       { formPhase === formPhases.menu ? <UploadMenu />
@@ -125,7 +125,7 @@ export default function UploadScreen () {
           <label>Transaction Name:</label>
           <input name="txnName" type="text" value={txnName} onChange={e => setTxnName(e.target.value)} />
         </fieldset>
-        <fieldset className="margin-y flex gap-s">
+        <fieldset>
           <MatcherRadioOption optionName={matcherOptions.autoMatch}>
             Automatically Match Name To Category?
           </MatcherRadioOption>
@@ -266,7 +266,7 @@ export default function UploadScreen () {
         <div className="transaction-list">
           <div className="pagination flex align-center">
             <IconButton preset="lArrow" className="text-l" fn={() => setTxnIndex(txnIndex - 1)} disabled={txnIndex == 0} />
-            <h4>Transaction {txnIndex + 1} of {numOfTransactions}:</h4>
+            <h3>Transaction {txnIndex + 1} of {numOfTransactions}:</h3>
             <IconButton preset="rArrow" className="text-l" fn={() => setTxnIndex(txnIndex + 1)} disabled={txnIndex == numOfTransactions - 1} />
           </div>
           { txnAlreadySaved && <p className="text-accent">This transaction is already saved.</p> }

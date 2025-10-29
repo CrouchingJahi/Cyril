@@ -43,8 +43,8 @@ main {
 }
 
 ::selection {
-  color: theme.$grn-light;
-  background-color: theme.$moss-light;
+  color: theme.$text-highlight;
+  background-color: theme.$selection;
 }
 
 dialog {
@@ -53,19 +53,26 @@ dialog {
   border-radius: theme.$border-radius * 2;
   box-shadow: 0 2px 10px theme.$bg;
   color: theme.$text;
-  padding: 1rem;
+  padding: 2rem;
 
   &::backdrop {
     background-color: rgba(theme.$bg, 0.5);
   }
 }
 
+p {
+  margin: 0.5rem 0;
+}
+
 // Headers
-h2 {
+h1 {
   margin: 0.5rem 0 1rem;
 }
+h2 {
+  margin: 0.5rem 0;
+}
 h3 {
-  margin: 0.5rem 0 0.25rem;
+  margin: 0.5rem 0;
 }
 h4 {
   margin: 0.25rem 0;
@@ -120,14 +127,20 @@ button, .button {
     cursor: pointer;
 
     &:focus, &:hover {
+      background-color: theme.$forms-secondary;
       transform: theme.$trans-zoom;
     }
   }
 
-  &.secondary {
+  // Themes
+  &.light {
     background-color: theme.$forms-secondary;
-    color: theme.$text;
-    border-color: theme.$text;
+    color: theme.$bg;
+    border-color: theme.$bg;
+
+    &:focus, &:hover {
+      background-color: theme.$forms-bg;
+    }
   }
 
   &.unstyled {
@@ -136,7 +149,11 @@ button, .button {
     color: currentColor;
     font-weight: normal;
     padding: 0.25em 0;
-  }
+
+    &:focus, &:hover {
+      background-color: transparent;
+    }
+  }   
 }
 
 input, select {
@@ -146,17 +163,20 @@ input, select {
   color: theme.$bg;
   padding: 0.5em;
   font-family: "Elliot Sans", sans-serif;
+  font-size: 1rem;
   font-weight: 500;
 }
-// Checkbox and radio inputs use visibility instead of display none so its element can stay interactable
+// Checkbox and radio inputs use positioning to hide instead of display:none so its element can stay interactable
 input[type="checkbox"], input[type="radio"] {
   position: absolute;
-  visibility: hidden;
+  width: 0;
+  height: 0;
 
   + label {
-    align-items: center;
+    align-items: end;
     display: flex;
-    gap: 0.5em;
+    gap: 0.5rem;
+    padding: 0.5rem 0;
     transition: color theme.$transitions-quick;
 
     &:focus, &:hover {
@@ -167,8 +187,8 @@ input[type="checkbox"], input[type="radio"] {
     &::before {
       content: "";
       background-color: theme.$forms-bg;
-      border: 2px solid theme.$black;
-      color: theme.$black;
+      border: 2px solid theme.$forms-border;
+      color: theme.$forms-border;
       display: inline-block;
       font-size: 1.5rem;
       font-weight: bold;
@@ -176,6 +196,11 @@ input[type="checkbox"], input[type="radio"] {
       line-height: 1rem;
       width: 1rem;
     }
+  }
+
+  &:focus + label {
+    outline: -webkit-focus-ring-color auto 1px;
+    color: theme.$link;
   }
 }
 
@@ -216,14 +241,14 @@ input[type="file"] {
 
 // Text & Color
 .danger {
-  color: theme.$red;
-  border-color: theme.$red;
+  color: theme.$danger;
+  border-color: theme.$danger;
 }
 .border-danger {
-  border-color: theme.$red;
+  border-color: theme.$danger;
 }
 .text-danger {
-  color: theme.$red;
+  color: theme.$danger;
 }
 .border-accent {
   border-color: theme.$accent;

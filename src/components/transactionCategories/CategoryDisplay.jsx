@@ -69,10 +69,10 @@ export default function CategoryDisplay ({ categoryList, activeCatId, setActiveF
           const childTree = treeNode[category.id]
           const hasChildren = Object.keys(childTree).length > 0
           return <div className={`category-choice ${activeCatId == category.id ? 'selected' : ''}`} key={category.id + category.catName}>
-            <button className="unstyled category-name" onClick={() => selectNode(category.id)}>
+            <button className={`unstyled category-name ${hasChildren ? '' : 'extended'}`} onClick={() => selectNode(category.id)}>
               <span>{ category.catName }</span>
             </button>
-            { hasChildren && <IconButton preset='rArrow' className="child-link" fn={() => selectCategory(level + 1, category.id)} /> }
+            { hasChildren && <IconButton preset='rArrow' className="unstyled child-link" fn={() => selectCategory(level + 1, category.id)} /> }
           </div>
         }) }
       </div>
