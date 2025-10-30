@@ -269,10 +269,10 @@ input[type="file"] {
 // Lists
 ul {
   margin: 0;
-  padding-inline-start: 1em;
+  padding-inline-start: 1rem;
 
   li {
-    padding-left: 0.5em;
+    padding-left: 0.75rem;
   }
   li::marker {
     content: "¢";

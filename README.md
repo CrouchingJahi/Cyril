@@ -30,10 +30,12 @@ React DevTools issues - https://github.com/electron/electron/issues/41613
 ## To Do
 * Settings - Need to figure out best way to update new view of transactions after adding or deleting
 * CategoryDisplay - Fancify and add animations
+* Check D3 collapsible tree as interface for CategoryDisplay
 * Data storage - need a replacement for rxdb because it has a 5mb limit unless you pay for premium
 * DB migration function
-* DBs - Check LevelDB, electron-store, NeDB (had prev difficulty)
+* DBs - Check IndexedDB, LevelDB, electron-store, NeDB (had prev difficulty)
 * Initial Window settings - check screen aspect ratio for vertical screens, create max dimensions
+* Default categories and potentially other settings - and options to reset to default or full clear
 * Look into Recharts as a library for charts
 * Line chart as a default view for total account in/out
 * Budgeting view, to create budgets per category
