@@ -17,3 +17,13 @@ export async function readBackupFile (pathName) {
   let fileString = await fs.readFile(filePath, 'utf8')
   return JSON.parse(fileString)
 }
+
+export async function doesBackupFileExist () {
+  const userSettings = await getUserSettings()
+  const filePath = userSettings.backupFile.filePath
+  const fpResults = await fs.stat(filePath)
+  return {
+    filePath,
+    fileExists: fpResults.err == null
+  }
+}

@@ -1,7 +1,7 @@
 import { app, BrowserWindow, ipcMain, shell } from 'electron';
 import installExtension, { REACT_DEVELOPER_TOOLS } from 'electron-devtools-installer';
 import path from 'node:path';
-import { createBackupFile, readBackupFile } from './utils/backupFile';
+import { createBackupFile, readBackupFile, doesBackupFileExist } from './utils/backupFile';
 import { getUserSettings, saveUserWindowPosition } from './utils/userSettings';
 
 import style from './components/theme.module.scss';
@@ -75,6 +75,10 @@ app.whenReady().then(async () => {
   ipcMain.handle('readBackupFile', async (event, filePath) => {
     return readBackupFile(filePath);
   });
+
+  ipcMain.handle('doesBackupFileExist', async () => {
+    return doesBackupFileExist()
+  })
 
   ipcMain.on('openAppFolder', () => {
     shell.showItemInFolder(app.getAppPath('userData'))

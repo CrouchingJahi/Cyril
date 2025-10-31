@@ -21,6 +21,7 @@ contextBridge.exposeInMainWorld('cyrilAPI', {
   loginUser: (localUser) => ipcRenderer.send('loginUser', localUser),
   createBackupFile: async (backupObj) => await ipcRenderer.invoke('createBackupFile', backupObj),
   readBackupFile: async (filePath) => await ipcRenderer.invoke('readBackupFile', filePath),
+  doesBackupFileExist: async () => await ipcRenderer.invoke('doesBackupFileExist'),
   openAppFolder: () => ipcRenderer.send('openAppFolder'),
 })
 

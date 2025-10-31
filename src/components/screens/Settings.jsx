@@ -9,6 +9,7 @@ import CategoryDisplay from '@/transactionCategories/CategoryDisplay'
  * Spending Account (options to add/modify/remove, attach to APIs)
  * Transaction Categories (options to add/modify)
  * 
+ * @todo finish clear data functions
  * @todo dont clear full form when a category is selected (add category name)
  * @todo fix screen update on modify category
  * @todo ability to transfer transactions to another account
@@ -47,17 +48,27 @@ export default function SettingsScreen () {
 function DataOptions () {
   const [backupFileImportData, setBackupFileImportData] = useState(null)
   const [backupSaved, setBackupSaved] = useState(null)
+  const [confirmSavePath, setConfirmSavePath] = useState('')
+  const backupConfirmSaveModalRef = useRef(null)
   const backupFileImportModalRef = useRef(null)
   const clearDataModalRef = useRef(null)
 
+  // Open modals once their data is filled in
   useEffect(() => {
     if (backupFileImportData) {
       backupFileImportModalRef.current.open()
     }
   }, [backupFileImportData])
 
+  useEffect(() => {
+    if (confirmSavePath) {
+      backupConfirmSaveModalRef.current.open()
+    }
+  }, [confirmSavePath])
+
   function handleLoadBackup (e) {
     e.preventDefault()
+    setBackupFileImportData(null)
     if (e.target.files.length) {
       cyrilAPI.readBackupFile(e.target.files[0].path).then(data => {
         // validate data
@@ -66,8 +77,19 @@ function DataOptions () {
     } 
   }
 
-  function handleSaveBackup (e) {
+  function checkForBackupFile (e) {
     e.preventDefault()
+    setConfirmSavePath('')
+    cyrilAPI.doesBackupFileExist().then(resp => {
+      if (resp.fileExists) {
+        setConfirmSavePath(resp.filePath)
+      } else {
+        handleSaveBackup()
+      }
+    })
+  }
+
+  function handleSaveBackup () {
     db.createBackup().then(resp => {
       setBackupSaved({
         filePath: resp.filePath,
@@ -104,7 +126,8 @@ function DataOptions () {
     </div>
     <div className="pad-bottom">
       <h4>Save Backup File</h4>
-      <button className="width-fit" onClick={handleSaveBackup} disabled={!!backupSaved}>Save</button>
+      <button className="width-fit" onClick={checkForBackupFile} disabled={!!backupSaved}>Save</button>
+      <ConfirmSaveDataModal />
       { backupSaved && <>
         <div>Backup saved!<br/>{ backupSaved.filePath }</div>
       </> }
@@ -150,6 +173,20 @@ function DataOptions () {
         </label>
       </div>
     }
+  }
+
+  // Confirm overwriting when a file already exists
+  function ConfirmSaveDataModal () {
+    return <Modal modalId="confirm-save-modal" modalRef={backupConfirmSaveModalRef}>
+      <h3>Backup File Already Exists</h3>
+      <p>{ confirmSavePath }</p>
+      <p>The backup file already exists. Are you sure you want to overwrite it?</p>
+      <p>This is your chance to rename and/or move the file in order to keep this version of it.</p>
+      <div className="flex gap-m">
+        <button onClick={() => handleSaveBackup()}>Overwrite File</button>
+        <button onClick={() => backupConfirmSaveModalRef.current.close()}>Cancel</button>
+      </div>
+    </Modal>
   }
 
   function ClearDataModal () {
