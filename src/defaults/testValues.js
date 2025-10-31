@@ -37,6 +37,20 @@ export const trxNarrowDateRange = [{
   txnType: 'DEBIT',
 }]
 
+export const trxMediumDateRange = [{
+  id: 'earlier',
+  categoryId: '0',
+  txnAmount: '-10',
+  txnDate: '2000-01-02',
+  txnType: 'DEBIT',
+}, {
+  id: 'later',
+  categoryId: '0',
+  txnAmount: '-10',
+  txnDate: '2000-02-01',
+  txnType: 'DEBIT',
+}]
+
 export const trxWideDateRange = [{
   id: 'earlier',
   categoryId: '0',
