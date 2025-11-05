@@ -47,7 +47,7 @@ export default function Spending () {
         </ul>
       </div>
       : <div>
-        <section>
+        <section className="pad-bottom">
           <h2>Data</h2>
           <p>Time Period: { txnData.timeframe.start } - { txnData.timeframe.end }</p>
           <p>Total Spending: ${ txnData.total }</p>

@@ -2,6 +2,9 @@
  * Parses a list of transactions into a format ready for charts to use.
  * The transactions are expected to be filtered before passing to this function.
  * 
+ * @param transactions array of transactions
+ * @param categories array of categories
+ * 
  * @returns {
  *  total: the total value of all transactions added up
  *  timeframe: {
@@ -31,7 +34,7 @@ export function createTransactionData (transactions, categories) {
 
     // Category Hierarchy
     let thisCategory = categories.find(cat => cat.id == txn.categoryId)
-    addAncestryToTree(stats.hierarchy, thisCategory, categories)
+    addAncestryToTree(stats.hierarchy, categories, thisCategory, txn)
 
     return stats
   }, {
@@ -45,11 +48,11 @@ export function createTransactionData (transactions, categories) {
 }
 
 // Build a branch out of this node and its ancestors and add it to the tree
-function addAncestryToTree(tree, category, categories) {
+function addAncestryToTree(tree, categories, thisCategory, thisTxn) {
   let treePointer = tree
   // Add ancestors to tree
-  if (category.catAncestry) {
-    let ancestors = category.catAncestry.split(',')
+  if (thisCategory.catAncestry) {
+    let ancestors = thisCategory.catAncestry.split(',')
     for (let b = ancestors.length - 1; b >= 0; b--) {
       let thisAncestor = categories.find(cat => cat.id == ancestors[b])
       // Check if this ancestor is already in the tree
@@ -70,7 +73,8 @@ function addAncestryToTree(tree, category, categories) {
   }
   // Then add this node
   treePointer.children.push({
-    name: category.catName,
-    catId: category.id,
+    name: thisCategory.catName,
+    catId: thisCategory.id,
+    value: Math.abs(thisTxn.txnAmount),
   })
 }

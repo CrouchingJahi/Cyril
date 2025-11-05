@@ -1,0 +1,8 @@
+@use '@/theme';
+
+#money-pie {
+  fill: theme.$black;
+  font-weight: 500;
+  height: auto;
+  width: 100%;
+}
