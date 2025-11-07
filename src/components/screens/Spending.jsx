@@ -21,16 +21,16 @@ export default function Spending () {
   const [txnData, setTxnData] = useState(null)
 
   useEffect(() => {
-    getTransactions().then(setTransactions)
     getCategories().then(setCategories)
+    getTransactions().then(setTransactions)
   }, [])
 
   useEffect(() => {
-    if (transactions && categories) {
+    if (transactions.length && categories.length) {
       // Calculate the transaction data
       setTxnData(createTransactionData(transactions, categories))
     }
-  }, [transactions])
+  }, [transactions, categories])
 
   return <div id="spending">
     <header>
@@ -42,8 +42,8 @@ export default function Spending () {
         <p>Choose which spending view to use:</p>
         <ul className="list">
           <li><button onClick={() => setSelectedView(views.PieChart)}>Pie</button></li>
-          <li>Line</li>
-          <li>Bar</li>
+          {/* <li>Line</li> */}
+          {/* <li>Bar</li> */}
         </ul>
       </div>
       : <div>

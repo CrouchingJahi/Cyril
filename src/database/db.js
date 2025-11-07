@@ -1,28 +1,16 @@
-import * as RxDB from './rxdb'
+import * as IDB from './indexeddb'
 
 let db;
 
-async function waitForInit () {
-  return new Promise((resolve) => {
-    if (db) {
-      resolve(true)
-    } else {
-      window.addEventListener('VaultLoaded', function () {
-        resolve(true)
-      }, { once: true })
-    }
-  })
-}
-
 export async function getDB () {
   if (!db)  {
-    db = await RxDB.getRxDB()
+    db = await IDB.getIDB()
     // Add methods to global object for debug purposes
     Object.assign(db, {
       getUserAccounts, addUserAccount, removeUserAccount,
       getCategories, addCategory,
       getStringMatchers, addStringMatcher,
-      getTransactions,
+      getTransactions, addTransaction,
       createBackup, loadFromBackup,
     })
     window.dispatchEvent(new CustomEvent('VaultLoaded'))
@@ -55,63 +43,47 @@ export async function createBackup () {
 }
 export function loadFromBackup (whichCollections) {
   window.cyrilAPI.readBackupFile().then(backupData => {
-    RxDB.loadFromBackup(db, backupData, whichCollections)
+    IDB.loadFromBackup(backupData, whichCollections)
   })
 }
 
 // Passthrough methods for DB API
 export async function getUserAccounts () {
-  await waitForInit()
-  return RxDB.getUserAccounts(db)
+  return IDB.getUserAccounts()
 }
 export async function addUserAccount (newAccount) {
-  await waitForInit()
-  return RxDB.addUserAccount(db, newAccount)
+  return IDB.addUserAccount(newAccount)
 }
-export async function editUserAccount (account) {
-  await waitForInit()
-  return RxDB.editUserAccount(db, account)
+export async function modifyUserAccount (account) {
+  return IDB.modifyUserAccount(account)
 }
 export async function removeUserAccount (accountId) {
-  await waitForInit()
-  return RxDB.removeUserAccount(db, accountId)
+  return IDB.removeUserAccount(accountId)
 }
 export async function getCategories () {
-  await waitForInit()
-  return RxDB.getCategories(db)
+  return IDB.getCategories()
 }
 export async function addCategory (newCategory) {
-  await waitForInit()
-  return RxDB.addCategory(db, newCategory)
+  return IDB.addCategory(newCategory)
 }
 export async function modifyCategory (category) {
-  await waitForInit()
-  return RxDB.modifyCategory(db, category)
+  return IDB.modifyCategory(category)
 }
 // accountId is optional - if null, return all transactions
 export async function getTransactions(accountId) {
-  await waitForInit()
-  return RxDB.getTransactions(db, accountId)
+  return IDB.getTransactions(accountId)
 }
 export async function getTransactionCountForAccount (accountId) {
-  await waitForInit()
-  return RxDB.getTransactionCountForAccount(db, accountId)
+  return IDB.getTransactionCountForAccount(accountId)
 }
 export async function addTransaction (newTransaction) {
-  await waitForInit()
-  return RxDB.addTransaction(db, newTransaction)
+  return IDB.addTransaction(newTransaction)
 }
 export async function getStringMatchers () {
-  await waitForInit()
-  return RxDB.getStringMatchers(db)
+  return IDB.getStringMatchers()
 }
 export async function addStringMatcher (matcher) {
-  await waitForInit()
-  return RxDB.addStringMatcher(db, matcher)
-}
-export async function seedMockData () {
-  await waitForInit()
-  return RxDB.seedMockData(db)
+  return IDB.addStringMatcher(matcher)
 }
 
 /* Schemas

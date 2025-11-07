@@ -8,7 +8,6 @@ import './pieChart.scss'
  * 
  * @todo back button in center
  * @todo hover states
- * @todo zoom animation
  */
 export default function PieChart ({ transactionData }) {
   const chartContainerRef = useRef(null)

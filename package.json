@@ -1,7 +1,7 @@
 {
   "name": "cyril",
   "productName": "Cyril",
-  "version": "0.4.1",
+  "version": "0.5.0",
   "description": "A desktop finance management app",
   "license": "MIT",
   "author": "CrouchingJahi",
@@ -17,9 +17,7 @@
     "d3": "^7.9.0",
     "electron-squirrel-startup": "^1.0.1",
     "react": "^18.3.1",
-    "react-dom": "^18.3.1",
-    "rxdb": "^16.18.0",
-    "rxjs": "^7.8.2"
+    "react-dom": "^18.3.1"
   },
   "devDependencies": {
     "@electron-forge/cli": "^7.4.0",

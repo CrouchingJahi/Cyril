@@ -259,7 +259,7 @@ function AccountOptions ({accounts, setAccounts}) {
 
   function handleEditAccount (event) {
     const formData = Object.fromEntries(new FormData(event.target))
-    db.editUserAccount(formData).then(res => {
+    db.modifyUserAccount(formData).then(res => {
       const acctIndex = accounts.indexOf(acct => acct.id == activeAccount.id)
       let accountsCopy = [...accounts]
       accountsCopy[acctIndex] = res;
