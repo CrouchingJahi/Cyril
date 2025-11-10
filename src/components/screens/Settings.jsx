@@ -9,6 +9,7 @@ import CategoryDisplay from '@/transactionCategories/CategoryDisplay'
  * Spending Account (options to add/modify/remove, attach to APIs)
  * Transaction Categories (options to add/modify)
  * 
+ * @todo add loading state to fix jumping on page load
  * @todo finish clear data functions
  * @todo dont clear full form when a category is selected (add category name)
  * @todo fix screen update on modify category
@@ -390,7 +391,7 @@ function CategoryOptions ({categories, setCategories, stringMatchers, setStringM
       return parentId
     }
   }
-  // if modifying, do not use activeCategoryId
+  // if isModifying, do not allow setting catParent to own category
   function CategoryParentSelector ({elementId, selectedParentId, setSelectedParentId, isModifying}) {
     return <select name="catParent" id={elementId}
       value={selectedParentId}

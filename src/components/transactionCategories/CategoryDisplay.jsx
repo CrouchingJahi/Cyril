@@ -59,7 +59,13 @@ export default function CategoryDisplay ({ categoryList, activeCatId, setActiveF
     }
 
     const catIds = Object.keys(treeNode)
-    const catList = categoryList.filter(cat => catIds.includes(cat.id))
+    const catList = categoryList
+      .filter(cat => catIds.includes(cat.id))
+      .sort((a, b) => {
+        // If they're the same lengh, use simple compare
+        let lengthDiff = a.length - b.length
+        return lengthDiff || a.id - b.id
+      })
 
     // need a UX for distinguishing between selecting the category and viewing child categories
     return <>

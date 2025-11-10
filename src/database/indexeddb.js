@@ -56,15 +56,16 @@ async function migrateDB () {
     console.error('Error while migrating database:', event)
   }
 
+  // Not all fields need to be indexed
   const accountStore = dbInstance.createObjectStore('accounts', { keyPath: 'id' })
   accountStore.createIndex('name', 'name', { unique: false })
   accountStore.createIndex('org', 'org', { unique: false })
 
-  const categoryStore = dbInstance.createObjectStore('categories', { keyPath: 'id' })
+  const categoryStore = dbInstance.createObjectStore('categories', { keyPath: 'id', autoIncrement: true })
   categoryStore.createIndex('catName', 'catName', { unique: false })
   categoryStore.createIndex('catAncestry', 'catAncestry', { unique: false })
 
-  const stringMatcherStore = dbInstance.createObjectStore('stringMatchers', { keyPath: 'id' })
+  const stringMatcherStore = dbInstance.createObjectStore('stringMatchers', { keyPath: 'id', autoIncrement: true })
   stringMatcherStore.createIndex('pattern', 'pattern', { unique: false })
   stringMatcherStore.createIndex('categoryId', 'categoryId', { unique: false })
 
@@ -72,9 +73,7 @@ async function migrateDB () {
   transactionStore.createIndex('accountId', 'accountId', { unique: false })
   transactionStore.createIndex('categoryId', 'categoryId', { unique: false })
   transactionStore.createIndex('txnDate', 'txnDate', { unique: false })
-  transactionStore.createIndex('txnAmount', 'txnAmount', { unique: false })
   transactionStore.createIndex('txnName', 'txnName', { unique: false })
-  transactionStore.createIndex('txnMemo', 'txnMemo', { unique: false })
   transactionStore.createIndex('txnType', 'txnType', { unique: false })
 
   console.log('Database migration complete.')
@@ -94,9 +93,23 @@ async function getStore (storeName, accessMode) {
 async function wrapDBRequest (dbOperation, storeName, accessMode) {
   return new Promise(async (resolve) => {
     let store = await getStore(storeName, accessMode)
-    let dbRequest = dbOperation(store)
+    let dbRequest
+    if (dbOperation.constructor.name == 'AsyncFunction') {
+      dbRequest = await dbOperation(store)
+    } else {
+      dbRequest = dbOperation(store)
+    }
     dbRequest.onsuccess = () => {
       resolve(dbRequest.result)
+    }
+  })
+}
+// Wrapper for getting a store's size
+async function getStoreCount (store) {
+  return new Promise(async (resolve) => {
+    const countReq = store.count()
+    countReq.onsuccess = (event) => {
+      resolve(event.target.result)
     }
   })
 }
@@ -124,8 +137,13 @@ async function wrapGetAllRequest (storeName) {
   }, storeName)
 }
 async function wrapAddOneRequest (storeName, newObj) {
-  return wrapDBRequest((store) => {
-    return store.add(newObj)
+  return wrapDBRequest(async (store) => {
+    if (store.autoIncrement) {
+      const currentCount = await getStoreCount(store)
+      return store.add(Object.assign({id: '' + currentCount}, newObj))
+    } else {
+      return store.add(newObj)
+    }
   }, storeName, DBAccessModes.ReadWrite)
 }
 async function wrapModifyOneRequest (storeName, obj) {

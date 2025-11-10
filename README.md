@@ -28,7 +28,9 @@ React DevTools issues - https://github.com/electron/electron/issues/41613
 ---
 
 ## To Do
+* DB - Auto inc won't work well with deletions
 * Create dedicated svg for bullet points, radio buttons, checkmarks
+* Create coin icon
 * Settings - Need to figure out best way to update new view of transactions after adding or deleting
 * CategoryDisplay - Fancify and add animations
 * Check D3 collapsible tree as interface for CategoryDisplay
