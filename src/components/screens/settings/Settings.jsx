@@ -11,7 +11,6 @@ import CategoryOptions from './CategoryOptions'
  * Spending Account (options to add/modify/remove, attach to APIs)
  * Transaction Categories (options to add/modify)
  * 
- * @todo add loading state to fix jumping on page load
  * @todo finish clear data functions
  * @todo dont clear full form when a category is selected (add category name)
  * @todo fix screen update on modify category

@@ -28,6 +28,8 @@ React DevTools issues - https://github.com/electron/electron/issues/41613
 ---
 
 ## To Do
+* Upload screen should save pending transactions to localStorage until they're categorized and saved in vault
+* Sorting screen, where you can sort your current transactions or finish working on previous uploads
 * DB - Auto inc won't work well with deletions
 * Create dedicated svg for bullet points, radio buttons, checkmarks
 * Create coin icon

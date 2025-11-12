@@ -1,5 +1,6 @@
 import { useEffect, useState, useRef } from 'react'
 import Modal from '@/ui/Modal'
+import { createBackup } from '~/database/db'
 
 export default function DataOptions () {
   const [backupFileImportData, setBackupFileImportData] = useState(null)
@@ -46,7 +47,7 @@ export default function DataOptions () {
   }
 
   function handleSaveBackup () {
-    db.createBackup().then(resp => {
+    createBackup().then(resp => {
       setBackupSaved({
         filePath: resp.filePath,
         accounts: resp.backupObj.accounts.length,
