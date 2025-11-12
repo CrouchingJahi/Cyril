@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import * as db from '~/database/db'
 import { BackToMenuLink } from '@/router/Link'
+import LoadingIcon from '@/ui/LoadingIcon'
 import DataOptions from './DataOptions'
 import AccountOptions from './AccountOptions'
 import CategoryOptions from './CategoryOptions'
@@ -17,9 +18,9 @@ import CategoryOptions from './CategoryOptions'
  * @todo ability to transfer transactions to another account
  */
 export default function SettingsScreen () {
-  const [userAccounts, setUserAccounts] = useState([])
-  const [categories, setCategories] = useState([])
-  const [stringMatchers, setStringMatchers] = useState([])
+  const [userAccounts, setUserAccounts] = useState(null)
+  const [categories, setCategories] = useState(null)
+  const [stringMatchers, setStringMatchers] = useState(null)
 
   useEffect(() => {
     db.getUserAccounts().then(setUserAccounts)
@@ -32,17 +33,26 @@ export default function SettingsScreen () {
       <BackToMenuLink />
       <h1>Settings</h1>
     </header>
-    <main className="grid cols-2">
-      <DataOptions />
-      <AccountOptions
-        accounts={userAccounts} setAccounts={setUserAccounts}
-      />
-      {/* <TransactionOptions /> */}
-      {/* <SpendingOptions /> */}
-      <CategoryOptions
-        categories={categories} setCategories={setCategories}
-        stringMatchers={stringMatchers} setStringMatchers={setStringMatchers}
-      />
-    </main>
+    { userAccounts && categories && stringMatchers ?
+      <main className="grid cols-2">
+        <DataOptions />
+        <AccountOptions
+          accounts={userAccounts} setAccounts={setUserAccounts}
+        />
+        {/* <TransactionOptions /> */}
+        {/* <SpendingOptions /> */}
+        <CategoryOptions
+          categories={categories} setCategories={setCategories}
+          stringMatchers={stringMatchers} setStringMatchers={setStringMatchers}
+        />
+      </main> :
+      <SettingsSkeleton />
+    }
+  </div>
+}
+
+export function SettingsSkeleton () {
+  return <div className="width-m centered">
+    <LoadingIcon />
   </div>
 }
