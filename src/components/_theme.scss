@@ -44,10 +44,22 @@ $border-radius: 0.5rem;
 // Transformations
 $trans-zoom: scale(calc(17/16));
 
-// Animations
+// Transitions
 $transition-duration: 0.5s;
 $transition-duration-quick: 0.2s;
 $transition-function: ease-out;
 
 $transitions: $transition-duration $transition-function;
 $transitions-quick: $transition-duration-quick $transition-function;
+
+// Animations
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+$anim-fade-in: fadeIn $transitions forwards;
+$anim-fade-out: fadeIn $transitions backwards;

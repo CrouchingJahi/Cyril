@@ -351,3 +351,10 @@ ul {
 .pad-no {
   padding: 0;
 }
+
+// Animations
+.anim-fade-in {
+  opacity: 0;
+  animation: theme.$anim-fade-in;
+  animation-delay: theme.$transitions;
+}
