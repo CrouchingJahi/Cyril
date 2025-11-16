@@ -1,4 +1,5 @@
 import { useEffect, useState, useRef } from 'react'
+import { getTransactionCountForAccount, addUserAccount, modifyUserAccount, removeUserAccount } from '~/database/db'
 import Modal from '@/ui/Modal'
 
 export default function AccountOptions ({accounts, setAccounts}) {
@@ -15,7 +16,7 @@ export default function AccountOptions ({accounts, setAccounts}) {
 
   function handleOpenAccountDetails (account) {
     setActiveAccount(account)
-    db.getTransactionCountForAccount(account.id).then(trxCount => {
+    getTransactionCountForAccount(account.id).then(trxCount => {
       setActiveAccountInfo({
         trxCount
       })
@@ -39,7 +40,7 @@ export default function AccountOptions ({accounts, setAccounts}) {
   function handleAddAccount (event) {
     event.preventDefault()
     const formData = Object.fromEntries(new FormData(event.target))
-    db.addUserAccount(formData).then(res => {
+    addUserAccount(formData).then(res => {
       setAccounts([...accounts, res])
     })
     event.target.reset()
@@ -47,7 +48,7 @@ export default function AccountOptions ({accounts, setAccounts}) {
 
   function handleEditAccount (event) {
     const formData = Object.fromEntries(new FormData(event.target))
-    db.modifyUserAccount(formData).then(res => {
+    modifyUserAccount(formData).then(res => {
       const acctIndex = accounts.indexOf(acct => acct.id == activeAccount.id)
       let accountsCopy = [...accounts]
       accountsCopy[acctIndex] = res;
@@ -61,7 +62,7 @@ export default function AccountOptions ({accounts, setAccounts}) {
   }
 
   function confirmDeleteAccount (accountId) {
-    db.removeUserAccount(accountId).then(([trxResult, acctResult]) => {
+    removeUserAccount(accountId).then(([trxResult, acctResult]) => {
       setAccounts(accounts.filter(acct => acct.id != acctResult.id))
       confirmDeleteAccountDialogRef.current.close()
       accountDetailsModalRef.current.close()

@@ -1,46 +1,48 @@
 import { useRef, useEffect, useState } from 'react'
 import * as d3 from 'd3'
 
+import LoadingIcon from '@/ui/LoadingIcon'
 import './pieChart.scss'
 
 /**
  * Pie chart displaying the shares of transactions in each category.
+ * https://observablehq.com/@d3/zoomable-sunburst
  * 
- * @todo back button in center
- * @todo hover states
+ * @todo specify d3 imports
+ * @todo label button in center
+ * @todo change middle button color (parent.fill) on navigate to the current parent's color
  */
 export default function PieChart ({ transactionData }) {
-  const chartContainerRef = useRef(null)
   const [isDataLoaded, setIsDataLoaded] = useState(false)
-  const [chartSize, setChartSize] = useState(0)
 
   useEffect(() => {
     if (transactionData) {
-      setChartSize(chartContainerRef.current.clientWidth)
       setIsDataLoaded(true)
     }
   }, [transactionData])
  
-  return <div ref={chartContainerRef}>
-    { isDataLoaded ?
-      <D3PieChart data={transactionData} size={chartSize} /> :
-      <div /> // Loads too fast to show loading icon
-    }
-  </div>
+  return isDataLoaded ?
+    <D3PieChart data={transactionData} /> :
+    <LoadingIcon />
 }
 
-// https://observablehq.com/@d3/zoomable-sunburst
-function D3PieChart ({data, size}) {
+function D3PieChart ({ data }) {
   const svgRef = useRef()
 
   useEffect(() => {
     if (data) renderChart()
+    return clearChart
   }, [data])
 
   function renderChart () {
     const svg = d3.select(svgRef.current)
+    const size = svgRef.current.clientWidth
+
+    // Element Attributes
+    svgRef.current.setAttribute('viewBox', `${size / -2} ${size / -2} ${size} ${size}`)
 
     // Chart Dimensions
+    // Radius of the inner circle / middle button size
     const radius = size / 6
 
     // Chart Styling & Color
@@ -73,7 +75,7 @@ function D3PieChart ({data, size}) {
 
     // Create Navigable Elements
     path.filter(d => d.children)
-      .style("cursor", "pointer")
+      .classed("interactable", true)
       .on("click", zoomOnClick)
 
     const format = d3.format(",d")
@@ -92,11 +94,13 @@ function D3PieChart ({data, size}) {
       .attr("transform", d => labelTransform(d.current))
       .text(d => d.data.name)
 
+    // style this and add text (is this auto to root or to parent? label destination)
     const parent = svg.append("circle")
       .datum(root)
       .attr("r", radius)
       .attr("fill", "none")
       .attr("pointer-events", "all")
+      .classed("interactable", true)
       .on("click", zoomOnClick)
 
     // Animations
@@ -150,10 +154,11 @@ function D3PieChart ({data, size}) {
     }
   }
 
-  return data ?
-    <svg id="money-pie"
-      ref={svgRef}
-      viewBox={`${size / -2} ${size / -2} ${size} ${size}`}
-    />
-    : <div />
+  function clearChart () {
+    if (svgRef.current) {
+      svgRef.current.innerHTML = ''
+    }
+  }
+
+  return <svg id="money-pie" ref={svgRef} />
 }

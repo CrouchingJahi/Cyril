@@ -61,5 +61,6 @@ $transitions-quick: $transition-duration-quick $transition-function;
     opacity: 1;
   }
 }
+
 $anim-fade-in: fadeIn $transitions forwards;
 $anim-fade-out: fadeIn $transitions backwards;

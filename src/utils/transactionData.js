@@ -32,6 +32,11 @@ export function createTransactionData (transactions, categories) {
       stats.timeframe.end = txn.txnDate
     }
 
+    // Account IDs
+    if (txn.accountId && !stats.accountIds.includes(txn.accountId)) {
+      stats.accountIds.push(txn.accountId)
+    }
+
     // Category Hierarchy
     let thisCategory = categories.find(cat => cat.id == txn.categoryId)
     addAncestryToTree(stats.hierarchy, categories, thisCategory, txn)
@@ -40,6 +45,7 @@ export function createTransactionData (transactions, categories) {
   }, {
     total: 0,
     timeframe: {},
+    accountIds: [],
     hierarchy: {
       name: "Total",
       children: [],

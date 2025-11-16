@@ -1,7 +1,7 @@
 import { createContext } from 'react'
 import SplashScreen from '@/screens/Splash'
 import MenuScreen from '@/screens/Menu'
-import SettingsScreen from '@/screens/Settings'
+import SettingsScreen from '@/screens/settings/Settings'
 import SpendingScreen from '@/screens/Spending'
 import UploadScreen from '@/screens/Upload'
 
