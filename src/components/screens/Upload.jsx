@@ -5,7 +5,7 @@ import AccountSelector from '@/forms/AccountSelector'
 import RegexMatcherInput from '@/forms/RegexMatcherInput'
 import CategoryDisplay from '@/transactionCategories/CategoryDisplay'
 import TransactionMatcher from '@/transactionCategories/TransactionMatcher'
-import { BackToMenuLink } from '@/router/Link'
+import { Header } from '@/ui/Layout'
 import IconButton from '@/ui/IconButton'
 import LoadingIcon from '@/ui/LoadingIcon'
 
@@ -48,17 +48,14 @@ export default function UploadScreen () {
   }
 
   return <div id="upload">
-    <header>
-      <BackToMenuLink />
-      <h1>Upload</h1>
-    </header>
+    <Header>Upload</Header>
     <main>
       { formPhase === formPhases.menu ? <UploadMenu />
        : formPhase === formPhases.uploadFile ? <UploadFileForm />
        : formPhase === formPhases.uploadManual ? <UploadManualForm />
        : formPhase === formPhases.categorize ? <UploadCategorizerForm />
        : formPhase === formPhases.success ? <UploadSuccessMessage />
-       : <div>Error</div>
+       : <div className="danger">Error</div>
       }
     </main>
   </div>

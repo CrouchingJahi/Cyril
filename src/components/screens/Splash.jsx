@@ -10,7 +10,7 @@ export default function SplashScreen () {
     <h1>Cyril</h1>
     <p>Version {version}</p>
     <p>by CrouchingJahi</p>
-    <img className='logo' src={cyrilLogo} />
+    <img className="logo" src={cyrilLogo} />
     <p><button className="unstyled link" onClick={window.cyrilAPI.openGithubLink}>GitHub Page</button></p>
     <p><Link to="menu" className="button">Continue</Link></p>
   </div>

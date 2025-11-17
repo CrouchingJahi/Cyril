@@ -1,10 +1,11 @@
+import path from 'node:path';
 import { app, BrowserWindow, ipcMain, shell } from 'electron';
 import installExtension, { REACT_DEVELOPER_TOOLS } from 'electron-devtools-installer';
-import path from 'node:path';
+
 import { createBackupFile, readBackupFile, doesBackupFileExist } from './utils/backupFile';
 import { getUserSettings, saveUserWindowPosition } from './utils/userSettings';
 
-import style from './components/theme.module.scss';
+import theme from './components/theme.module.scss';
 
 const createWindow = async () => {
   const userSettings = await getUserSettings()
@@ -15,7 +16,7 @@ const createWindow = async () => {
     width: userSettings.windowPosition.w,
     height: userSettings.windowPosition.h,
     icon: 'assets/Cyril.ico',
-    backgroundColor: style.bgColor,
+    backgroundColor: theme.bgColor,
     webPreferences: {
       nodeIntegration: true,
       preload: path.join(__dirname, 'preload.js'),

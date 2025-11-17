@@ -155,8 +155,9 @@ function D3PieChart ({ data }) {
   }
 
   function clearChart () {
-    if (svgRef.current) {
-      svgRef.current.innerHTML = ''
+    const svgElement = document.getElementById('money-pie')
+    if (svgElement) {
+      svgElement.innerHTML = ''
     }
   }
 

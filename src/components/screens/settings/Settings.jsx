@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
+
 import * as db from '~/database/db'
-import { BackToMenuLink } from '@/router/Link'
+import { Header } from '@/ui/Layout'
 import LoadingIcon from '@/ui/LoadingIcon'
 import DataOptions from './DataOptions'
 import AccountOptions from './AccountOptions'
@@ -28,10 +29,7 @@ export default function SettingsScreen () {
   }, [])
 
   return <div id="settings">
-    <header>
-      <BackToMenuLink />
-      <h1>Settings</h1>
-    </header>
+    <Header>Settings</Header>
     { userAccounts && categories && stringMatchers ?
       <main className="grid cols-2">
         <DataOptions />

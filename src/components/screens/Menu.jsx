@@ -1,3 +1,4 @@
+import { Header } from '@/ui/Layout'
 import Link from '@/router/Link'
 
 const menuLinks = [
@@ -7,16 +8,14 @@ const menuLinks = [
 ]
 
 export default function MenuScreen () {
-    return <div id="menu">
-      <header>
-        <h1>Menu</h1>
-      </header>
-      <main>
-        <ul>
-          { menuLinks.map(link =>
-            <li key={link.href}><Link to={link.href}>{link.label}</Link></li>
-          ) }
-        </ul>
-      </main>
-    </div>
+  return <div id="menu">
+    <Header useMenuLink={false}>Menu</Header>
+    <main>
+      <ul>
+        { menuLinks.map(link =>
+          <li key={link.href}><Link to={link.href}>{link.label}</Link></li>
+        ) }
+      </ul>
+    </main>
+  </div>
 }

@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
 
-import { BackToMenuLink } from '@/router/Link'
 import PieChart from '@/charts/PieChart'
+import { Header } from '@/ui/Layout'
 import LoadingIcon from '@/ui/LoadingIcon'
 
 import { getTransactions, getCategories, getUserAccounts } from '~/database/db'
@@ -62,10 +62,7 @@ export default function Spending () {
   }, [filtering])
 
   return <div id="spending">
-    <header>
-      <BackToMenuLink />
-      <h1>Spending</h1>
-    </header>
+    <Header>Spending</Header>
     <main>
       { isLoading ? <div className="width-m centered">
           <LoadingIcon />
