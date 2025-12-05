@@ -4,7 +4,7 @@ import MenuScreen from '@/screens/Menu'
 import CategorizeScreen from '@/screens/categorize/Categorize'
 import SettingsScreen from '@/screens/settings/Settings'
 import SpendingScreen from '@/screens/Spending'
-import UploadScreen from '@/screens/Upload'
+import UploadScreen from '@/screens/upload/Upload'
 
 export const routes = {
   splash: SplashScreen,

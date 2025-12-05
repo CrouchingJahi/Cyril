@@ -9,5 +9,9 @@ export function getPendingTransactions () {
 }
 
 export function savePendingTransactions (transactions) {
+  const storedTransactions = getPendingTransactions()
+  if (storedTransactions) {
+    // append
+  }
   localStorage.setItem(storageKeys.pendingTransactions, JSON.stringify(transactions))
 }
