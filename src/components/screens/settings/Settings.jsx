@@ -16,6 +16,7 @@ import CategoryOptions from './CategoryOptions'
  * @todo dont clear full form when a category is selected (add category name)
  * @todo fix screen update on modify category
  * @todo ability to transfer transactions to another account
+ * @todo settings for pending transactions
  */
 export default function SettingsScreen () {
   const [userAccounts, setUserAccounts] = useState(null)
