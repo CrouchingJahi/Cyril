@@ -5,6 +5,7 @@ const menuLinks = [
   { label: 'Settings', href: 'settings' },
   { label: 'Upload Transaction Data', href: 'upload'},
   { label: 'View Spending Summary', href: 'spending' },
+  { label: 'Categorize pending transactions', href: 'categorize' },
 ]
 
 export default function MenuScreen () {
