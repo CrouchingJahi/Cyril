@@ -1,4 +1,5 @@
 import Link from '@/router/Link'
+import { Routes } from '@/router'
 
 import cyrilLogo from '@assets/Cyril.png'
 import './splash.scss'
@@ -12,6 +13,6 @@ export default function SplashScreen () {
     <p>by CrouchingJahi</p>
     <img className="logo" src={cyrilLogo} />
     <p><button className="unstyled link" onClick={window.cyrilAPI.openGithubLink}>GitHub Page</button></p>
-    <p><Link to="menu" className="button">Continue</Link></p>
+    <p><Link to={Routes.Menu} className="button">Continue</Link></p>
   </div>
 }

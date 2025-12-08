@@ -1,20 +1,14 @@
 import { createContext } from 'react'
-import SplashScreen from '@/screens/Splash'
-import MenuScreen from '@/screens/Menu'
-import CategorizeScreen from '@/screens/categorize/Categorize'
-import SettingsScreen from '@/screens/settings/Settings'
-import SpendingScreen from '@/screens/Spending'
-import UploadScreen from '@/screens/upload/Upload'
 
-export const routes = {
-  splash: SplashScreen,
-  menu: MenuScreen,
-  settings: SettingsScreen,
-  spending: SpendingScreen,
-  upload: UploadScreen,
-  categorize: CategorizeScreen,
+export const Routes = {
+  Splash: 'splash',
+  Menu: 'menu',
+  Settings: 'settings',
+  Spending: 'spending',
+  Upload: 'upload',
+  Categorize: 'categorize',
 }
 
-export const defaultRoute = 'splash'
+export const defaultRoute = Routes.Splash
 
 export const RouteContext = createContext({ currentRoute: defaultRoute })

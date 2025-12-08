@@ -1,14 +1,15 @@
 import { Header } from '@/ui/Layout'
 import Link from '@/router/Link'
-
-const menuLinks = [
-  { label: 'Settings', href: 'settings' },
-  { label: 'Upload Transaction Data', href: 'upload'},
-  { label: 'View Spending Summary', href: 'spending' },
-  { label: 'Categorize pending transactions', href: 'categorize' },
-]
+import { Routes } from '@/router'
 
 export default function MenuScreen () {
+  const menuLinks = [
+    { label: 'Settings', href: Routes.Settings },
+    { label: 'Upload Transaction Data', href: Routes.Upload },
+    { label: 'View Spending Summary', href: Routes.Spending },
+    { label: 'Categorize pending transactions', href: Routes.Categorize },
+  ]
+
   return <div id="menu">
     <Header useMenuLink={false}>Menu</Header>
     <main>

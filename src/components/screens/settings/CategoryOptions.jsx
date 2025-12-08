@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import { modifyCategory, addCategory, addStringMatcher } from '~/database/db'
 import CategoryDisplay from '@/transactionCategories/CategoryDisplay'
 
 // Category picker, then the options that depend on having an active category
@@ -50,7 +51,7 @@ export default function CategoryOptions ({categories, setCategories, stringMatch
     function handleModifyCategory (event) {
       event.preventDefault()
       const formData = Object.fromEntries(new FormData(event.target))
-      db.modifyCategory({
+      modifyCategory({
         id: activeCategoryId,
         ...formData,
         catAncestry: buildAncestryString(selectedParentId)
@@ -87,7 +88,7 @@ export default function CategoryOptions ({categories, setCategories, stringMatch
     function handleAddCategory (event) {
       event.preventDefault()
       const formData = Object.fromEntries(new FormData(event.target))
-      db.addCategory({
+      addCategory({
         ...formData,
         catAncestry: buildAncestryString(selectedParentId)
       }).then(res => {
@@ -118,7 +119,7 @@ export default function CategoryOptions ({categories, setCategories, stringMatch
       const formData = Object.fromEntries(new FormData(event.target))
       e.preventDefault()
 
-      db.addStringMatcher({
+      addStringMatcher({
         ...formData,
         categoryId: activeCategoryId
       }).then(res => {

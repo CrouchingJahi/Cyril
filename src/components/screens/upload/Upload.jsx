@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react'
 import * as db from '~/database/db'
 import { getPendingTransactions, savePendingTransactions } from '~/database/localStorage'
 import parseTransactionFile from '~/utils/parseTransactionFile'
-import { RouteContext } from '@/router'
+import { RouteContext, Routes } from '@/router'
 import Link from '@/router/Link'
 import { Header } from '@/ui/Layout'
 import LoadingIcon from '@/ui/LoadingIcon'
@@ -45,7 +45,7 @@ export default function UploadScreen () {
   // Callback for the server to send parsed transaction info that needs to be categorized
   function processFileTransactions (fileData) {
     savePendingTransactions(fileData)
-    RouteContext.changeRoute('categorize')
+    RouteContext.changeRoute(Routes.Categorize)
   }
 
   return <div id="upload">
@@ -77,7 +77,7 @@ export default function UploadScreen () {
       <p>What would you like to do?</p>
       { pendingTransactions?.transactions.length > 0 && <div className="pad-bottom">
         <p>You already have transactions pending. Go to the Categorize screen to sort them out, or continue to add new transactions to the queue.</p>
-        <Link className="button" to="categorize">Go To Categorize</Link>
+        <Link className="button" to={Routes.Categorize}>Go To Categorize</Link>
       </div> }
       <div className="list width-fit">
         <button onClick={() => setFormPhase(formPhases.uploadFile)}>Upload transaction files</button>
