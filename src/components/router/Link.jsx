@@ -8,8 +8,8 @@ export default function Link ({ to, className, children}) {
   const buttonClasses = className?.includes('button') ? className : ['unstyled link', className].join(' ')
 
   return <button className={ buttonClasses }
-    onClick={() => routeContext.setCurrentRoute(to)}
-    >
+    onClick={() => routeContext.changeRoute(to)}
+  >
     { children }
   </button>
 }

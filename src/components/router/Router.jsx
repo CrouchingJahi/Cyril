@@ -4,23 +4,23 @@ import SplashScreen from '@/screens/Splash'
 import MenuScreen from '@/screens/Menu'
 import CategorizeScreen from '@/screens/categorize/Categorize'
 import SettingsScreen from '@/screens/settings/Settings'
-import SpendingScreen from '@/screens/Spending'
+import SpendingScreen from '@/screens/spending/Spending'
 import UploadScreen from '@/screens/upload/Upload'
 
 function getRoutedComponent (route) {
   switch (route) {
     case Routes.Splash:
-      return SplashScreen;
+      return SplashScreen
     case Routes.Menu:
-      return MenuScreen;
+      return MenuScreen
     case Routes.Settings:
-      return SettingsScreen;
+      return SettingsScreen
     case Routes.Spending:
-      return SpendingScreen;
+      return SpendingScreen
     case Routes.Upload:
-      return UploadScreen;
+      return UploadScreen
     case Routes.Categorize:
-      return CategorizeScreen;
+      return CategorizeScreen
     default:
       throw new Error(`Illegal route: ${route}`)
   }
@@ -28,11 +28,15 @@ function getRoutedComponent (route) {
 
 export default function Router () {
   const [currentRoute, setCurrentRoute] = useState(defaultRoute)
-  const currentRouteContext = { currentRoute, setCurrentRoute }
+  const Route = getRoutedComponent(currentRoute)
 
-  const CurrentRoute = getRoutedComponent(currentRoute)
+  const context = { currentRoute, changeRoute }
 
-  return <RouteContext value={currentRouteContext}>
-    <CurrentRoute />
+  function changeRoute (route) {
+    setCurrentRoute(route)
+  }
+
+  return <RouteContext value={context}>
+    <Route />
   </RouteContext>
 }
