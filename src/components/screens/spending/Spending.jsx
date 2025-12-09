@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 
-import PieChart from '@/charts/PieChart'
+import PieChart from './PieChart'
 import { Header } from '@/ui/Layout'
 import LoadingIcon from '@/ui/LoadingIcon'
 
