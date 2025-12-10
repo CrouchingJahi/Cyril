@@ -1,13 +1,13 @@
-import { useEffect, useState, useRef } from 'react'
+import { useContext, useEffect, useState, useRef } from 'react'
 
 import * as db from '~/database/db'
 import { getPendingTransactions } from '~/database/localStorage'
+import { VaultContext } from '@/context/VaultContext'
 import AccountSelector from '@/forms/AccountSelector'
 import RegexMatcherInput from '@/forms/RegexMatcherInput'
 import CategoryDisplay from '@/transactionCategories/CategoryDisplay'
 import { Header } from '@/ui/Layout'
 import IconButton from '@/ui/IconButton'
-import LoadingIcon from '@/ui/LoadingIcon'
 
 /**
  * Categorize transactions that are staged from the last file upload
@@ -16,69 +16,50 @@ import LoadingIcon from '@/ui/LoadingIcon'
  */
 export default function CategorizeScreen () {
   const [stagedTransactions, setStagedTransactions] = useState(null)
-  const [userAccounts, setUserAccounts] = useState(null)
-  const [categories, setCategories] = useState(null)
-  const [stringMatchers, setStringMatchers] = useState(null)
-  const [isLoaded, setIsLoaded] = useState(false)
 
   useEffect(() => {
     const localTransactions = getPendingTransactions()
     if (localTransactions) {
       setStagedTransactions(localTransactions)
     }
-
-    db.getUserAccounts().then(setUserAccounts)
-    db.getCategories().then(setCategories)
-    db.getStringMatchers().then(setStringMatchers)
-
   }, [])
-
-  useEffect(() => {
-    if (userAccounts && categories && stringMatchers) {
-      setIsLoaded(true)
-    }
-  }, [userAccounts, categories, stringMatchers])
 
   return <div id="categorize">
     <Header>Categorize</Header>
     <main>
-      { isLoaded ?
-        stagedTransactions?.transactions.length > 0 ?
-          <UploadCategorizerForm
-            userAccounts={userAccounts}
-            setUserAccounts={setUserAccounts}
-            categories={categories}
-            stringMatchers={stringMatchers}
-            transactionDataToCategorize={stagedTransactions}
-          /> :
-          <div>
-            <p>There are no transactions pending to categorize.</p>
-          </div>
-        : <LoadingIcon />
+      { stagedTransactions?.transactions.length > 0 ?
+        <UploadCategorizerForm
+          transactionDataToCategorize={stagedTransactions}
+        /> :
+        <div>
+          <p>There are no transactions pending to categorize.</p>
+        </div>
       }
     </main>
   </div>
 }
 
-function UploadCategorizerForm ({ userAccounts, setUserAccounts, categories, stringMatchers, transactionDataToCategorize }) {
-  if (!transactionDataToCategorize) {
-    return <LoadingIcon />
-  }
+function UploadCategorizerForm ({ transactionDataToCategorize }) {
+  const {
+    categories,
+    accounts, updateAccounts,
+    stringMatchers,
+    transactions,
+  } = useContext(VaultContext)
   const uploadCategorizerFormRef = useRef(null)
   const numOfTransactions = transactionDataToCategorize.transactions.length
   // If the file contains account id, check for a matching one in db. If none is created yet, preselect "Import" option
-  const defaultAccountId = transactionDataToCategorize.account ? userAccounts.find(acct => acct.id == transactionDataToCategorize.account.id) || '_import' : userAccounts.length > 0 ? userAccounts[0] : ''
+  const defaultAccountId = transactionDataToCategorize.account ?
+    accounts.find(acct => acct.id == transactionDataToCategorize.account.id) || '_import' :
+    accounts.length > 0 ? accounts[0] : ''
+
   const [selectedAccountId, setSelectedAccountId] = useState(defaultAccountId)
   const [selectedCategories, setSelectedCategories] = useState(Array.from({length: numOfTransactions}))
   const [txnIndex, setTxnIndex] = useState(0)
-  const [allTxns, setAllTxns] = useState([])
+
   const thisTxn = transactionDataToCategorize.transactions[txnIndex]
   const autoMatch = stringMatchers.find(regex => thisTxn.name.match(regex.pattern))
-  const txnAlreadySaved = allTxns.some(txn => txn.id == thisTxn.fitid)
-
-  useEffect(() => {
-    db.getTransactions().then(setAllTxns)
-  }, [])
+  const txnAlreadySaved = transactions.some(txn => txn.id == thisTxn.fitid)
 
   useEffect(() => {
     // Auto select matching categories if one hasn't already been selected
@@ -104,6 +85,9 @@ function UploadCategorizerForm ({ userAccounts, setUserAccounts, categories, str
       db.addStringMatcher({
         pattern: formData.regexMatch,
         categoryId: selectedCategories[txnIndex],
+      }).then(() => {
+        console.log('op complete', arguments)
+        // updateStringMatchers()
       })
     }
 
@@ -114,10 +98,17 @@ function UploadCategorizerForm ({ userAccounts, setUserAccounts, categories, str
         org: formData.newAccountOrg,
       }).then((account) => {
         txnObject.accountId = account.id
-        db.addTransaction(txnObject)
+        return db.addTransaction(txnObject)
+      }).then(() => {
+        console.log('transactions and new account added')
+        // updateAccounts()
+        // updateTransactions()
       })
     } else {
-      db.addTransaction(txnObject)
+      db.addTransaction(txnObject).then(() => {
+        console.log('transaction added')
+        // updateTransactions()
+      })
     }
   }
 
@@ -132,7 +123,11 @@ function UploadCategorizerForm ({ userAccounts, setUserAccounts, categories, str
   return <div className="upload-categorizer">
     <form ref={uploadCategorizerFormRef}>
       <div className="width-fit">
-        <AccountSelector name="accountId" accounts={userAccounts} setAccounts={setUserAccounts} selectedAccountId={selectedAccountId} setSelectedAccountId={setSelectedAccountId} importingAccount={transactionDataToCategorize.account} />
+        <AccountSelector name="accountId"
+          accounts={accounts} updateAccounts={updateAccounts}
+          selectedAccountId={selectedAccountId} setSelectedAccountId={setSelectedAccountId}
+          importingAccount={transactionDataToCategorize.account}
+        />
       </div>
       <div className="transaction-list">
         <div className="pagination flex align-center">

@@ -44,7 +44,6 @@ export async function getIDB() {
       dbOpenRequest.onupgradeneeded = async (event) => {
         dbInstance = event.target.result
         await migrateDB()
-        resolve(dbInstance)
       }
     }
   })
@@ -91,7 +90,7 @@ async function getStore (storeName, accessMode) {
 }
 // Handles the boilerplate of creating a promise for the db operation results
 async function wrapDBRequest (dbOperation, storeName, accessMode) {
-  return new Promise(async (resolve) => {
+  return new Promise(async (resolve, reject) => {
     let store = await getStore(storeName, accessMode)
     let dbRequest
     if (dbOperation.constructor.name == 'AsyncFunction') {
@@ -101,6 +100,9 @@ async function wrapDBRequest (dbOperation, storeName, accessMode) {
     }
     dbRequest.onsuccess = () => {
       resolve(dbRequest.result)
+    }
+    dbRequest.onerror = (event) => {
+      reject(event)
     }
   })
 }

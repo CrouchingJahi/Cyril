@@ -23,6 +23,14 @@ export default function VaultProvider ({ children }) {
   }
 
   useEffect(() => {
+    if (window.cyrilVault) {
+      loadData()
+    } else {
+      window.addEventListener('VaultLoaded', loadData, { once: true })
+    }
+  }, [])
+
+  function loadData () {
     Promise.all([
       updateCategories(),
       updateAccounts(),
@@ -31,7 +39,7 @@ export default function VaultProvider ({ children }) {
     ]).then(_ => {
       setIsLoaded(true)
     })
-  }, [])
+  }
 
   function updateCategories () {
     return getCategories().then(setCategories)

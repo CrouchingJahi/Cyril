@@ -1,4 +1,6 @@
-import { useEffect, useRef, useState } from 'react'
+import { useContext, useEffect, useRef, useState } from 'react'
+
+import { VaultContext } from '@/context/VaultContext'
 import Modal from '@/ui/Modal'
 import { addUserAccount } from '~/database/db'
 
@@ -7,7 +9,10 @@ import { addUserAccount } from '~/database/db'
  * @param name the field name for the form element
  * @param importingAccount (opt) When the file import option is being used for the Upload screen, this will be an object containing the imported account data
  */
-export default function AccountSelector ({ name, accounts, setAccounts, selectedAccountId, setSelectedAccountId, importingAccount}) {
+export default function AccountSelector ({ name, selectedAccountId, setSelectedAccountId, importingAccount}) {
+  const {
+    accounts, updateAccounts
+  } = useContext(VaultContext)
   const [accountName, setAccountName] = useState('')
   const [accountFid, setAccountFid] = useState('')
   const [accountOrg, setAccountOrg] = useState('')
@@ -32,7 +37,8 @@ export default function AccountSelector ({ name, accounts, setAccounts, selected
     event.stopPropagation()
     const formData = Object.fromEntries(new FormData(event.target))
     addUserAccount(formData).then(res => {
-      setAccounts([...accounts, res])
+      updateAccounts()
+      // setAccounts([...accounts, res])
       setSelectedAccountId(res.id)
     })
     event.target.reset()

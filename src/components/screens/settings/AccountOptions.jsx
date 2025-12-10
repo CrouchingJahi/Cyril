@@ -2,7 +2,7 @@ import { useEffect, useState, useRef } from 'react'
 import { getTransactionCountForAccount, addUserAccount, modifyUserAccount, removeUserAccount } from '~/database/db'
 import Modal from '@/ui/Modal'
 
-export default function AccountOptions ({accounts, setAccounts}) {
+export default function AccountOptions ({accounts, updateAccounts}) {
   const [activeAccount, setActiveAccount] = useState(null)
   const [activeAccountInfo, setActiveAccountInfo] = useState(null)
   const confirmDeleteAccountDialogRef = useRef(null)
@@ -41,7 +41,7 @@ export default function AccountOptions ({accounts, setAccounts}) {
     event.preventDefault()
     const formData = Object.fromEntries(new FormData(event.target))
     addUserAccount(formData).then(res => {
-      setAccounts([...accounts, res])
+      updateAccounts()
     })
     event.target.reset()
   }
@@ -49,10 +49,7 @@ export default function AccountOptions ({accounts, setAccounts}) {
   function handleEditAccount (event) {
     const formData = Object.fromEntries(new FormData(event.target))
     modifyUserAccount(formData).then(res => {
-      const acctIndex = accounts.indexOf(acct => acct.id == activeAccount.id)
-      let accountsCopy = [...accounts]
-      accountsCopy[acctIndex] = res;
-      setAccounts(accountsCopy)
+      updateAccounts()
       accountDetailsModalRef.current.close()
     })
   }

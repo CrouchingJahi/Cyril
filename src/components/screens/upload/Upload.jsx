@@ -1,10 +1,11 @@
-import { useEffect, useState } from 'react'
+import { useContext, useEffect, useState } from 'react'
 
-import * as db from '~/database/db'
 import { getPendingTransactions, savePendingTransactions } from '~/database/localStorage'
 import parseTransactionFile from '~/utils/parseTransactionFile'
+import { VaultContext } from '@/context/VaultContext'
 import { RouteContext, Routes } from '@/router'
 import Link from '@/router/Link'
+
 import { Header } from '@/ui/Layout'
 import LoadingIcon from '@/ui/LoadingIcon'
 
@@ -23,24 +24,23 @@ const formPhases = {
  * @todo auto-highlight matcher in RegexMatcherInput when one was auto matched
  */
 export default function UploadScreen () {
-  const [userAccounts, setUserAccounts] = useState(null)
-  const [categories, setCategories] = useState(null)
-  const [stringMatchers, setStringMatchers] = useState(null)
+  const {
+    categories,
+    accounts, updateAccounts,
+    stringMatchers,
+  } = useContext(VaultContext)
   const [formPhase, setFormPhase] = useState(formPhases.loading)
   const [pendingTransactions, setPendingTransactions] = useState(null)
 
   useEffect(() => {
-    db.getUserAccounts().then(setUserAccounts)
-    db.getCategories().then(setCategories)
-    db.getStringMatchers().then(setStringMatchers)
     setPendingTransactions(getPendingTransactions())
   }, [])
 
   useEffect(() => {
-    if (userAccounts && categories && stringMatchers && formPhase === formPhases.loading) {
+    if (accounts && categories && stringMatchers && formPhase === formPhases.loading) {
       setFormPhase(formPhases.menu)
     }
-  }, [userAccounts, categories, stringMatchers])
+  }, [accounts, categories, stringMatchers])
 
   // Callback for the server to send parsed transaction info that needs to be categorized
   function processFileTransactions (fileData) {
@@ -59,8 +59,8 @@ export default function UploadScreen () {
         <UploadFileForm uploadCallback={processFileTransactions} />
        : formPhase === formPhases.uploadManual ?
         <UploadManualForm
-          userAccounts={userAccounts}
-          setUserAccounts={setUserAccounts}
+          userAccounts={accounts}
+          updateAccounts={updateAccounts}
           categories={categories}
           stringMatchers={stringMatchers}
           setFormPhase={setFormPhase}

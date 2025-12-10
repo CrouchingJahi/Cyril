@@ -64,7 +64,12 @@ export async function getCategories () {
   return IDB.getCategories()
 }
 export async function addCategory (newCategory) {
-  return IDB.addCategory(newCategory)
+  // Remove unnecessary fields - catParent is part of the formData, but catAncestry is formed from its data
+  const formattedCategory = {
+    catName: newCategory.catName,
+    catAncestry: newCategory.catAncestry,
+  }
+  return IDB.addCategory(formattedCategory)
 }
 export async function modifyCategory (category) {
   return IDB.modifyCategory(category)

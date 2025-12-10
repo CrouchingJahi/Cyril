@@ -3,7 +3,7 @@ import { modifyCategory, addCategory, addStringMatcher } from '~/database/db'
 import CategoryDisplay from '@/transactionCategories/CategoryDisplay'
 
 // Category picker, then the options that depend on having an active category
-export default function CategoryOptions ({categories, setCategories, stringMatchers, setStringMatchers}) {
+export default function CategoryOptions ({categories, updateCategories, stringMatchers, updateStringMatchers}) {
   const [activeCategoryId, setActiveCategoryId] = useState(null)
 
   return <>
@@ -58,7 +58,7 @@ export default function CategoryOptions ({categories, setCategories, stringMatch
       }).then(res => {
         let newCategories = [...categories]
         newCategories[categories.indexOf(cat => cat.id == activeCategoryId)] = res
-        setCategories(newCategories)
+        updateCategories(newCategories)
       })
     }
 
@@ -92,7 +92,7 @@ export default function CategoryOptions ({categories, setCategories, stringMatch
         ...formData,
         catAncestry: buildAncestryString(selectedParentId)
       }).then(res => {
-        setCategories([...categories, res])
+        updateCategories([...categories, res])
       })
       event.target.reset()
     }
@@ -123,7 +123,7 @@ export default function CategoryOptions ({categories, setCategories, stringMatch
         ...formData,
         categoryId: activeCategoryId
       }).then(res => {
-        setStringMatchers([...stringMatchers, res])
+        updateStringMatchers([...stringMatchers, res])
       })
       e.target.reset()
     }

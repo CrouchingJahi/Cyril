@@ -1,6 +1,7 @@
-import { useEffect, useState } from 'react'
+import { useContext } from 'react'
 
-import * as db from '~/database/db'
+import { VaultContext } from '@/context/VaultContext'
+
 import { Header } from '@/ui/Layout'
 import LoadingIcon from '@/ui/LoadingIcon'
 import DataOptions from './DataOptions'
@@ -15,42 +16,34 @@ import CategoryOptions from './CategoryOptions'
  * @todo finish clear data functions
  * @todo dont clear full form when a category is selected (add category name)
  * @todo fix screen update on modify category
- * @todo ability to transfer transactions to another account
+ * @todo a way to edit, re-categorize existing transactions
  * @todo settings for pending transactions
  */
 export default function SettingsScreen () {
-  const [userAccounts, setUserAccounts] = useState(null)
-  const [categories, setCategories] = useState(null)
-  const [stringMatchers, setStringMatchers] = useState(null)
-
-  useEffect(() => {
-    db.getUserAccounts().then(setUserAccounts)
-    db.getCategories().then(setCategories)
-    db.getStringMatchers().then(setStringMatchers)
-  }, [])
+  const {
+    categories, updateCategories,
+    accounts, updateAccounts,
+    stringMatchers, updateStringMatchers,
+  } = useContext(VaultContext)
 
   return <div id="settings">
     <Header>Settings</Header>
-    { userAccounts && categories && stringMatchers ?
+    { accounts && categories && stringMatchers ?
       <main className="grid cols-2">
         <DataOptions />
         <AccountOptions
-          accounts={userAccounts} setAccounts={setUserAccounts}
+          accounts={accounts} updateAccounts={updateAccounts}
         />
         {/* <TransactionOptions /> */}
         {/* <SpendingOptions /> */}
         <CategoryOptions
-          categories={categories} setCategories={setCategories}
-          stringMatchers={stringMatchers} setStringMatchers={setStringMatchers}
+          categories={categories} updateCategories={updateCategories}
+          stringMatchers={stringMatchers} updateStringMatchers={updateStringMatchers}
         />
       </main> :
-      <SettingsSkeleton />
+      <div className="width-l centered">
+        <LoadingIcon />
+      </div>
     }
-  </div>
-}
-
-export function SettingsSkeleton () {
-  return <div className="width-m centered">
-    <LoadingIcon />
   </div>
 }

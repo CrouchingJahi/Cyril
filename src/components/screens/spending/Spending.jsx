@@ -1,10 +1,10 @@
-import { useState, useEffect } from 'react'
+import { useContext, useState, useEffect } from 'react'
 
+import { VaultContext } from '@/context/VaultContext'
 import PieChart from './PieChart'
 import { Header } from '@/ui/Layout'
 import LoadingIcon from '@/ui/LoadingIcon'
 
-import { getTransactions, getCategories, getUserAccounts } from '~/database/db'
 import { createTransactionData } from '~/utils/transactionData'
 
 const views = {
@@ -27,26 +27,21 @@ const chartInfo = {
  * @todo date pickers for ChartFacets
  */
 export default function Spending () {
+  const {
+    categories,
+    accounts,
+    transactions,
+  } = useContext(VaultContext)
   const [selectedView, setSelectedView] = useState(views.Menu)
-  const [transactions, setTransactions] = useState(null)
-  const [categories, setCategories] = useState(null)
-  const [accounts, setAccounts] = useState(null)
   const [txnData, setTxnData] = useState(null)
   const [isLoading, setIsLoading] = useState(true)
   const [filtering, setFiltering] = useState({})
 
   useEffect(() => {
-    Promise.all([
-      getCategories(),
-      getTransactions(),
-      getUserAccounts(),
-    ]).then(([cats, txns, accts]) => {
-      setCategories(cats)
-      setTransactions(txns)
-      setTxnData(createTransactionData(txns, cats))
-      setAccounts(accts)
-    })
-  }, [])
+    if (transactions && categories) {
+      setTxnData(createTransactionData(transactions, categories))
+    }
+  }, [transactions, categories])
 
   useEffect(() => {
     if (txnData) {
@@ -64,7 +59,7 @@ export default function Spending () {
   return <div id="spending">
     <Header>Spending</Header>
     <main>
-      { isLoading ? <div className="width-m centered">
+      { isLoading ? <div className="width-l centered">
           <LoadingIcon />
         </div> :
         selectedView == views.Menu ? <SpendingViewMenu setSelectedView={setSelectedView} /> :
