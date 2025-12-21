@@ -1,5 +1,6 @@
 import { useMemo, useState } from 'react'
 import IconButton from '@/ui/IconButton'
+import LoadingIcon from '@/ui/LoadingIcon'
 import createCategoryTree from '~/utils/createCategoryTree'
 
 import './categoryDisplay.scss'
@@ -46,7 +47,7 @@ export default function CategoryDisplay ({ categoryList, activeCatId, setActiveF
       <CategoryTree treeNode={categoryTree} level={0} />
     </div>
   } else {
-    return <div>{ /* Loading animation */ }</div>
+    return <LoadingIcon />
   }
 
   function CategoryTree ({treeNode, level}) {

@@ -16,6 +16,25 @@ That's it.
 ## Structure
 This project uses electron-forge for scaffolding and Vite to handle the dev process.
 
+## Style Guide
+Component Structure:
+```js
+/**
+ * Bigger components should have a comment explaining the scope and props
+ */
+function Component ({ props }) {
+  // Any breakout or null rendering conditions - Put them as early as possible 
+  // Values derived from props - often used as default values for state
+  // Context Consumers
+  // Refs
+  // State
+  // Effects
+  // Any Other Hooks
+  // Computed Variables - Anything used as rendering logic
+  // Render
+  // Inline Functions
+}
+```
 ---
 
 ## Issues
@@ -29,10 +48,11 @@ React DevTools issues - https://github.com/electron/electron/issues/41613
 
 ## To Do
 * Sorting screen, where you can sort your current transactions or finish working on previous uploads
+* Scheduling screen, to handle any recurring expenses that aren't tracked via bank statements (payroll deductions)
 * DB - Auto inc won't work well with deletions
 * Create dedicated svg for bullet points, radio buttons, checkmarks
 * Create coin icon
-* Create coin flipping SVG animation for loading
+* Create coin rolling SVG animation for loading
 * Settings - Need to figure out best way to update new view of transactions after adding or deleting
 * CategoryDisplay - Fancify and add animations
 * Check D3 collapsible tree as interface for CategoryDisplay

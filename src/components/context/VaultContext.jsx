@@ -14,14 +14,6 @@ export default function VaultProvider ({ children }) {
   const [stringMatchers, setStringMatchers] = useState()
   const [isLoaded, setIsLoaded] = useState(false)
 
-  const context = {
-    categories, updateCategories,
-    accounts, updateAccounts,
-    transactions, updateTransactions,
-    stringMatchers, updateStringMatchers,
-    isLoaded,
-  }
-
   useEffect(() => {
     if (window.cyrilVault) {
       loadData()
@@ -55,6 +47,14 @@ export default function VaultProvider ({ children }) {
 
   function updateStringMatchers () {
     return getStringMatchers().then(setStringMatchers)
+  }
+
+  const context = {
+    categories, updateCategories,
+    accounts, updateAccounts,
+    transactions, updateTransactions,
+    stringMatchers, updateStringMatchers,
+    isLoaded,
   }
 
   return <VaultContext value={context}>

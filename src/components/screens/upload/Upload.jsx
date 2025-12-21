@@ -29,6 +29,7 @@ export default function UploadScreen () {
     accounts, updateAccounts,
     stringMatchers,
   } = useContext(VaultContext)
+  const { changeRoute } = useContext(RouteContext)
   const [formPhase, setFormPhase] = useState(formPhases.loading)
   const [pendingTransactions, setPendingTransactions] = useState(null)
 
@@ -45,7 +46,7 @@ export default function UploadScreen () {
   // Callback for the server to send parsed transaction info that needs to be categorized
   function processFileTransactions (fileData) {
     savePendingTransactions(fileData)
-    RouteContext.changeRoute(Routes.Categorize)
+    changeRoute(Routes.Categorize)
   }
 
   return <div id="upload">

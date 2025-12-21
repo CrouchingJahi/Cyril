@@ -9,7 +9,7 @@ import { addUserAccount } from '~/database/db'
  * @param name the field name for the form element
  * @param importingAccount (opt) When the file import option is being used for the Upload screen, this will be an object containing the imported account data
  */
-export default function AccountSelector ({ name, selectedAccountId, setSelectedAccountId, importingAccount}) {
+export default function AccountSelector ({ name, selectedAccountId, selectAccountId, importingAccount}) {
   const {
     accounts, updateAccounts
   } = useContext(VaultContext)
@@ -17,7 +17,8 @@ export default function AccountSelector ({ name, selectedAccountId, setSelectedA
   const [accountFid, setAccountFid] = useState('')
   const [accountOrg, setAccountOrg] = useState('')
   const newAccountModalRef = useRef(null)
-  const importingAccountAlreadyExists = importingAccount && accounts.some(acct => acct.id == importingAccount.id)
+
+  const importingAccountAlreadyExists = importingAccount && accounts.find(acct => acct.id == importingAccount.id)
 
   useEffect(() => {
     if (selectedAccountId == '_new') {
@@ -30,7 +31,7 @@ export default function AccountSelector ({ name, selectedAccountId, setSelectedA
   }, [selectedAccountId])
 
   function handleAccountSelection (e) {
-    setSelectedAccountId(e.target.value)
+    selectAccountId(e.target.value)
   }
 
   function handleAddAccount (event) {
@@ -38,27 +39,31 @@ export default function AccountSelector ({ name, selectedAccountId, setSelectedA
     const formData = Object.fromEntries(new FormData(event.target))
     addUserAccount(formData).then(res => {
       updateAccounts()
-      // setAccounts([...accounts, res])
-      setSelectedAccountId(res.id)
+      selectAccountId(res.id)
     })
     event.target.reset()
   }
 
   function handleCancelModal () {
-    setSelectedAccountId(accounts[0]?.id || '')
+    selectAccountId(accounts[0]?.id || '')
     newAccountModalRef.current.close()
   }
 
   return <div>
-    <fieldset>
-      <label htmlFor={name}>Account:</label>
-      <select name={name} value={selectedAccountId} onChange={handleAccountSelection}>
-        { accounts.map(acct => <option key={acct.id} value={acct.id}>{ acct.name }</option>) }
-        { accounts.length == 0 && <option value="">(No accounts exist)</option> }
-        { importingAccount && !importingAccountAlreadyExists && <option value="_import">(Import from file)</option> }
-        <option value="_new">(Create New)</option>
-      </select>
-    </fieldset>
+    { importingAccountAlreadyExists ?
+      <div>
+        <p>Account is already saved as { importingAccountAlreadyExists.name }.</p>
+      </div> :
+      <fieldset>
+        <label htmlFor={name}>Account:</label>
+        <select name={name} value={selectedAccountId} onChange={handleAccountSelection}>
+          { accounts.map(acct => <option key={acct.id} value={acct.id}>{ acct.name }</option>) }
+          { accounts.length == 0 && <option value="">(No accounts exist)</option> }
+          { importingAccount && !importingAccountAlreadyExists && <option value="_import">(Import from file)</option> }
+          <option value="_new">(Create New)</option>
+        </select>
+      </fieldset>
+    }
     <Modal modalId="new-account-modal" modalRef={newAccountModalRef} className="width-m">
       <form method="dialog" onSubmit={handleAddAccount}>
         <h4>Add Account</h4>

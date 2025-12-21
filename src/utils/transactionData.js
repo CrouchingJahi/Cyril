@@ -21,7 +21,7 @@ export function createTransactionData (transactions, categories) {
     // only pull debit transactions as spending? what to do w/ credit?
     let txnAmount = parseFloat(txn.txnAmount)
     if (!Number.isNaN(txnAmount)) {
-      stats.total += Math.abs(txn.txnAmount)
+      stats.total = (parseFloat(stats.total) + Math.abs(txnAmount)).toFixed(2)
     }
 
     // Timeframe
@@ -43,7 +43,7 @@ export function createTransactionData (transactions, categories) {
 
     return stats
   }, {
-    total: 0,
+    total: '0.00',
     timeframe: {},
     accountIds: [],
     hierarchy: {
@@ -78,9 +78,14 @@ function addAncestryToTree(tree, categories, thisCategory, thisTxn) {
     }
   }
   // Then add this node
-  treePointer.children.push({
-    name: thisCategory.catName,
-    catId: thisCategory.id,
-    value: Math.abs(thisTxn.txnAmount),
-  })
+  const matchingNode = treePointer.children.find(child => child.catId === thisCategory.id)
+  if (matchingNode) {
+    matchingNode.value += Math.abs(thisTxn.txnAmount)
+  } else {
+    treePointer.children.push({
+      name: thisCategory.catName,
+      catId: thisCategory.id,
+      value: Math.abs(thisTxn.txnAmount),
+    })
+  }
 }

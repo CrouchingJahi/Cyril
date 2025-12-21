@@ -11,7 +11,7 @@ describe('createTransactionData function', () => {
 
     it('returns a base object wih 0 total and empty hierarchy', () => {
       const expectedData = {
-        total: 0,
+        total: '0.00',
         timeframe: {},
         hierarchy: {
           name: 'Total',
@@ -28,7 +28,7 @@ describe('createTransactionData function', () => {
 
     it('returns a proper category hierarchy', () => {
       let expectedData = {
-        total: 0,
+        total: '0.00',
         timeframe: {
           start: '2020-02-20',
           end: '2020-02-20',
@@ -54,7 +54,7 @@ describe('createTransactionData function', () => {
 
       it('returns total, timeframe of the trx date, and properly built category hierarchy', () => {
         let expectedData = {
-          total: 123.45,
+          total: '123.45',
           timeframe: {
             start: '2000-01-01',
             end: '2000-01-01',
@@ -76,48 +76,79 @@ describe('createTransactionData function', () => {
       })
     })
 
-    describe('and 2 transactions a day apart', () => {
-      const trx = mox.trxNarrowDateRange.slice()
+    describe('testing transaction dates', () => {
+      describe('with 2 transactions a day apart', () => {
+        const trx = mox.trxNarrowDateRange.slice()
 
-      it('will properly show the date range', () => {
-        let expectedData = {
-          total: 20,
-          timeframe: {
-            start: '2000-01-01',
-            end: '2000-01-02',
+        it('will properly show the total and date range', () => {
+          let expectedData = {
+            total: '20.00',
+            timeframe: {
+              start: '2000-01-01',
+              end: '2000-01-02',
+            }
           }
-        }
-        expect(createTransactionData(trx, cats)).toMatchObject(expectedData)
+          expect(createTransactionData(trx, cats)).toMatchObject(expectedData)
+        })
+      })
+
+      describe('with 2 transactions a month minus a day apart', () => {
+        const trx = mox.trxMediumDateRange.slice()
+
+        it('will properly show the date range', () => {
+          let expectedData = {
+            total: '20.00',
+            timeframe: {
+              start: '2000-01-02',
+              end: '2000-02-01',
+            }
+          }
+          expect(createTransactionData(trx, cats)).toMatchObject(expectedData)
+        })
+      })
+
+      describe('with 2 transactions years apart', () => {
+        const trx = mox.trxWideDateRange.slice()
+
+        it('will properly show the date range', () => {
+          let expectedData = {
+            total: '20.00',
+            timeframe: {
+              start: '2000-01-01',
+              end: '2025-10-01',
+            }
+          }
+          expect(createTransactionData(trx, cats)).toMatchObject(expectedData)
+        })
       })
     })
 
-    describe('and 2 transactions a month minus a day apart', () => {
-      const trx = mox.trxMediumDateRange.slice()
+    describe('with multiple transactions in different categories that share a parent', () => {
+      const trx = mox.trxSameParentCategory.slice()
 
-      it('will properly show the date range', () => {
+      it('combines the total and category hierarchy', () => {
         let expectedData = {
-          total: 20,
-          timeframe: {
-            start: '2000-01-02',
-            end: '2000-02-01',
+          total: '150.00',
+          hierarchy: {
+            name: 'Total',
+            children: [{
+              name: 'Food & Drink',
+              catId: '8',
+              children: [{
+                name: 'Carryout',
+                catId: '27',
+                value: 60,
+              },
+              {
+                name: 'Bars',
+                catId: '28',
+                value: 90,
+              }]
+            }]
           }
         }
-        expect(createTransactionData(trx, cats)).toMatchObject(expectedData)
-      })
-    })
-
-    describe('and 2 transactions years apart', () => {
-      const trx = mox.trxWideDateRange.slice()
-
-      it('will properly show the date range', () => {
-        let expectedData = {
-          total: 20,
-          timeframe: {
-            start: '2000-01-01',
-            end: '2025-10-01',
-          }
-        }
-        expect(createTransactionData(trx, cats)).toMatchObject(expectedData)
+        let result = createTransactionData(trx, cats)
+        expect(result).toMatchObject(expectedData)
       })
     })
   })
@@ -128,7 +159,7 @@ describe('createTransactionData function', () => {
 
     it('returns total, timeframe of the trx date, and properly built category hierarchy', () => {
       let expectedData = {
-        total: 505.05,
+        total: '505.05',
         timeframe: {
           start: '1234-12-12',
           end: '1234-12-12',

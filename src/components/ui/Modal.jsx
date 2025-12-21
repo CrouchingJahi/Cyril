@@ -9,18 +9,16 @@ import { createPortal } from 'react-dom'
  * @param className Classes to attach to the dialog class name
  */
 export default function Modal ({ modalRef, modalId, closeFn, className, children }) {
+  const dialogRef = useRef(null)
+
   useImperativeHandle(modalRef, () => {
     return {
       open: () => dialogRef.current.showModal(),
       close: () => dialogRef.current.close(),
     }
   })
-  const dialogRef = useRef(null)
-  const dialogProps = {}
-  if (closeFn) dialogProps.onClose = closeFn
-  if (className) dialogProps.className = className
 
-  return createPortal(<dialog id={modalId} ref={dialogRef} {...dialogProps}>
+  return createPortal(<dialog id={modalId} ref={dialogRef} onClose={closeFn} className={className}>
     { children }
   </dialog>, document.getElementById("modals"))
 }

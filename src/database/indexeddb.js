@@ -227,6 +227,9 @@ export async function getTransactionCountForAccount (accountId) {
 export async function addTransaction (newTransaction) {
   return wrapAddOneRequest(DBTables.Transactions, newTransaction)
 }
+export async function modifyTransaction (transaction) {
+  return wrapModifyOneRequest(DBTables.Transactions, transaction)
+}
 
 export async function getStringMatchers () {
   return wrapGetAllRequest(DBTables.StringMatchers)

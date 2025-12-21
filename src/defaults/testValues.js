@@ -65,6 +65,33 @@ export const trxWideDateRange = [{
   txnType: 'DEBIT',
 }]
 
+export const trxSameParentCategory = [{
+  id: 'carryoutOrder',
+  categoryId: '27',
+  txnAmount: '-60',
+  txnType: 'DEBIT',
+}, {
+  id: 'barhop1',
+  categoryId: '28',
+  txnAmount: '-21',
+  txnType: 'DEBIT',
+}, {
+  id: 'barhop2',
+  categoryId: '28',
+  txnAmount: '-22',
+  txnType: 'DEBIT',
+}, {
+  id: 'barhop3',
+  categoryId: '28',
+  txnAmount: '-23',
+  txnType: 'DEBIT',
+}, {
+  id: 'barhop4',
+  categoryId: '28',
+  txnAmount: '-24',
+  txnType: 'DEBIT',
+}]
+
 
 // Categories
 export const catJustRoot = [{
