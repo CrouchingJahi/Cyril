@@ -318,6 +318,11 @@ ul {
 }
 
 // Sizing
+.height-boxed {
+  max-height: 10rem;
+  overflow-y: auto;
+}
+
 .width-fit {
   width: fit-content;
 }

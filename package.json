@@ -30,6 +30,7 @@
     "@electron-forge/plugin-vite": "^7.10.2",
     "@electron/fuses": "^1.8.0",
     "@vitejs/plugin-react": "^4.7.0",
+    "baseline-browser-mapping": "^2.10.38",
     "electron": "^39.2.1",
     "electron-devtools-installer": "^4.0.0",
     "sass": "^1.94.0",

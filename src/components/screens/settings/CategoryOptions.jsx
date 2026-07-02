@@ -130,7 +130,7 @@ export default function CategoryOptions ({categories, updateCategories, stringMa
     return <section>
       <h3>Transaction Category Matchers</h3>
       { stringMatchers.length == 0 ? <p>No category matchers have been created yet.</p> :
-        <ul>
+        <ul className="height-boxed margin-y">
           { stringMatchers.map(matcher => <li key={matcher.id}>
             { matcher.pattern } &#8702; { categories.find(cat => cat.id == matcher.categoryId).catName }
           </li>)}

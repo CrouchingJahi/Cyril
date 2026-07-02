@@ -1,0 +1,20 @@
+@use '@/theme';
+
+.message-center {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  background: theme.$modal-bg;
+  color: theme.$text-highlight;
+  border-bottom: 2px solid theme.$accent;
+  text-align: center;
+  transition: transform theme.$transitions-quick;
+  padding: 1rem;
+  
+  &.empty {
+    // border: none;
+    transform: translateY(-100%);
+  }
+
+}

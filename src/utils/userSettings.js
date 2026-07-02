@@ -1,4 +1,4 @@
-import path from 'path'
+import path from 'node:path'
 import fs from 'node:fs/promises'
 import { app, screen } from 'electron'
 
@@ -19,6 +19,7 @@ async function writeSettingsFile (newSettings) {
 function createDefaultSettings () {
   const thisDisplay = screen.getDisplayNearestPoint(screen.getCursorScreenPoint())
   return {
+    messageDuration: 5 * 1000,
     backupFile: {
       filePath: path.join(app.getPath('userData'), 'vault.json')
     },

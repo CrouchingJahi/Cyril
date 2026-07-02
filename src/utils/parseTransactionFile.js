@@ -1,3 +1,5 @@
+import { getTransactions } from '~/database/db'
+
 /**
  * 
  * @param fileData 
@@ -8,6 +10,19 @@ export default function parseTransactionFile (file) {
   } else if (file.name.endsWith('.csv')) {
     return parseCsv(file)
   }
+}
+
+export async function dropDuplicateTransactionsFrom (data) {
+  const knownTransactions = await getTransactions()
+  const dataCopy = {}
+  dataCopy.csvHeaders = data.csvHeaaders
+  dataCopy.headers = data.headers
+  dataCopy.account = data.account
+  dataCopy.transactions = data.transactions.filter(trx => {
+    return knownTransactions.some(thisKnownTrx => thisKnownTrx.id == trx.id)
+  })
+
+  return dataCopy
 }
 
 /**

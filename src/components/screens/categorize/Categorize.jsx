@@ -23,7 +23,7 @@ export default function CategorizeScreen () {
   }, [])
 
   function removeStagedTransaction (index) {
-    if (stagedTransactions.transactions.length === 1) {
+    if (stagedTransactions?.transactions?.length === 1) {
       setStagedTransactions(null)
       deletePendingTransactions()
     } else {
@@ -41,7 +41,7 @@ export default function CategorizeScreen () {
     <Header>Categorize</Header>
     <main>
       { stagedTransactions ?
-          stagedTransactions?.transactions.length > 0 ?
+          stagedTransactions?.transactions?.length > 0 ?
             <TransactionFiler
               transactionDataToCategorize={stagedTransactions}
               removeTransactionFn={removeStagedTransaction}

@@ -55,8 +55,8 @@ app.whenReady().then(async () => {
 }).then(() => {
 
   // Backend API functions
-  ipcMain.on('getUserSettings', async (event) => {
-    event.returnValue = await getUserSettings();
+  ipcMain.handle('getUserSettings', async () => {
+    return getUserSettings();
   });
 
   ipcMain.on('getVersion', (event) => {
@@ -64,7 +64,6 @@ app.whenReady().then(async () => {
   });
 
   ipcMain.on('openGithubLink', () => {
-    //TODO import this from package json
     const githubLink = 'https://github.com/CrouchingJahi/Cyril';
     shell.openExternal(githubLink);
   });
