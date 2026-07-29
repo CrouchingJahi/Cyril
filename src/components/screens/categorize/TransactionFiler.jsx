@@ -47,14 +47,14 @@ export default function TransactionFiler ({ transactionDataToCategorize, removeT
   function saveTransaction () {
     const formData = Object.fromEntries(new FormData(uploadCategorizerFormRef.current).entries())
     const txnObject = {
-      id: formData.fitid,
+      fitid: formData.fitid,
       accountId: formData.accountId == '_new_' ? formData.newAccountId : formData.accountId,
       categoryId: formData.categoryId,
-      txnDate: formData.date,
-      txnAmount: formData.amount,
-      txnName: formData.name,
-      txnMemo: formData.memo,
-      txnType: formData.type,
+      date: formData.date,
+      amount: formData.amount,
+      name: formData.name,
+      memo: formData.memo,
+      type: formData.type,
     }
 
     if (formData.regexMatch) {
@@ -230,7 +230,7 @@ function TransactionToCategorize ({transaction, categories, updateCategories, se
             Category: { selectedCategoryObj ? selectedCategoryObj.catName : '(None Selected)' }
           </h4>
         </label>
-        <IconButton preset="add" fn={() => addCategoryModalRef.current.open()} />
+        <IconButton preset="add" fn={() => addCategoryModalRef.current.open()}>Create New Category</IconButton>
         <CategoryDisplay categoryList={categories} activeCatId={selectedCategory} setActiveFn={selectFn} />
       </fieldset>
       { selectedCategoryObj && <RegexMatcherInput txnName={modifiedFields.name || transaction.name} prefill={autoMatch?.pattern} /> }

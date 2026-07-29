@@ -1,8 +1,7 @@
 import { getTransactions } from '~/database/db'
 
 /**
- * 
- * @param fileData 
+ * Routes to a parser according to file type.
  */
 export default function parseTransactionFile (file) {
   if (file.name.endsWith('.qfx')) {
@@ -19,7 +18,7 @@ export async function dropDuplicateTransactionsFrom (data) {
   dataCopy.headers = data.headers
   dataCopy.account = data.account
   dataCopy.transactions = data.transactions.filter(trx => {
-    return knownTransactions.some(thisKnownTrx => thisKnownTrx.id == trx.id)
+    return !knownTransactions.some(thisKnownTrx => thisKnownTrx.fitid == trx.fitid)
   })
 
   return dataCopy
@@ -62,7 +61,14 @@ async function parseCsv (file) {
  *     org: name of the FI
  *     fid: FID of the FI (currently unused)
  *   }
- *   transactions: []
+ *   transactions: {
+ *     fitid: ID of this trx
+ *     date
+ *     type: 'CREDIT' for payment, 'DEBIT' for purchase
+ *     amount
+ *     name
+ *     memo
+ *   }[]
  * }
  */
 async function parseQfx(file) {

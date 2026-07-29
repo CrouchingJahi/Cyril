@@ -12,7 +12,7 @@ export default function RegexMatcherInput ({ txnName = '', prefill }) {
     try {
       return matcher && !!txnName.match(matcher)
     } catch (e) {
-      return false;
+      return false
     }
   })()
 

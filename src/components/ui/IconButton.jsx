@@ -15,7 +15,7 @@ function decodeHtml (text) {
   return decoder.value
 }
 
-export default function IconButton ({ text, preset, label, className, disabled, fn }) {
+export default function IconButton ({ children, preset, label, className, disabled, fn }) {
   const buttonClasses = ['icon-button']
   const buttonContent = preset && decodeHtml(buttonPresets[preset])
   if (typeof buttonContent == 'string') {
@@ -27,6 +27,7 @@ export default function IconButton ({ text, preset, label, className, disabled, 
 
   return <button className={buttonClasses.join(' ')} label={label} disabled={disabled} onClick={fn} type="button">
     { buttonContent }
-    { text }
+    { !!buttonContent && !!children && ' ' }
+    { children }
   </button>
 }

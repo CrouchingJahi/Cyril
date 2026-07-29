@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import IconButton from '@/ui/IconButton'
 import LoadingIcon from '@/ui/LoadingIcon'
 import createCategoryTree from '~/utils/createCategoryTree'
@@ -22,9 +22,28 @@ export default function CategoryDisplay ({ categoryList, activeCatId, setActiveF
   // Array where each slot is the selected node of that tree level
   const [selectedCategories, setSelectedCategories] = useState([])
 
+  // When a new cat id is selected
+  useEffect(() => {
+    // make the selection visible via category level
+    if (!activeCatId) {
+      setSelectedCategories([])
+      setCurrentCategoryLevel(0)
+    } else {
+      const newCatAncestry = categoryList.find(cat => cat.id === activeCatId).catAncestry
+      if (newCatAncestry) {
+        setSelectedCategories(newCatAncestry.split(','))
+        setCurrentCategoryLevel(newCatAncestry.split(',').length)
+      } else {
+        setSelectedCategories([])
+        setCurrentCategoryLevel(0)
+      }
+    }
+  }, [activeCatId])
+
   function selectCategory (catLevel, catId) {
     const newSelectedCategories = [...selectedCategories]
     newSelectedCategories.splice(catLevel, 1, catId)
+    console.log('selectCategory called', catLevel, catId, newSelectedCategories)
     setSelectedCategories(newSelectedCategories)
     setCurrentCategoryLevel(catLevel)
   }
