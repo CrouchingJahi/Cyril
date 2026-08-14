@@ -43,7 +43,6 @@ export default function CategoryDisplay ({ categoryList, activeCatId, setActiveF
   function selectCategory (catLevel, catId) {
     const newSelectedCategories = [...selectedCategories]
     newSelectedCategories.splice(catLevel, 1, catId)
-    console.log('selectCategory called', catLevel, catId, newSelectedCategories)
     setSelectedCategories(newSelectedCategories)
     setCurrentCategoryLevel(catLevel)
   }

@@ -9,6 +9,9 @@ import CategoryDisplay from '@/transactionCategories/CategoryDisplay'
 import IconButton from '@/ui/IconButton'
 import Modal from '@/ui/Modal'
 
+/**
+ * @todo loading state, completion icon for 'Save This Transaction' button
+ */
 export default function TransactionFiler ({ transactionDataToCategorize, removeTransactionFn }) {
   const {
     categories, updateCategories,
@@ -19,18 +22,18 @@ export default function TransactionFiler ({ transactionDataToCategorize, removeT
 
   const numOfTransactions = transactionDataToCategorize.transactions.length
   // If the file contains account id, check for a matching one in db. If none is created yet, preselect "Import" option
-  const defaultAccountId = transactionDataToCategorize.account ?
+  const defaultAccount = transactionDataToCategorize.account ?
     accounts.find(acct => acct.id == transactionDataToCategorize.account.id) || '_import' :
     accounts.length > 0 ? accounts[0] : ''
 
   const uploadCategorizerFormRef = useRef(null)
-  const [selectedAccountId, setSelectedAccountId] = useState(defaultAccountId)
+  const [selectedAccountId, setSelectedAccountId] = useState(defaultAccount.id)
   const [selectedCategories, setSelectedCategories] = useState(Array.from({length: numOfTransactions}))
   const [txnIndex, setTxnIndex] = useState(0)
 
   const thisTxn = transactionDataToCategorize.transactions[txnIndex]
   const autoMatch = thisTxn && stringMatchers.find(regex => thisTxn.name.match(regex.pattern))
-  const txnAlreadySaved = thisTxn && transactions.find(txn => txn.id == thisTxn.fitid)
+  const txnAlreadySaved = thisTxn && transactions.find(txn => txn.fitid == thisTxn.fitid)
 
   useEffect(() => {
     // Auto select matching categories if one hasn't already been selected
@@ -56,8 +59,9 @@ export default function TransactionFiler ({ transactionDataToCategorize, removeT
       memo: formData.memo,
       type: formData.type,
     }
+    const stringMatcherIsNew = formData.regexMatch && !stringMatchers.some(matcher => matcher.pattern === formData.regexMatch)
 
-    if (formData.regexMatch) {
+    if (stringMatcherIsNew) {
       addStringMatcher({
         pattern: formData.regexMatch,
         categoryId: selectedCategories[txnIndex],
@@ -75,13 +79,11 @@ export default function TransactionFiler ({ transactionDataToCategorize, removeT
         txnObject.accountId = account.id
         return addTransaction(txnObject)
       }).then(() => {
-        console.log('transactions and new account added')
         updateAccounts()
         updateTransactions()
       })
     } else {
       addTransaction(txnObject).then(() => {
-        console.log('transaction added')
         updateTransactions()
       })
     }

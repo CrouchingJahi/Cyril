@@ -68,12 +68,12 @@ async function migrateDB () {
   stringMatcherStore.createIndex('pattern', 'pattern', { unique: false })
   stringMatcherStore.createIndex('categoryId', 'categoryId', { unique: false })
 
-  const transactionStore = dbInstance.createObjectStore('transactions', { keyPath: 'id' })
+  const transactionStore = dbInstance.createObjectStore('transactions', { keyPath: 'fitid' })
   transactionStore.createIndex('accountId', 'accountId', { unique: false })
   transactionStore.createIndex('categoryId', 'categoryId', { unique: false })
-  transactionStore.createIndex('txnDate', 'txnDate', { unique: false })
-  transactionStore.createIndex('txnName', 'txnName', { unique: false })
-  transactionStore.createIndex('txnType', 'txnType', { unique: false })
+  transactionStore.createIndex('date', 'date', { unique: false })
+  transactionStore.createIndex('name', 'name', { unique: false })
+  transactionStore.createIndex('type', 'type', { unique: false })
 
   console.log('Database migration complete.')
 }

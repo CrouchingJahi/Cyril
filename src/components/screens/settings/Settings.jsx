@@ -7,6 +7,7 @@ import LoadingIcon from '@/ui/LoadingIcon'
 import DataOptions from './DataOptions'
 import AccountOptions from './AccountOptions'
 import CategoryOptions from './CategoryOptions'
+import TransactionOptions from './TransactionOptions'
 
 /**
  * Settings:
@@ -34,12 +35,12 @@ export default function SettingsScreen () {
         <AccountOptions
           accounts={accounts} updateAccounts={updateAccounts}
         />
-        {/* <TransactionOptions /> */}
         {/* <SpendingOptions /> */}
         <CategoryOptions
           categories={categories} updateCategories={updateCategories}
           stringMatchers={stringMatchers} updateStringMatchers={updateStringMatchers}
         />
+        <TransactionOptions />
       </main> :
       <div className="width-l centered">
         <LoadingIcon />

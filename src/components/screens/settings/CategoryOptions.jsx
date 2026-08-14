@@ -8,7 +8,7 @@ export default function CategoryOptions ({categories, updateCategories, stringMa
 
   return <>
     <section>
-      <h2>Transaction Categories</h2>
+      <h2>Categories</h2>
       { categories.length == 0 ? <p>No categories exist yet.</p> :
         <>
           <CategoryDisplay categoryList={categories} activeCatId={activeCategoryId} setActiveFn={setActiveCategoryId} />

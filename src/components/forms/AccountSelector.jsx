@@ -8,6 +8,8 @@ import { addUserAccount } from '~/database/db'
  * A selector that lets the user choose between existing accounts, or to open a modal and create a new one
  * @param name the field name for the form element
  * @param importingAccount (opt) When the file import option is being used for the Upload screen, this will be an object containing the imported account data
+ * 
+ * @todo option to select some other account anyway
  */
 export default function AccountSelector ({ name, selectedAccountId, selectAccountId, importingAccount}) {
   const {
@@ -53,6 +55,7 @@ export default function AccountSelector ({ name, selectedAccountId, selectAccoun
     { importingAccountAlreadyExists ?
       <div>
         <p>Account is already saved as { importingAccountAlreadyExists.name }.</p>
+        <input type="hidden" name={name} value={importingAccount.id} />
       </div> :
       <fieldset>
         <label htmlFor={name}>Account:</label>

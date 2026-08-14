@@ -9,6 +9,7 @@ import TransactionFiler from './TransactionFiler'
 /**
  * Categorize transactions that are staged from the last file upload
  * 
+ * @todo issue when one trx is saved then the next has no default category selected: clear out selection and regex matcher input
  * @todo flesh out auto categorizer
  * @todo proper screen for when all pending are removed
  */

@@ -104,7 +104,7 @@ export default function UploadScreen () {
 
 function UploadFileForm ({uploadCallback}) {
   const [selectedFile, setSelectedFile] = useState(null)
-  const [actionForDuplicates, setActionForDuplicates] = useState()
+  const [actionForDuplicates, setActionForDuplicates] = useState('keep')
 
   function handleFileChange (event) {
     setSelectedFile(event.target.files[0])

@@ -47,7 +47,6 @@ React DevTools issues - https://github.com/electron/electron/issues/41613
 ---
 
 ## To Do
-* Sorting screen, where you can sort your current transactions or finish working on previous uploads
 * Scheduling screen, to handle any recurring expenses that aren't tracked via bank statements (payroll deductions)
 * DB - Auto inc won't work well with deletions
 * Create dedicated svg for bullet points, radio buttons, checkmarks

@@ -19,17 +19,17 @@ export function createTransactionData (transactions, categories) {
   return transactions.reduce((stats, txn) => {
     // Total
     // only pull debit transactions as spending? what to do w/ credit?
-    let txnAmount = parseFloat(txn.txnAmount)
+    let txnAmount = parseFloat(txn.amount)
     if (!Number.isNaN(txnAmount)) {
       stats.total = (parseFloat(stats.total) + Math.abs(txnAmount)).toFixed(2)
     }
 
     // Timeframe
-    if (!stats.timeframe.start || txn.txnDate < stats.timeframe.start) {
-      stats.timeframe.start = txn.txnDate
+    if (!stats.timeframe.start || txn.date < stats.timeframe.start) {
+      stats.timeframe.start = txn.date
     }
-    if (!stats.timeframe.end || txn.txnDate > stats.timeframe.end) {
-      stats.timeframe.end = txn.txnDate
+    if (!stats.timeframe.end || txn.date > stats.timeframe.end) {
+      stats.timeframe.end = txn.date
     }
 
     // Account IDs
@@ -80,12 +80,12 @@ function addAncestryToTree(tree, categories, thisCategory, thisTxn) {
   // Then add this node
   const matchingNode = treePointer.children.find(child => child.catId === thisCategory.id)
   if (matchingNode) {
-    matchingNode.value += Math.abs(thisTxn.txnAmount)
+    matchingNode.value += Math.abs(thisTxn.amount)
   } else {
     treePointer.children.push({
       name: thisCategory.catName,
       catId: thisCategory.id,
-      value: Math.abs(thisTxn.txnAmount),
+      value: Math.abs(thisTxn.amount),
     })
   }
 }
