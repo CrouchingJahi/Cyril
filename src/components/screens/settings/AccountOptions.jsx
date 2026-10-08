@@ -1,8 +1,15 @@
-import { useEffect, useState, useRef } from 'react'
-import { getTransactionCountForAccount, addUserAccount, modifyUserAccount, removeUserAccount } from '~/database/db'
+import { useContext, useEffect, useState, useRef } from 'react'
+import { VaultContext } from '@/context/VaultContext'
 import Modal from '@/ui/Modal'
 
-export default function AccountOptions ({accounts, updateAccounts}) {
+export default function AccountOptions () {
+  const {
+    accounts,
+    addUserAccount,
+    modifyUserAccount,
+    removeUserAccount,
+    getTransactionCountForAccount
+  } = useContext(VaultContext)
   const [activeAccount, setActiveAccount] = useState(null)
   const [activeAccountInfo, setActiveAccountInfo] = useState(null)
   const confirmDeleteAccountDialogRef = useRef(null)
@@ -40,16 +47,13 @@ export default function AccountOptions ({accounts, updateAccounts}) {
   function handleAddAccount (event) {
     event.preventDefault()
     const formData = Object.fromEntries(new FormData(event.target))
-    addUserAccount(formData).then(res => {
-      updateAccounts()
-    })
+    addUserAccount(formData)
     event.target.reset()
   }
 
   function handleEditAccount (event) {
     const formData = Object.fromEntries(new FormData(event.target))
-    modifyUserAccount(formData).then(res => {
-      updateAccounts()
+    modifyUserAccount(formData).then(_ => {
       accountDetailsModalRef.current.close()
     })
   }
@@ -59,8 +63,7 @@ export default function AccountOptions ({accounts, updateAccounts}) {
   }
 
   function confirmDeleteAccount (accountId) {
-    removeUserAccount(accountId).then(([trxResult, acctResult]) => {
-      setAccounts(accounts.filter(acct => acct.id != acctResult.id))
+    removeUserAccount(accountId).then(_ => {
       confirmDeleteAccountDialogRef.current.close()
       accountDetailsModalRef.current.close()
       setActiveAccount(null)

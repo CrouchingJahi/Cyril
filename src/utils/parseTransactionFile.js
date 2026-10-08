@@ -1,5 +1,3 @@
-import { getTransactions } from '~/database/db'
-
 /**
  * Routes to a parser according to file type.
  */
@@ -11,8 +9,7 @@ export default function parseTransactionFile (file) {
   }
 }
 
-export async function dropDuplicateTransactionsFrom (data) {
-  const knownTransactions = await getTransactions()
+export async function dropDuplicateTransactionsFrom (data, knownTransactions) {
   const dataCopy = {}
   dataCopy.csvHeaders = data.csvHeaaders
   dataCopy.headers = data.headers

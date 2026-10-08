@@ -1,21 +1,30 @@
 import * as IDB from './indexeddb'
 
-let db;
+const dbInstance = await initDB()
 
-export async function getDB () {
-  if (!db)  {
-    db = await IDB.getIDB()
-    // Add methods to global object for debug purposes
-    Object.assign(db, {
-      getUserAccounts, addUserAccount, removeUserAccount,
-      getCategories, addCategory,
-      getStringMatchers, addStringMatcher,
-      getTransactions, addTransaction,
-      createBackup, loadFromBackup,
-    })
-    window.dispatchEvent(new CustomEvent('VaultLoaded'))
+export default dbInstance
+
+async function initDB () {
+  const dbInstance = await IDB.getIDB()
+
+  window.dispatchEvent(new CustomEvent('VaultLoaded'))
+
+  // Expose API
+  return {
+    // DB
+    dbInstance,
+    // CRUD
+    getUserAccounts, addUserAccount,
+    modifyUserAccount, removeUserAccount,
+    getCategories, addCategory,
+    modifyCategory,
+    getStringMatchers, addStringMatcher,
+    getTransactions, addTransaction,
+    // Stats
+    getTransactionCountForAccount,
+    // Utility
+    createBackup, loadFromBackup,
   }
-  return db
 }
 
 // An object containing the database's contents, with the collections as the keys
@@ -34,36 +43,36 @@ async function createBackupObject () {
     return backupObject
   })
 }
-export async function createBackup () {
+async function createBackup () {
   return createBackupObject().then(backupObj => {
     return window.cyrilAPI.createBackupFile(backupObj).then(filePath => {
       return { filePath, backupObj }
     })
   })
 }
-export function loadFromBackup (whichCollections) {
+function loadFromBackup (whichCollections) {
   window.cyrilAPI.readBackupFile().then(backupData => {
     IDB.loadFromBackup(backupData, whichCollections)
   })
 }
 
 // Passthrough methods for DB API
-export async function getUserAccounts () {
+async function getUserAccounts () {
   return IDB.getUserAccounts()
 }
-export async function addUserAccount (newAccount) {
+async function addUserAccount (newAccount) {
   return IDB.addUserAccount(newAccount)
 }
-export async function modifyUserAccount (account) {
+async function modifyUserAccount (account) {
   return IDB.modifyUserAccount(account)
 }
-export async function removeUserAccount (accountId) {
+async function removeUserAccount (accountId) {
   return IDB.removeUserAccount(accountId)
 }
-export async function getCategories () {
+async function getCategories () {
   return IDB.getCategories()
 }
-export async function addCategory (newCategory) {
+async function addCategory (newCategory) {
   // Remove unnecessary fields - catParent is part of the formData, but catAncestry is formed from its data
   const formattedCategory = {
     catName: newCategory.catName,
@@ -71,23 +80,23 @@ export async function addCategory (newCategory) {
   }
   return IDB.addCategory(formattedCategory)
 }
-export async function modifyCategory (category) {
+async function modifyCategory (category) {
   return IDB.modifyCategory(category)
 }
 // accountId is optional - if null, return all transactions
-export async function getTransactions(accountId) {
+async function getTransactions(accountId) {
   return IDB.getTransactions(accountId)
 }
-export async function getTransactionCountForAccount (accountId) {
+async function getTransactionCountForAccount (accountId) {
   return IDB.getTransactionCountForAccount(accountId)
 }
-export async function addTransaction (newTransaction) {
+async function addTransaction (newTransaction) {
   return IDB.addTransaction(newTransaction)
 }
-export async function getStringMatchers () {
+async function getStringMatchers () {
   return IDB.getStringMatchers()
 }
-export async function addStringMatcher (matcher) {
+async function addStringMatcher (matcher) {
   return IDB.addStringMatcher(matcher)
 }
 

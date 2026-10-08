@@ -2,7 +2,6 @@ import { useContext, useEffect, useRef, useState } from 'react'
 
 import { VaultContext } from '@/context/VaultContext'
 import Modal from '@/ui/Modal'
-import { addUserAccount } from '~/database/db'
 
 /**
  * A selector that lets the user choose between existing accounts, or to open a modal and create a new one
@@ -13,7 +12,7 @@ import { addUserAccount } from '~/database/db'
  */
 export default function AccountSelector ({ name, selectedAccountId, selectAccountId, importingAccount}) {
   const {
-    accounts, updateAccounts
+    accounts, addUserAccount
   } = useContext(VaultContext)
   const [accountName, setAccountName] = useState('')
   const [accountFid, setAccountFid] = useState('')
@@ -40,7 +39,6 @@ export default function AccountSelector ({ name, selectedAccountId, selectAccoun
     event.stopPropagation()
     const formData = Object.fromEntries(new FormData(event.target))
     addUserAccount(formData).then(res => {
-      updateAccounts()
       selectAccountId(res.id)
     })
     event.target.reset()

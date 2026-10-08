@@ -1,5 +1,4 @@
 import { useContext, useEffect, useState } from 'react'
-
 import { getPendingTransactions, savePendingTransactions } from '~/database/localStorage'
 import parseTransactionFile, { dropDuplicateTransactionsFrom } from '~/utils/parseTransactionFile'
 import { MessageContext } from '@/context/MessageContext'
@@ -103,6 +102,7 @@ export default function UploadScreen () {
 }
 
 function UploadFileForm ({uploadCallback}) {
+  const { transactions } = useContext(VaultContext)
   const [selectedFile, setSelectedFile] = useState(null)
   const [actionForDuplicates, setActionForDuplicates] = useState('keep')
 
@@ -117,7 +117,7 @@ function UploadFileForm ({uploadCallback}) {
       if (actionForDuplicates === 'keep') {
         uploadCallback(fileData)
       } else if (actionForDuplicates === 'drop') {
-        uploadCallback(dropDuplicateTransactionsFrom(fileData))
+        uploadCallback(dropDuplicateTransactionsFrom(fileData, transactions))
       }
     })
   }

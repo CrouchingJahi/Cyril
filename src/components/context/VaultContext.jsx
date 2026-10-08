@@ -1,5 +1,5 @@
-import { createContext, useEffect, useState } from 'react'
-import { getCategories, getUserAccounts, getTransactions, getStringMatchers } from '~/database/db'
+import { createContext, useCallback, useEffect, useState } from 'react'
+import db from '~/database/db'
 
 export const VaultContext = createContext()
 
@@ -8,6 +8,7 @@ export const VaultContext = createContext()
  * Also exposes methods to pull again whenever the DB is updated.
  */
 export default function VaultProvider ({ children }) {
+  const [dbInstance, setDbInstance] = useState()
   const [categories, setCategories] = useState()
   const [accounts, setAccounts] = useState()
   const [transactions, setTransactions] = useState()
@@ -15,14 +16,28 @@ export default function VaultProvider ({ children }) {
   const [isLoaded, setIsLoaded] = useState(false)
 
   useEffect(() => {
-    if (window.cyrilVault) {
-      loadData()
-    } else {
-      window.addEventListener('VaultLoaded', loadData, { once: true })
+    async function loadData() {
+      if (isMounted) {
+        setDbInstance(db)
+      }
+    }
+
+    let isMounted = true
+    loadData()
+
+    return () => {
+      isMounted = false
     }
   }, [])
 
-  function loadData () {
+  useEffect(() => {
+    if (dbInstance) {
+      updateData()
+    }
+  }, [dbInstance])
+
+  // Functions to refresh context from db
+  const updateData = useCallback(() => {
     Promise.all([
       updateCategories(),
       updateAccounts(),
@@ -31,29 +46,46 @@ export default function VaultProvider ({ children }) {
     ]).then(_ => {
       setIsLoaded(true)
     })
-  }
+  }, [dbInstance])
 
-  function updateCategories () {
-    return getCategories().then(setCategories)
-  }
+  const updateCategories = useCallback(() => {
+    dbInstance?.getCategories().then(setCategories)
+  }, [dbInstance])
 
-  function updateAccounts () {
-    return getUserAccounts().then(setAccounts)
-  }
+  const updateAccounts = useCallback(() => {
+    dbInstance?.getUserAccounts().then(setAccounts)
+  }, [dbInstance])
 
-  function updateTransactions () {
-    return getTransactions().then(setTransactions)
-  }
+  const updateTransactions = useCallback(() => {
+    dbInstance?.getTransactions().then(setTransactions)
+  }, [dbInstance])
 
-  function updateStringMatchers () {
-    return getStringMatchers().then(setStringMatchers)
-  }
+  const updateStringMatchers = useCallback(() => {
+    dbInstance?.getStringMatchers().then(setStringMatchers)
+  }, [dbInstance])
 
+  const addCategory = useCallback((category) => {
+    dbInstance?.addCategory(category).then(updateCategories)
+  }, [dbInstance])
+
+  const addUserAccount = useCallback((userAccount) => {
+    dbInstance?.addUserAccount(userAccount).then(updateAccounts)
+  }, [dbInstance])
+
+  const addTransaction = useCallback((transaction) => {
+    dbInstance?.addTransaction(transaction).then(updateTransactions)
+  }, [dbInstance])
+
+  const addStringMatcher = useCallback((stringMatcher) => {
+    dbInstance?.addStringMatcher(stringMatcher).then(updateStringMatchers)
+  }, [dbInstance])
+
+  // API
   const context = {
-    categories, updateCategories,
-    accounts, updateAccounts,
-    transactions, updateTransactions,
-    stringMatchers, updateStringMatchers,
+    categories, updateCategories, addCategory,
+    accounts, updateAccounts, addUserAccount,
+    transactions, updateTransactions, addTransaction,
+    stringMatchers, updateStringMatchers, addStringMatcher,
     isLoaded,
   }
 

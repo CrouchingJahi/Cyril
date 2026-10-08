@@ -1,8 +1,9 @@
-import { useEffect, useState, useRef } from 'react'
+import { useContext, useEffect, useState, useRef } from 'react'
+import { VaultContext } from '@/context/VaultContext'
 import Modal from '@/ui/Modal'
-import { createBackup } from '~/database/db'
 
 export default function DataOptions () {
+  const { createBackup } = useContext(VaultContext)
   const [backupFileImportData, setBackupFileImportData] = useState(null)
   const [backupSaved, setBackupSaved] = useState(null)
   const [confirmSavePath, setConfirmSavePath] = useState('')
@@ -63,8 +64,12 @@ export default function DataOptions () {
     clearDataModalRef.current.open()
   }
 
-  function handleClearAll () {}
-  function handleClearTransactions () {}
+  function handleClearAll () {
+    // @todo this
+  }
+  function handleClearTransactions () {
+    // @todo this
+  }
 
   return <section>
     <h2>Data</h2>
@@ -97,10 +102,12 @@ export default function DataOptions () {
   </section>
 
   function BackupFileImportModal () {
+    const { loadFromBackup } = useContext(VaultContext)
+
     function handleConfirmImport (e) {
       if (e.nativeEvent.submitter.value != 'cancel') {
         let formData = Object.fromEntries(new FormData(e.target).entries())
-        cyrilVault.loadFromBackup(Object.keys(formData).join(','))
+        loadFromBackup(Object.keys(formData).join(','))
       }
     }
 

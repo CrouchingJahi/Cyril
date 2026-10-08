@@ -1,5 +1,5 @@
-import { useEffect, useState } from 'react'
-import { modifyCategory, addCategory, addStringMatcher } from '~/database/db'
+import { useContext, useEffect, useState } from 'react'
+import { VaultContext } from '@/context/VaultContext'
 import CategoryDisplay from '@/transactionCategories/CategoryDisplay'
 
 // Category picker, then the options that depend on having an active category
@@ -42,6 +42,7 @@ export default function CategoryOptions ({categories, updateCategories, stringMa
   }
 
   function ModifyCategoryForm () {
+    const { modifyCategory } = useContext(VaultContext)
     if (!activeCategoryId) {
       return <section />
     }
@@ -55,10 +56,6 @@ export default function CategoryOptions ({categories, updateCategories, stringMa
         id: activeCategoryId,
         ...formData,
         catAncestry: buildAncestryString(selectedParentId)
-      }).then(res => {
-        let newCategories = [...categories]
-        newCategories[categories.indexOf(cat => cat.id == activeCategoryId)] = res
-        updateCategories(newCategories)
       })
     }
 
@@ -78,6 +75,7 @@ export default function CategoryOptions ({categories, updateCategories, stringMa
   }
 
   function AddCategoryForm () {
+    const { addCategory } = useContext(VaultContext)
     const [selectedParentId, setSelectedParentId] = useState('')
     useEffect(() => {
       if (activeCategoryId) {
@@ -115,6 +113,7 @@ export default function CategoryOptions ({categories, updateCategories, stringMa
   }
 
   function CategoryMatcherOptions () {
+    const { addStringMatcher } = useContext(VaultContext)
     function handleAddMatcher (e) {
       const formData = Object.fromEntries(new FormData(event.target))
       e.preventDefault()

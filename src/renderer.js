@@ -29,14 +29,11 @@ import { createElement } from 'react';
 import { createRoot } from 'react-dom/client';
 
 import App from '@/App';
-import { getDB } from './database/db';
+
+// For Debugging DB instance:
+// import DB from './database/db'
+// window.cyrilVault = DB
 
 const appNode = createRoot(document.getElementById('root'));
 appNode.render(createElement(App));
 
-initializeDB();
-
-async function initializeDB () {
-  const db = await getDB();
-  window.cyrilVault = db;
-}

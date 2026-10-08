@@ -1,7 +1,4 @@
 import { useContext, useEffect, useState, useRef } from 'react'
-
-import { addCategory, addStringMatcher, addUserAccount, addTransaction } from '~/database/db'
-
 import { VaultContext } from '@/context/VaultContext'
 import AccountSelector from '@/forms/AccountSelector'
 import RegexMatcherInput from '@/forms/RegexMatcherInput'
@@ -15,9 +12,9 @@ import Modal from '@/ui/Modal'
 export default function TransactionFiler ({ transactionDataToCategorize, removeTransactionFn }) {
   const {
     categories, updateCategories,
-    accounts, updateAccounts,
-    stringMatchers, updateStringMatchers,
-    transactions, updateTransactions,
+    accounts, addUserAccount,
+    stringMatchers, addStringMatcher,
+    transactions, addTransaction,
   } = useContext(VaultContext)
 
   const numOfTransactions = transactionDataToCategorize.transactions.length
@@ -65,8 +62,6 @@ export default function TransactionFiler ({ transactionDataToCategorize, removeT
       addStringMatcher({
         pattern: formData.regexMatch,
         categoryId: selectedCategories[txnIndex],
-      }).then(() => {
-        updateStringMatchers()
       })
     }
 
@@ -77,15 +72,10 @@ export default function TransactionFiler ({ transactionDataToCategorize, removeT
         org: formData.newAccountOrg,
       }).then((account) => {
         txnObject.accountId = account.id
-        return addTransaction(txnObject)
-      }).then(() => {
-        updateAccounts()
-        updateTransactions()
+        addTransaction(txnObject)
       })
     } else {
-      addTransaction(txnObject).then(() => {
-        updateTransactions()
-      })
+      addTransaction(txnObject)
     }
   }
 
@@ -116,7 +106,6 @@ export default function TransactionFiler ({ transactionDataToCategorize, removeT
           </div>
         }
         <AccountSelector name="accountId"
-          accounts={accounts} updateAccounts={updateAccounts}
           selectedAccountId={selectedAccountId} selectAccountId={setSelectedAccountId}
           importingAccount={transactionDataToCategorize.account}
         />
@@ -241,8 +230,9 @@ function TransactionToCategorize ({transaction, categories, updateCategories, se
   </div>
 }
 
-function AddCategoryModal ({ modalRef, activeCategory, updateCategories }) {
+function AddCategoryModal ({ modalRef, activeCategory }) {
   const [catName, setCatName] = useState('')
+  const { addCategory } = useContext(VaultContext)
 
   function addNewCategory () {
     const catAncestry = activeCategory.catAncestry ?
@@ -252,8 +242,6 @@ function AddCategoryModal ({ modalRef, activeCategory, updateCategories }) {
     addCategory({
       catName,
       catAncestry,
-    }).then(() => {
-      updateCategories()
     })
   }
 
